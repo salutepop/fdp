@@ -1,3 +1,5 @@
 cachebench/result
 cachebench/result/*
 *csv
+*parse
+*trace
