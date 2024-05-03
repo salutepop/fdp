@@ -12,6 +12,9 @@
     "navyMaxNumWrites": 128,
     "deviceEnableFDP": true,
     "nvmCachePaths": ["/dev/DEVICE"],
+    "writeAmpDeviceList": [
+      "DEVICE"
+    ]
     "nvmCacheSizeMB" : 952320,
     "navyBigHashBucketSize": 4096,
     "navyBigHashSizePct": 4,
