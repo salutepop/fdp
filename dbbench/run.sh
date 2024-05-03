@@ -3,12 +3,17 @@ MOUNT="/home/cm/tmp/"
 HOME="/home/cm/"
 DB_BENCH=$HOME'/repo/rocksdb/db_bench'
 DIR_RESULT=$HOME'/fdp/dbbench/result/'
-
-if [[ $# -ne 1 ]]; then
+OPT='normal'
+if [[ $# -lt 1 ]]; then
   echo "Illegal number of parameters"
-  echo "(ex) ./run.sh nvme0n1"
+  echo "(ex) ./run.sh nvme0n1 [normal, gdb]"
   exit
 fi
+
+if [[ $# -eq 2 ]]; then
+  OPT=$2
+fi
+
 # 0. mkfs & mount
 sudo umount $MOUNT
 sudo mkfs.xfs -f /dev/$1
@@ -24,6 +29,10 @@ if [[ $MOUNTED -ne 1 ]]; then
 fi
 
 # 1. execute db_bench
+if [[ $OPT == 'gdb' ]]; then
+  DB_BENCH='gdb -ex=run --args '$DB_BENCH
+fi
+echo $DB_BENCH
 $DB_BENCH \
   -benchmarks="fillrandom,levelstats" \
   -db=$MOUNT \
