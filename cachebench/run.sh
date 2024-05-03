@@ -29,8 +29,8 @@ sudo rm $DEV_CONFIG
 
 sudo nvme smart-log /dev/$DEV
 sed 's/DEVICE/'$DEV'/g' $NODEV_CONFIG > $DEV_CONFIG
-if [ $TYPE == 'cns' ]; then
-    sed -i 'FDP/d' $DEV_CONFIG
+if [ $DEV_TYPE == 'cns' ]; then
+    sed -i '/FDP/d' $DEV_CONFIG
 fi
 
 # 0. enable nvme
