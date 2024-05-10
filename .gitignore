@@ -3,3 +3,7 @@ cachebench/result/*
 *csv
 *parse
 *trace
+*log
+dbbench/db_bench
+dbbench/result
+dbbench/result/*
