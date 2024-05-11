@@ -1,8 +1,8 @@
-HOME='/home/cm/'
-CACHEBENCH=$HOME'/repo/CacheLib/opt/cachelib/bin/cachebench'
-PATH_SCRIPTS=$HOME'/fdp/util/'
-DIR_CONFIG=$HOME'/fdp/cachebench/test_configs/ssd_perf/'
-DIR_OUTPUT=$HOME'/fdp/cachebench/result/'
+HOME='/home/cm/dev/'
+CACHEBENCH=$HOME'repo/CacheLib/opt/cachelib/bin/cachebench'
+PATH_SCRIPTS=$HOME'fdp/util/'
+DIR_CONFIG=$HOME'fdp/cachebench/test_configs/ssd_perf/'
+DIR_OUTPUT=$HOME'fdp/cachebench/result/'
 NODEV_JSON='nodev_config_kvcache.json'
 
 if [[ $# -ne 3 ]]; then
@@ -27,11 +27,14 @@ echo START_TIME : `cat /proc/uptime`
 sudo rm $FILE_OUTPUT
 sudo rm $DEV_CONFIG
 sudo umount /dev/$DEV
+mkdir -p $DIR_OUTPUT
 
 sudo nvme smart-log /dev/$DEV
 sed 's/DEVICE/'$DEV'/g' $NODEV_CONFIG > $DEV_CONFIG
 if [ $DEV_TYPE == 'cns' ]; then
     sed -i '/FDP/d' $DEV_CONFIG
+    sed -i '/IoUring/d' $DEV_CONFIG
+    sed -i '/navyQDepth/d' $DEV_CONFIG
 fi
 
 # 0. enable nvme
@@ -44,5 +47,5 @@ sudo fio --name=trim --filename=/dev/$DEV --rw=trim --bs=3G
 sudo $CACHEBENCH -json_test_config $DEV_CONFIG -progress_stats_file $FILE_OUTPUT --progress 60
 
 # 3. end
-sudo nvme smart-log /dev/$DEV
 echo END_TIME : `cat /proc/uptime`
+sudo nvme smart-log /dev/$DEV
