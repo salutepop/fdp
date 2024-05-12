@@ -1,0 +1,53 @@
+<SMART-LOG before evaluation>
+Smart Log for NVME device:nvme0n1 namespace-id:ffffffff
+critical_warning                        : 0
+temperature                             : 42 °C (315 K)
+available_spare                         : 100%
+available_spare_threshold               : 10%
+percentage_used                         : 0%
+endurance group critical warning summary: 0
+Data Units Read                         : 568895017 (291.27 TB)
+Data Units Written                      : 272978276 (139.76 TB)
+host_read_commands                      : 46891161067
+host_write_commands                     : 22501334256
+controller_busy_time                    : 8860
+power_cycles                            : 77
+power_on_hours                          : 912
+unsafe_shutdowns                        : 68
+media_errors                            : 0
+num_err_log_entries                     : 13
+Warning Temperature Time                : 0
+Critical Composite Temperature Time     : 0
+Temperature Sensor 1           : 65 °C (338 K)
+Temperature Sensor 2           : 46 °C (319 K)
+Thermal Management T1 Trans Count       : 0
+Thermal Management T2 Trans Count       : 0
+Thermal Management T1 Total Time        : 0
+Thermal Management T2 Total Time        : 0
+
+<SMART-LOG after evaluation>
+Smart Log for NVME device:nvme0n1 namespace-id:ffffffff
+critical_warning                        : 0
+temperature                             : 44 °C (317 K)
+available_spare                         : 100%
+available_spare_threshold               : 10%
+percentage_used                         : 0%
+endurance group critical warning summary: 0
+Data Units Read                         : 577491782 (295.68 TB)
+Data Units Written                      : 278550091 (142.62 TB)
+host_read_commands                      : 47766677868
+host_write_commands                     : 23068831426
+controller_busy_time                    : 9011
+power_cycles                            : 77
+power_on_hours                          : 915
+unsafe_shutdowns                        : 68
+media_errors                            : 0
+num_err_log_entries                     : 13
+Warning Temperature Time                : 0
+Critical Composite Temperature Time     : 0
+Temperature Sensor 1           : 67 °C (340 K)
+Temperature Sensor 2           : 48 °C (321 K)
+Thermal Management T1 Trans Count       : 0
+Thermal Management T2 Trans Count       : 0
+Thermal Management T1 Total Time        : 0
+Thermal Management T2 Total Time        : 0

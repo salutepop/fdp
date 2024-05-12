@@ -1,0 +1,2511 @@
+Smart Log for NVME device:nvme0n1 namespace-id:ffffffff
+critical_warning                        : 0
+temperature                             : 42 °C (315 K)
+available_spare                         : 100%
+available_spare_threshold               : 10%
+percentage_used                         : 0%
+endurance group critical warning summary: 0
+Data Units Read                         : 568895017 (291.27 TB)
+Data Units Written                      : 272978276 (139.76 TB)
+host_read_commands                      : 46891161067
+host_write_commands                     : 22501334256
+controller_busy_time                    : 8860
+power_cycles                            : 77
+power_on_hours                          : 912
+unsafe_shutdowns                        : 68
+media_errors                            : 0
+num_err_log_entries                     : 13
+Warning Temperature Time                : 0
+Critical Composite Temperature Time     : 0
+Temperature Sensor 1           : 65 °C (338 K)
+Temperature Sensor 2           : 46 °C (319 K)
+Thermal Management T1 Trans Count       : 0
+Thermal Management T2 Trans Count       : 0
+Thermal Management T1 Total Time        : 0
+Thermal Management T2 Total Time        : 0
+delete-ns: Success, deleted nsid:1
+set-feature:0x1d (Flexible Direct Placement), value:00000000, cdw12:0x00000001
+, save:0x1
+set-feature:0x1d (Flexible Direct Placement), value:00000000, cdw12:00000000,
+save:0x1
+set-feature:0x1d (Flexible Direct Placement), value:00000000, cdw12:0x00000001
+, save:0x1
+create-ns: Success, created nsid:1
+attach-ns: Success, nsid:1
+/dev/nvme0n1          /dev/ng0n1            S77UNG0TB00664       MZOL63T8HDLT-
+00AFB                       0x1          3.76  TB /   3.76  TB      4 KiB +  0
+ B   LDA64F2Q
+get-feature:0x1d (Flexible Direct Placement), Current value:0x00000001
+        Flexible Direct Placement Enable (FDPE)       : Yes
+        Flexible Direct Placement Configuration Index : 0
+complete nvme configure [fdp]
+trim: (g=0): rw=trim, bs=(R) 3072MiB-3072MiB, (W) 3072MiB-3072MiB, (T) 3072MiB
+-3072MiB, ioengine=psync, iodepth=1
+fio-3.37-28-g3ed8e
+Starting 1 process
+
+trim: (groupid=0, jobs=1): err= 0: pid=200785: Sun May 12 10:32:16 2024
+  trim: IOPS=2730, BW=8192GiB/s (8796GB/s)(3498GiB/427msec); 0 zone resets
+    clat (usec): min=341, max=2385, avg=363.75, stdev=63.05
+     lat (usec): min=341, max=2385, avg=363.93, stdev=63.06
+    clat percentiles (usec):
+     |  1.00th=[  347],  5.00th=[  347], 10.00th=[  351], 20.00th=[  351],
+     | 30.00th=[  355], 40.00th=[  359], 50.00th=[  359], 60.00th=[  363],
+     | 70.00th=[  363], 80.00th=[  367], 90.00th=[  371], 95.00th=[  371],
+     | 99.00th=[  441], 99.50th=[  494], 99.90th=[  799], 99.95th=[ 2376],
+     | 99.99th=[ 2376]
+  lat (usec)   : 500=99.57%, 750=0.26%, 1000=0.09%
+  lat (msec)   : 4=0.09%
+  cpu          : usr=0.00%, sys=4.93%, ctx=1166, majf=0, minf=8
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0
+%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0
+%
+     issued rwts: total=0,0,1166,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=1
+
+Run status group 0 (all jobs):
+   TRIM: bw=8192GiB/s (8796GB/s), 8192GiB/s-8192GiB/s (8796GB/s-8796GB/s), io=
+3498GiB (3756GB), run=427-427msec
+
+Disk stats (read/write):
+  nvme0n1: ios=45/0, sectors=2128/0, merge=0/0, ticks=1/0, in_queue=383, util=
+81.93%
+===JSON Config===
+{
+  "cache_config":
+  {
+    "cacheSizeMB": 20000,
+    "cacheDir": "/root/cachelib_metadata",
+    "allocFactor": 1.08,
+    "maxAllocSize": 524288,
+    "minAllocSize": 64,
+    "navyReaderThreads": 72,
+    "navyWriterThreads": 36,
+    "nvmCachePaths": ["/dev/nvme0n1"],
+    "nvmCacheSizeMB" : 1757400,
+    "writeAmpDeviceList": ["nvme0n1"],
+    "navyBigHashBucketSize": 4096,
+    "navyBigHashSizePct": 4,
+    "navySmallItemMaxSize": 640,
+    "navySegmentedFifoSegmentRatio": [1.0],
+    "navyHitsReinsertionThreshold": 1,
+    "navyBlockSize": 4096,
+    "deviceMaxWriteSize": 262144,
+    "nvmAdmissionRetentionTimeThreshold": 7200,
+    "navyParcelMemoryMB": 6048,
+    "enableChainedItem": true,
+    "htBucketPower": 29,
+    "navyQDepth": 1,
+    "navyEnableIoUring": true,
+    "deviceEnableFDP": true,
+    "moveOnSlabRelease": false,
+    "poolRebalanceIntervalSec": 2,
+    "poolResizeIntervalSec": 2,
+    "rebalanceStrategy": "hits"
+  },
+  "test_config":
+  {
+    "opRatePerSec": 1000000,
+    "opRateBurstSize": 200,
+    "enableLookaside": false,
+    "generator": "replay",
+    "replayGeneratorConfig":
+    {
+      "ampFactor": 200
+    },
+    "repeatTraceReplay": true,
+    "repeatOpCount" : true,
+    "onlySetIfMiss" : false,
+    "numOps": 100000000000,
+    "numThreads": 10,
+    "prepopulateCache": true,
+    "traceFileNames": [
+      "kvcache_traces_1.csv",
+      "kvcache_traces_2.csv",
+      "kvcache_traces_3.csv",
+      "kvcache_traces_4.csv",
+      "kvcache_traces_5.csv"
+    ]
+  }
+}
+
+Welcome to OSS version of cachebench
+I0512 10:32:16.070708 200788 KVReplayGenerator.h:106] Started KVReplayGenerato
+r (amp factor 200, # of stressor threads 10)
+I0512 10:32:16.070768 200789 ReplayGeneratorBase.h:218] [0] Opened trace file
+kvcache_traces_1.csv
+I0512 10:32:16.070907 200789 ReplayGeneratorBase.h:179] New header detected: h
+eader "key,op,size,op_count,key_size" field map key -> 0, op -> 1, size -> 2,
+op_count -> 3, key_size -> 4
+I0512 10:32:16.076807 200788 Cache-inl.h:151] Configuring NVM cache: simple fi
+le /dev/nvme0n1 size 1757400 MB
+I0512 10:32:16.077206 200788 Cache-inl.h:240] Using the following nvm config{
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::QDepth": "1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionPolicy":
+ "",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionProbBase
+Size": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionProbFact
+orLowerBound": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionProbFact
+orUpperBound": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionProbabil
+ity": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionSuffixLe
+n": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::admissionWriteRat
+e": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::bigHashBucketBfSi
+ze": "8",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::bigHashBucketSize
+": "4096",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::bigHashSizePct":
+"4",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::bigHashSmallItemM
+axSize": "640",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheCleanRe
+gionThreads": "1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheCleanRe
+gions": "1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheDataChe
+cksum": "true",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheLru": "
+false",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheNumInMe
+mBuffers": "2",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheRegionS
+ize": "16777216",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheReinser
+tionHitsThreshold": "1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheReinser
+tionPctThreshold": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockCacheSegment
+edFifoSegmentRatio": "",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::blockSize": "4096
+",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::deviceMaxWriteSiz
+e": "262144",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::deviceMetadataSiz
+e": "0",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::enableFDP": "1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::fileName": "/dev/
+nvme0n1",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::fileSize": "18427
+67462400",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::ioEngine": "io_ur
+ing",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::maxConcurrentInse
+rts": "1000000",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::maxNumReads": "0"
+,
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::maxNumWrites": "0
+",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::maxParcelMemoryMB
+": "6048",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::maxWriteRate": "0
+",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::navyReqOrderingSh
+ards": "21",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::raidPaths": "",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::readerThreads": "
+72",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::stackSize": "1638
+4",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::truncateFile": "f
+alse",
+I0512 10:32:16.077206 200788 Cache-inl.h:240]   "navyConfig::writerThreads": "
+36"
+I0512 10:32:16.077206 200788 Cache-inl.h:240] }
+I0512 10:32:16.103215 200788 Device.cpp:1080] Cache file: /dev/nvme0n1 size: 1
+842767462400 truncate: 0
+I0512 10:32:16.103275 200788 FdpNvme.cpp:312] Opening NVMe Char Dev file: /dev
+/ng0n1
+I0512 10:32:16.103312 200788 FdpNvme.cpp:272] Nvme Device Info, NS Id: 1, lbaS
+hift: 12, Max Transfer size: 262144, start Lba: 0
+I0512 10:32:16.103776 200788 FdpNvme.cpp:35] Initialized NVMe FDP Device on fi
+le: /dev/nvme0n1
+I0512 10:32:16.103855 200788 Device.cpp:965] Created device with num_devices 1
+ size 1842767462400 block_size 4096,stripe_size 0 max_write_size 262144 max_io
+_size 262144 io_engine io_uring qdepth 1,num_fdp_devices 1
+I0512 10:32:16.175281 200788 NavySetup.cpp:243] metadataSize: 9213837312
+I0512 10:32:16.175307 200788 NavySetup.cpp:245] Setting up engine pair 0
+I0512 10:32:16.175319 200788 NavySetup.cpp:111] bighashStartingLimit: 92138373
+12 bigHashCacheOffset: 1769056763904 bigHashCacheSize: 73710698496
+I0512 10:32:16.175325 200788 NavySetup.cpp:259] blockCacheSize 1759842926592
+I0512 10:32:16.175331 200788 NavySetup.cpp:156] blockcache: starting offset: 9
+213837312, block cache size: 1759829295104
+I0512 10:32:16.175351 200788 FifoPolicy.cpp:37] FIFO policy
+I0512 10:32:16.226784 200788 FdpNvme.cpp:48] Allocated an FDP handle 1
+I0512 10:32:16.227591 200788 BigHash.cpp:93] BigHash created: buckets: 1799577
+6, bucket size: 4096, base offset: 1769056763904
+I0512 10:32:16.227601 200788 BigHash.cpp:102] Reset BigHash
+I0512 10:32:16.242055 200788 FdpNvme.cpp:48] Allocated an FDP handle 2
+I0512 10:32:16.242077 200788 RegionManager.cpp:50] 104894 regions, 16777216 by
+tes each
+I0512 10:32:16.266199 200900 RegionManager.cpp:68] region_manager_0 started
+I0512 10:32:16.304040 200788 Allocator.cpp:39] Enable priority-based allocatio
+n for Allocator. Number of priorities: 1
+I0512 10:32:16.304099 200788 BlockCache.cpp:145] Block cache created
+I0512 10:32:16.304306 200788 Driver.cpp:70] Max concurrent inserts: 1000000
+I0512 10:32:16.304316 200788 Driver.cpp:71] Max parcel memory: 6341787648
+I0512 10:32:16.304325 200788 Driver.cpp:72] Use Write Estimated Size: false
+I0512 10:32:16.304409 200788 Device.cpp:775] [ctx_0] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+W0512 10:32:16.304523 200788 NavySetup.cpp:392] No recovery data found. Contin
+uing with clean cache.
+I0512 10:32:16.304849 200788 Cache-inl.h:274] Successfully attached to existin
+g cache. Cache dir: /root/cachelib_metadata
+Total 1000000.00M ops to be run
+I0512 10:32:16.305966 200898 Device.cpp:775] [ctx_1] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306009 200877 Device.cpp:775] [ctx_2] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306024 200881 Device.cpp:775] [ctx_3] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306259 200872 Device.cpp:775] [ctx_4] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306266 200876 Device.cpp:775] [ctx_5] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306336 200884 Device.cpp:775] [ctx_8] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306328 200882 Device.cpp:775] [ctx_6] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306331 200896 Device.cpp:775] [ctx_7] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306362 200888 Device.cpp:775] [ctx_9] Created new async io cont
+ext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306374 200866 Device.cpp:775] [ctx_10] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306432 200868 Device.cpp:775] [ctx_11] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306467 200870 Device.cpp:775] [ctx_12] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306483 200886 Device.cpp:775] [ctx_13] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306604 200894 Device.cpp:775] [ctx_15] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306601 200892 Device.cpp:775] [ctx_14] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306689 200864 Device.cpp:775] [ctx_16] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306802 200880 Device.cpp:775] [ctx_17] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306909 200874 Device.cpp:775] [ctx_18] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.306932 200890 Device.cpp:775] [ctx_19] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307132 200899 Device.cpp:775] [ctx_20] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307220 200871 Device.cpp:775] [ctx_22] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307223 200887 Device.cpp:775] [ctx_23] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307232 200885 Device.cpp:775] [ctx_24] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307227 200891 Device.cpp:775] [ctx_21] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307229 200867 Device.cpp:775] [ctx_25] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307251 200873 Device.cpp:775] [ctx_26] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307351 200879 Device.cpp:775] [ctx_28] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307343 200865 Device.cpp:775] [ctx_27] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307391 200883 Device.cpp:775] [ctx_29] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307474 200893 Device.cpp:775] [ctx_30] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307556 200889 Device.cpp:775] [ctx_31] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.307571 200895 Device.cpp:775] [ctx_32] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.308112 200878 Device.cpp:775] [ctx_33] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.308304 200875 Device.cpp:775] [ctx_34] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.308589 200869 Device.cpp:775] [ctx_35] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:16.309288 200897 Device.cpp:775] [ctx_36] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+10:32:16       0.00M ops completed. Hit Ratio   0.00% (RAM   0.00%, NVM   0.00
+%)
+I0512 10:32:17.547351 200900 Device.cpp:775] [ctx_37] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+E0512 10:32:17.611044 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+I0512 10:32:24.946978 200813 Device.cpp:775] [ctx_38] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.009427 200803 Device.cpp:775] [ctx_39] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.009970 200837 Device.cpp:775] [ctx_40] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.010304 200853 Device.cpp:775] [ctx_41] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.010776 200827 Device.cpp:775] [ctx_42] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.242643 200856 Device.cpp:775] [ctx_43] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.242875 200804 Device.cpp:775] [ctx_44] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.365074 200850 Device.cpp:775] [ctx_45] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.365434 200858 Device.cpp:775] [ctx_46] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.365824 200818 Device.cpp:775] [ctx_47] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.387592 200824 Device.cpp:775] [ctx_48] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.387850 200814 Device.cpp:775] [ctx_49] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.761464 200802 Device.cpp:775] [ctx_50] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.769176 200798 Device.cpp:775] [ctx_51] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.769462 200834 Device.cpp:775] [ctx_52] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.769764 200854 Device.cpp:775] [ctx_53] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.769931 200832 Device.cpp:775] [ctx_54] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.820129 200830 Device.cpp:775] [ctx_55] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.902097 200847 Device.cpp:775] [ctx_56] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.902508 200805 Device.cpp:775] [ctx_57] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.902739 200851 Device.cpp:775] [ctx_58] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.903025 200793 Device.cpp:775] [ctx_59] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.918323 200823 Device.cpp:775] [ctx_60] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.918828 200811 Device.cpp:775] [ctx_61] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.919226 200821 Device.cpp:775] [ctx_62] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:25.919521 200831 Device.cpp:775] [ctx_63] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.001479 200819 Device.cpp:775] [ctx_64] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.002290 200795 Device.cpp:775] [ctx_65] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.325363 200835 Device.cpp:775] [ctx_66] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.440929 200852 Device.cpp:775] [ctx_67] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.442020 200806 Device.cpp:775] [ctx_68] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.442715 200796 Device.cpp:775] [ctx_69] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.443066 200843 Device.cpp:775] [ctx_70] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.443150 200828 Device.cpp:775] [ctx_71] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.443391 200826 Device.cpp:775] [ctx_72] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.443837 200836 Device.cpp:775] [ctx_73] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.443931 200840 Device.cpp:775] [ctx_74] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.444028 200801 Device.cpp:775] [ctx_75] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.444364 200822 Device.cpp:775] [ctx_76] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.444726 200810 Device.cpp:775] [ctx_77] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.445093 200862 Device.cpp:775] [ctx_78] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.445170 200861 Device.cpp:775] [ctx_79] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.445593 200841 Device.cpp:775] [ctx_80] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.445659 200842 Device.cpp:775] [ctx_81] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.446215 200845 Device.cpp:775] [ctx_82] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.447118 200816 Device.cpp:775] [ctx_83] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.447894 200849 Device.cpp:775] [ctx_84] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.448788 200800 Device.cpp:775] [ctx_85] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.449235 200844 Device.cpp:775] [ctx_86] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.449519 200848 Device.cpp:775] [ctx_87] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.449767 200859 Device.cpp:775] [ctx_88] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.450581 200807 Device.cpp:775] [ctx_89] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.450971 200857 Device.cpp:775] [ctx_90] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.451595 200797 Device.cpp:775] [ctx_91] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.452332 200829 Device.cpp:775] [ctx_92] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.452354 200838 Device.cpp:775] [ctx_93] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.452628 200794 Device.cpp:775] [ctx_94] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.452632 200792 Device.cpp:775] [ctx_95] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.453082 200820 Device.cpp:775] [ctx_96] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.453425 200863 Device.cpp:775] [ctx_97] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.453475 200839 Device.cpp:775] [ctx_98] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.454204 200815 Device.cpp:775] [ctx_99] Created new async io con
+text with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.455422 200799 Device.cpp:775] [ctx_100] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.584568 200855 Device.cpp:775] [ctx_101] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:26.585430 200825 Device.cpp:775] [ctx_102] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+E0512 10:32:27.611582 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+I0512 10:32:27.905244 200817 Device.cpp:775] [ctx_103] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:27.913306 200833 Device.cpp:775] [ctx_104] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:27.914395 200846 Device.cpp:775] [ctx_105] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:28.028718 200860 Device.cpp:775] [ctx_106] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:28.174664 200812 Device.cpp:775] [ctx_107] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:28.183011 200809 Device.cpp:775] [ctx_108] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+I0512 10:32:28.188144 200808 Device.cpp:775] [ctx_109] Created new async io co
+ntext with qdepth 1 (sync wait) io_engine io_uring FDP enabled
+E0512 10:32:38.732673 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:32:49.645268 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:33:01.330320 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:33:12.769578 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:33:16      57.60M ops completed. Hit Ratio  73.95% (RAM  73.91%, NVM   0.14
+%)
+E0512 10:33:22.964440 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:33:33.288636 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:33:47.807237 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:33:58.392212 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:34:09.912779 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:34:16     112.95M ops completed. Hit Ratio  72.20% (RAM  72.08%, NVM   0.42
+%)
+E0512 10:34:19.911583 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:34:32.182043 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:34:45.714977 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:34:56.999596 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:35:07.514804 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:35:16     168.35M ops completed. Hit Ratio  72.67% (RAM  72.46%, NVM   0.73
+%)
+E0512 10:35:17.611288 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:35:29.129561 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:35:39.219965 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:35:52.703638 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:36:03.529964 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:36:13.827942 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:36:16     224.71M ops completed. Hit Ratio  69.00% (RAM  68.69%, NVM   0.98
+%)
+E0512 10:36:26.929467 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:36:37.071776 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:36:47.785059 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:37:01.336954 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:37:11.943649 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:37:16     279.04M ops completed. Hit Ratio  75.73% (RAM  75.37%, NVM   1.45
+%)
+E0512 10:37:22.414789 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:37:33.266683 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:37:44.124915 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:37:54.415989 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:38:04.415589 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:38:16     333.46M ops completed. Hit Ratio  69.15% (RAM  68.66%, NVM   1.56
+%)
+E0512 10:38:22.571538 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:38:32.653126 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:38:43.591023 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:38:54.389641 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:39:04.643414 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:39:14.639590 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:39:16     387.58M ops completed. Hit Ratio  72.03% (RAM  71.49%, NVM   1.87
+%)
+E0512 10:39:25.331870 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:39:45.453763 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:39:55.772154 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:40:05.839086 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:40:16     443.23M ops completed. Hit Ratio  73.21% (RAM  72.68%, NVM   1.93
+%)
+E0512 10:40:16.809126 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:40:27.435232 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:40:43.353805 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:40:53.975715 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:41:04.167917 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:41:14.167592 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:41:16     496.46M ops completed. Hit Ratio  68.71% (RAM  68.03%, NVM   2.14
+%)
+E0512 10:41:26.242435 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:41:44.726082 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:41:55.292587 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:42:06.766366 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:42:16     549.53M ops completed. Hit Ratio  74.49% (RAM  73.85%, NVM   2.43
+%)
+E0512 10:42:26.536230 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:42:37.025822 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:42:48.670433 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:43:00.160371 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:43:11.145454 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:43:16     602.40M ops completed. Hit Ratio  68.59% (RAM  67.82%, NVM   2.40
+%)
+E0512 10:43:28.861274 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:43:40.343093 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:43:52.012453 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:44:04.858037 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:44:15.434325 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:44:16     655.81M ops completed. Hit Ratio  67.70% (RAM  66.96%, NVM   2.24
+%)
+E0512 10:44:25.431590 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:44:35.600617 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:44:45.958285 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:44:56.611715 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:45:07.934812 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:45:16     708.29M ops completed. Hit Ratio  73.10% (RAM  72.22%, NVM   3.17
+%)
+E0512 10:45:18.128536 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:45:28.708801 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:45:40.448194 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:45:51.198534 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:46:01.967574 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:46:14.998507 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:46:16     759.21M ops completed. Hit Ratio  70.34% (RAM  69.30%, NVM   3.41
+%)
+E0512 10:46:26.225873 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:46:39.937129 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:46:50.084102 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:47:01.119966 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:47:13.703570 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:47:16     810.91M ops completed. Hit Ratio  73.77% (RAM  72.71%, NVM   3.88
+%)
+E0512 10:47:23.699585 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:47:33.927953 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:47:44.944414 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:47:55.562185 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:48:07.927971 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:48:17     861.38M ops completed. Hit Ratio  69.67% (RAM  68.45%, NVM   3.86
+%)
+E0512 10:48:18.352551 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:48:28.368741 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:48:38.515727 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:48:48.891120 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:48:58.966408 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:49:09.837146 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:49:17     912.73M ops completed. Hit Ratio  75.76% (RAM  74.57%, NVM   4.68
+%)
+E0512 10:49:21.957983 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:49:33.305317 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:49:44.793995 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:49:56.268714 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:50:07.867772 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:50:17     962.59M ops completed. Hit Ratio  71.54% (RAM  70.13%, NVM   4.74
+%)
+E0512 10:50:17.867590 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:50:32.166098 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:50:45.198069 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:50:56.217393 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:51:06.428041 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:51:16.427586 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:51:17    1013.77M ops completed. Hit Ratio  75.99% (RAM  74.64%, NVM   5.31
+%)
+E0512 10:51:27.826080 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:51:37.937920 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:51:48.331605 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:51:58.349802 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:52:08.876726 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:52:17    1064.88M ops completed. Hit Ratio  74.41% (RAM  73.04%, NVM   5.07
+%)
+E0512 10:52:19.735006 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:52:29.731596 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:52:41.203371 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:52:52.318437 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:53:02.964696 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:53:17    1114.70M ops completed. Hit Ratio  72.80% (RAM  71.27%, NVM   5.34
+%)
+E0512 10:53:21.688103 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:53:33.118652 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:53:43.768584 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:53:55.386201 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:54:08.161767 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:54:17    1164.91M ops completed. Hit Ratio  77.48% (RAM  75.99%, NVM   6.21
+%)
+E0512 10:54:18.779113 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:54:34.097854 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:54:44.317456 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:54:54.666564 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:55:05.165486 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:55:15.480523 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:55:17    1214.34M ops completed. Hit Ratio  65.90% (RAM  64.50%, NVM   3.96
+%)
+E0512 10:55:28.213603 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:55:41.779077 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:55:52.224720 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:56:03.615493 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:56:13.987840 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:56:17    1265.33M ops completed. Hit Ratio  79.60% (RAM  78.12%, NVM   6.75
+%)
+E0512 10:56:26.342565 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:56:37.460347 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:56:48.609530 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:56:59.926312 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:57:12.090260 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:57:17    1314.84M ops completed. Hit Ratio  77.03% (RAM  75.43%, NVM   6.49
+%)
+E0512 10:57:22.087589 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:57:32.721269 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:57:42.868030 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:57:52.867588 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:58:02.869346 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:58:12.867591 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:58:17    1365.56M ops completed. Hit Ratio  79.72% (RAM  78.14%, NVM   7.20
+%)
+E0512 10:58:23.844105 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:58:36.319015 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:58:53.181276 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:59:06.274705 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+10:59:17    1415.39M ops completed. Hit Ratio  75.88% (RAM  74.11%, NVM   6.83
+%)
+E0512 10:59:24.365817 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:59:36.220142 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:59:46.219585 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 10:59:59.635576 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:00:11.028567 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:00:17    1465.84M ops completed. Hit Ratio  80.55% (RAM  78.89%, NVM   7.88
+%)
+E0512 11:00:21.107868 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:00:32.413029 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:00:44.044045 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:00:56.614366 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:01:07.008410 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:01:17.131922 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:01:17    1514.99M ops completed. Hit Ratio  75.55% (RAM  73.63%, NVM   7.31
+%)
+E0512 11:01:28.932346 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:01:38.998538 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:01:50.232337 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:02:00.517037 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:02:12.518649 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:02:17    1565.09M ops completed. Hit Ratio  79.33% (RAM  77.59%, NVM   7.76
+%)
+E0512 11:02:26.381752 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:02:41.199655 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:02:52.896268 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:03:03.427890 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:03:13.447937 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:03:17    1614.04M ops completed. Hit Ratio  75.64% (RAM  73.64%, NVM   7.60
+%)
+E0512 11:03:23.447588 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:03:33.999845 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:03:44.988889 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:03:56.487932 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:04:10.083803 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:04:17    1663.20M ops completed. Hit Ratio  80.01% (RAM  78.14%, NVM   8.58
+%)
+E0512 11:04:22.397420 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:04:36.537892 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:04:47.188768 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:04:58.057472 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:05:13.325795 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:05:17    1710.86M ops completed. Hit Ratio  75.21% (RAM  73.02%, NVM   8.14
+%)
+E0512 11:05:27.040178 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:05:38.925042 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:05:52.487181 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:06:05.406522 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:06:17    1759.68M ops completed. Hit Ratio  79.27% (RAM  77.29%, NVM   8.72
+%)
+E0512 11:06:20.949204 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:06:30.947582 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:06:43.308784 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:07:00.060939 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:07:10.526650 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:07:17    1806.04M ops completed. Hit Ratio  73.04% (RAM  70.51%, NVM   8.59
+%)
+E0512 11:07:23.401016 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:07:34.760984 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:07:45.106916 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:07:56.360931 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:08:07.634360 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:08:17    1853.94M ops completed. Hit Ratio  79.65% (RAM  77.57%, NVM   9.25
+%)
+E0512 11:08:23.041488 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:08:34.059148 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:08:53.601196 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:09:05.364933 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:09:17.321925 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:09:17    1900.89M ops completed. Hit Ratio  74.76% (RAM  72.31%, NVM   8.86
+%)
+E0512 11:09:39.255581 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:09:50.628165 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:10:02.961565 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:10:14.598282 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:10:17    1947.97M ops completed. Hit Ratio  77.61% (RAM  75.29%, NVM   9.36
+%)
+E0512 11:10:24.786807 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:10:36.497564 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:10:47.129108 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:10:58.679513 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:11:10.944126 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:11:17    1993.70M ops completed. Hit Ratio  73.54% (RAM  71.04%, NVM   8.65
+%)
+E0512 11:11:21.077119 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:11:34.333164 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:11:47.711893 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:11:57.842019 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:12:09.662282 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:12:17    2040.43M ops completed. Hit Ratio  77.94% (RAM  75.55%, NVM   9.77
+%)
+E0512 11:12:20.483970 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:12:30.483597 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:12:41.643377 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:12:54.995515 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:13:08.456916 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:13:18    2085.49M ops completed. Hit Ratio  74.11% (RAM  71.50%, NVM   9.17
+%)
+E0512 11:13:24.003789 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:13:36.485000 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:13:46.713236 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:14:02.421682 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:14:12.587855 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:14:18    2131.56M ops completed. Hit Ratio  77.74% (RAM  75.25%, NVM  10.04
+%)
+E0512 11:14:25.355228 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:14:39.742878 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:14:54.887345 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:15:04.883586 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:15:16.832901 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:15:18    2175.47M ops completed. Hit Ratio  73.44% (RAM  70.61%, NVM   9.63
+%)
+E0512 11:15:29.024461 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:15:39.024468 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:15:50.083744 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:16:03.438198 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:16:18    2221.36M ops completed. Hit Ratio  79.48% (RAM  77.05%, NVM  10.59
+%)
+E0512 11:16:18.584652 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:16:28.883093 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:16:38.879583 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:16:50.317505 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:17:01.433958 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:17:12.186029 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:17:18    2264.49M ops completed. Hit Ratio  73.20% (RAM  70.21%, NVM  10.05
+%)
+E0512 11:17:32.849047 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:17:44.906399 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:17:55.299430 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:18:05.627173 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:18:16.327064 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:18:18    2309.74M ops completed. Hit Ratio  78.85% (RAM  76.30%, NVM  10.74
+%)
+E0512 11:18:26.737902 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:18:37.388232 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:18:48.054593 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:18:59.227734 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:19:10.302122 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:19:18    2353.32M ops completed. Hit Ratio  75.27% (RAM  72.25%, NVM  10.88
+%)
+E0512 11:19:20.331998 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:19:36.120402 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:19:47.018882 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:20:02.645214 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:20:14.216198 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:20:18    2397.94M ops completed. Hit Ratio  79.50% (RAM  76.80%, NVM  11.65
+%)
+E0512 11:20:26.778088 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:20:39.098283 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:20:49.373121 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:21:00.954835 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:21:13.422571 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:21:18    2441.63M ops completed. Hit Ratio  76.16% (RAM  73.14%, NVM  11.23
+%)
+E0512 11:21:25.070120 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:21:35.880315 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:21:48.925795 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:22:01.839044 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:22:13.709395 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:22:18    2486.13M ops completed. Hit Ratio  80.86% (RAM  78.15%, NVM  12.41
+%)
+E0512 11:22:24.560810 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:22:37.344704 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:22:48.275799 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:22:58.901539 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:23:12.275084 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:23:18    2528.26M ops completed. Hit Ratio  76.56% (RAM  73.45%, NVM  11.71
+%)
+E0512 11:23:22.792955 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:23:35.430973 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:23:46.663994 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:23:56.801183 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:24:06.893842 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:24:18    2571.98M ops completed. Hit Ratio  79.38% (RAM  76.52%, NVM  12.17
+%)
+E0512 11:24:22.319665 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:24:32.819287 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:24:44.256518 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:24:54.837815 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:25:05.521521 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:25:15.669633 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:25:18    2615.01M ops completed. Hit Ratio  78.18% (RAM  75.13%, NVM  12.27
+%)
+E0512 11:25:27.672773 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:25:38.210272 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:25:50.292136 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:26:06.626027 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:26:17.575793 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:26:18    2657.55M ops completed. Hit Ratio  79.35% (RAM  76.32%, NVM  12.79
+%)
+E0512 11:26:33.827320 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:26:45.478574 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:26:59.164732 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:27:09.378078 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:27:18    2701.93M ops completed. Hit Ratio  82.87% (RAM  80.09%, NVM  13.99
+%)
+E0512 11:27:20.586274 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:27:32.433259 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:27:42.943222 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:27:57.786305 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:28:10.827284 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:28:18    2743.31M ops completed. Hit Ratio  77.53% (RAM  74.06%, NVM  13.38
+%)
+E0512 11:28:31.805006 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:28:42.319258 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:28:53.567065 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:29:05.005836 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:29:16.636801 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:29:18    2787.33M ops completed. Hit Ratio  83.23% (RAM  80.52%, NVM  13.91
+%)
+E0512 11:29:30.532905 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:29:43.190027 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:29:53.191583 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:30:10.059799 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:30:18    2828.87M ops completed. Hit Ratio  79.30% (RAM  76.05%, NVM  13.55
+%)
+E0512 11:30:20.059587 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:30:30.124014 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:30:40.349835 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:30:50.537931 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:31:01.983979 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:31:13.024045 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:31:18    2872.67M ops completed. Hit Ratio  83.22% (RAM  80.44%, NVM  14.24
+%)
+E0512 11:31:23.726560 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:31:40.535312 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:31:50.932782 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:32:00.931582 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:32:14.878379 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:32:18    2913.96M ops completed. Hit Ratio  79.84% (RAM  76.49%, NVM  14.21
+%)
+E0512 11:32:26.510476 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:32:40.136788 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:32:54.399706 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:33:06.198840 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:33:18    2956.37M ops completed. Hit Ratio  82.01% (RAM  78.88%, NVM  14.85
+%)
+E0512 11:33:20.900124 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:33:35.468466 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:33:49.218963 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:34:03.033826 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:34:14.312114 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:34:18    2999.27M ops completed. Hit Ratio  83.59% (RAM  80.80%, NVM  14.52
+%)
+E0512 11:34:24.664094 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:34:35.013692 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:34:52.376531 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:35:02.580658 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:35:13.283438 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:35:18    3039.91M ops completed. Hit Ratio  78.95% (RAM  75.46%, NVM  14.24
+%)
+E0512 11:35:24.476734 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:35:35.255091 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:35:46.602315 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:35:58.408646 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:36:11.593449 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:36:18    3083.33M ops completed. Hit Ratio  84.70% (RAM  81.94%, NVM  15.30
+%)
+E0512 11:36:28.574331 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:36:39.740184 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:36:50.182090 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:37:01.111493 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:37:11.841768 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:37:18    3124.13M ops completed. Hit Ratio  79.77% (RAM  76.48%, NVM  13.99
+%)
+E0512 11:37:22.725888 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:37:36.007123 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:37:46.269280 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:37:57.715639 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:38:10.797243 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:38:19    3166.81M ops completed. Hit Ratio  83.57% (RAM  80.67%, NVM  14.98
+%)
+E0512 11:38:24.500745 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:38:42.806503 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:38:55.438448 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:39:07.461824 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:39:19    3207.51M ops completed. Hit Ratio  81.14% (RAM  77.81%, NVM  15.01
+%)
+E0512 11:39:21.011269 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:39:32.778366 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:39:46.768498 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:39:57.563279 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:40:09.886437 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:40:19    3248.05M ops completed. Hit Ratio  80.06% (RAM  76.59%, NVM  14.82
+%)
+E0512 11:40:20.751897 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:40:30.751594 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:40:49.200323 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:40:59.863777 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:41:09.866443 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:41:19    3288.67M ops completed. Hit Ratio  81.94% (RAM  78.50%, NVM  16.00
+%)
+E0512 11:41:24.792605 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:41:35.386505 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:41:46.684251 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:42:01.479244 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:42:19    3328.04M ops completed. Hit Ratio  79.72% (RAM  76.12%, NVM  15.08
+%)
+E0512 11:42:25.445700 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:42:37.107280 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:42:49.011810 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:43:02.422278 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:43:16.760215 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:43:19    3369.73M ops completed. Hit Ratio  83.59% (RAM  80.41%, NVM  16.22
+%)
+E0512 11:43:27.167239 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:43:37.882570 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:43:54.124997 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:44:05.795422 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:44:17.014227 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:44:19    3409.16M ops completed. Hit Ratio  79.98% (RAM  76.28%, NVM  15.59
+%)
+E0512 11:44:33.069671 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:44:46.637264 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:44:56.651060 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:45:07.078839 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:45:17.559588 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:45:19    3449.20M ops completed. Hit Ratio  80.53% (RAM  76.89%, NVM  15.77
+%)
+E0512 11:45:34.846136 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:45:45.215730 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:46:04.129424 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:46:15.241546 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:46:19    3489.40M ops completed. Hit Ratio  82.53% (RAM  79.14%, NVM  16.26
+%)
+E0512 11:46:25.487322 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:46:39.453396 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:46:49.630912 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:47:02.667433 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:47:13.844053 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:47:19    3526.97M ops completed. Hit Ratio  78.24% (RAM  74.19%, NVM  15.71
+%)
+E0512 11:47:24.109083 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:47:34.769338 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:47:48.207450 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:48:02.867699 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:48:17.063922 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:48:19    3567.90M ops completed. Hit Ratio  82.36% (RAM  79.02%, NVM  15.92
+%)
+E0512 11:48:29.256545 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:48:39.255585 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:48:51.973441 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:49:08.413557 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:49:18.411585 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:49:19    3606.50M ops completed. Hit Ratio  79.30% (RAM  75.44%, NVM  15.71
+%)
+E0512 11:49:29.591633 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:49:39.773050 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:49:55.618473 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:50:08.263265 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:50:19    3646.21M ops completed. Hit Ratio  79.39% (RAM  75.69%, NVM  15.21
+%)
+E0512 11:50:21.705094 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:50:32.634707 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:50:47.188575 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:50:57.187585 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:51:08.048262 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:51:18.996969 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:51:19    3687.05M ops completed. Hit Ratio  83.19% (RAM  79.86%, NVM  16.54
+%)
+E0512 11:51:32.055096 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:51:43.432385 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:51:54.084957 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:52:04.499456 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:52:19    3724.33M ops completed. Hit Ratio  76.95% (RAM  72.88%, NVM  14.99
+%)
+E0512 11:52:21.066423 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:52:36.729211 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:52:46.727586 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:52:59.804924 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:53:19    3763.62M ops completed. Hit Ratio  81.72% (RAM  78.26%, NVM  15.92
+%)
+E0512 11:53:20.282525 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:53:31.872352 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:53:43.782054 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:53:54.295411 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:54:11.829351 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:54:19    3801.63M ops completed. Hit Ratio  79.71% (RAM  75.84%, NVM  16.03
+%)
+E0512 11:54:26.729022 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:54:38.133898 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:54:51.423264 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:55:04.954682 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:55:15.788740 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:55:19    3839.23M ops completed. Hit Ratio  77.66% (RAM  73.71%, NVM  15.03
+%)
+E0512 11:55:26.227246 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:55:37.814274 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:55:52.103413 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:56:05.610233 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:56:19    3878.60M ops completed. Hit Ratio  81.75% (RAM  78.12%, NVM  16.58
+%)
+E0512 11:56:25.578996 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:56:40.224595 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:56:51.254661 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:57:05.773071 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:57:19    3915.44M ops completed. Hit Ratio  78.36% (RAM  74.28%, NVM  15.86
+%)
+E0512 11:57:25.232225 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:57:35.231583 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:57:46.123452 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:58:01.569110 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:58:13.507672 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:58:19    3952.86M ops completed. Hit Ratio  79.08% (RAM  75.10%, NVM  16.00
+%)
+E0512 11:58:30.665547 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:58:42.122025 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:58:54.077793 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:59:14.805944 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+11:59:19    3992.71M ops completed. Hit Ratio  82.27% (RAM  78.88%, NVM  16.08
+%)
+E0512 11:59:28.687885 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:59:41.125880 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 11:59:59.037545 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:00:10.761250 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:00:19    4028.97M ops completed. Hit Ratio  76.72% (RAM  72.43%, NVM  15.57
+%)
+E0512 12:00:21.680868 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:00:33.053782 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:00:50.424270 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:01:00.949861 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:01:10.995631 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:01:19    4067.71M ops completed. Hit Ratio  82.15% (RAM  78.64%, NVM  16.42
+%)
+E0512 12:01:21.269848 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:01:31.822456 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:01:45.494864 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:01:57.224288 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:02:08.052037 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:02:20    4103.97M ops completed. Hit Ratio  78.68% (RAM  74.57%, NVM  16.15
+%)
+E0512 12:02:22.859160 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:02:40.915020 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:02:51.949870 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:03:02.093537 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:03:12.492909 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:03:20    4141.70M ops completed. Hit Ratio  79.09% (RAM  75.10%, NVM  16.03
+%)
+E0512 12:03:23.254062 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:03:36.571370 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:03:49.934573 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:04:00.913946 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:04:11.834584 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:04:20    4180.53M ops completed. Hit Ratio  82.55% (RAM  79.00%, NVM  16.92
+%)
+E0512 12:04:26.022535 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:04:47.669355 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:05:02.197781 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:05:13.438574 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:05:20    4217.34M ops completed. Hit Ratio  76.95% (RAM  72.81%, NVM  15.25
+%)
+E0512 12:05:27.929378 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:05:44.208914 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:05:55.957069 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:06:10.643832 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:06:20    4256.05M ops completed. Hit Ratio  82.90% (RAM  79.30%, NVM  17.38
+%)
+E0512 12:06:20.920300 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:06:31.572394 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:06:44.239277 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:06:56.464128 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:07:08.708431 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:07:20    4293.14M ops completed. Hit Ratio  79.89% (RAM  75.69%, NVM  17.29
+%)
+E0512 12:07:23.293806 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:07:35.443180 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:07:47.141182 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:07:58.068890 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:08:09.818417 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:08:20    4330.89M ops completed. Hit Ratio  79.34% (RAM  75.42%, NVM  15.97
+%)
+E0512 12:08:22.856125 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:08:34.900045 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:08:49.967232 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:09:01.158306 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:09:15.905249 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:09:20    4369.39M ops completed. Hit Ratio  82.21% (RAM  78.33%, NVM  17.90
+%)
+E0512 12:09:31.615264 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:09:41.704603 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:09:56.096946 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:10:08.697923 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:10:19.348298 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:10:20    4405.67M ops completed. Hit Ratio  79.13% (RAM  74.86%, NVM  16.99
+%)
+E0512 12:10:31.098947 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:10:41.735352 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:10:54.391903 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:11:05.019806 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:11:18.557222 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:11:20    4442.55M ops completed. Hit Ratio  80.35% (RAM  76.18%, NVM  17.48
+%)
+E0512 12:11:30.545206 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:11:41.142823 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:11:54.438676 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:12:05.833186 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:12:15.831585 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:12:20    4481.71M ops completed. Hit Ratio  84.24% (RAM  80.65%, NVM  18.55
+%)
+E0512 12:12:29.010381 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:12:44.300551 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:12:54.964270 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:13:12.478835 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:13:20    4518.17M ops completed. Hit Ratio  78.82% (RAM  74.39%, NVM  17.29
+%)
+E0512 12:13:29.559933 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:13:41.030787 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:13:54.390761 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:14:05.152278 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:14:16.462354 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:14:20    4557.22M ops completed. Hit Ratio  84.98% (RAM  81.40%, NVM  19.21
+%)
+E0512 12:14:29.075007 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:14:40.081272 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:14:55.031435 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:15:05.037132 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:15:18.450364 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:15:20    4594.15M ops completed. Hit Ratio  80.86% (RAM  76.70%, NVM  17.85
+%)
+E0512 12:15:31.447027 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:15:42.572487 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:15:54.257236 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:16:04.589218 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:16:20    4632.12M ops completed. Hit Ratio  81.13% (RAM  77.12%, NVM  17.54
+%)
+E0512 12:16:23.449948 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:16:33.447587 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:16:43.447585 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:17:00.024436 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:17:11.013097 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:17:20    4670.76M ops completed. Hit Ratio  84.41% (RAM  80.59%, NVM  19.67
+%)
+E0512 12:17:34.699544 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:17:46.988215 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:17:57.872587 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:18:13.386101 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:18:20    4707.04M ops completed. Hit Ratio  80.27% (RAM  76.01%, NVM  17.75
+%)
+E0512 12:18:27.921464 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:18:40.543261 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:18:55.056031 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:19:07.867419 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:19:17.991181 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:19:20    4744.44M ops completed. Hit Ratio  82.52% (RAM  78.50%, NVM  18.70
+%)
+E0512 12:19:41.039670 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:19:54.488051 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:20:07.576566 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:20:17.575617 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:20:20    4783.81M ops completed. Hit Ratio  85.62% (RAM  82.10%, NVM  19.65
+%)
+E0512 12:20:34.652242 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:20:44.819070 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:20:57.182032 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:21:14.485014 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:21:20    4819.72M ops completed. Hit Ratio  80.51% (RAM  76.15%, NVM  18.30
+%)
+E0512 12:21:27.092365 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:21:38.970169 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:21:50.104670 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:22:05.802219 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:22:15.799598 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:22:20    4858.11M ops completed. Hit Ratio  84.03% (RAM  80.29%, NVM  18.98
+%)
+E0512 12:22:27.470217 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:22:39.851974 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:22:52.946748 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:23:06.348953 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:23:18.468321 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:23:20    4896.54M ops completed. Hit Ratio  83.78% (RAM  80.01%, NVM  18.85
+%)
+E0512 12:23:30.899403 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:23:49.401641 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:24:01.178622 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:24:11.205715 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:24:20    4932.92M ops completed. Hit Ratio  81.14% (RAM  76.78%, NVM  18.77
+%)
+E0512 12:24:22.657447 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:24:39.694840 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:24:50.111083 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:25:10.491243 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:25:20    4973.13M ops completed. Hit Ratio  85.81% (RAM  82.34%, NVM  19.66
+%)
+E0512 12:25:25.042694 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:25:35.234488 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:25:46.573254 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:25:57.115861 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:26:07.575983 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:26:17.693803 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:26:20    5010.12M ops completed. Hit Ratio  82.65% (RAM  78.46%, NVM  19.43
+%)
+E0512 12:26:30.683734 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:26:43.126286 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:26:55.251632 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:27:05.251585 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:27:15.951390 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:27:21    5046.64M ops completed. Hit Ratio  80.41% (RAM  76.11%, NVM  18.03
+%)
+E0512 12:27:26.309142 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:27:39.172170 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:27:57.271673 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:28:12.649635 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:28:21    5086.45M ops completed. Hit Ratio  85.84% (RAM  82.29%, NVM  20.06
+%)
+E0512 12:28:24.090541 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:28:40.467699 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:28:51.869794 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:29:06.404038 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:29:17.360134 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:29:21    5123.44M ops completed. Hit Ratio  81.87% (RAM  77.68%, NVM  18.77
+%)
+E0512 12:29:27.372701 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:29:38.977822 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:29:52.263027 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:30:02.443714 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:30:13.672203 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:30:21    5160.44M ops completed. Hit Ratio  82.94% (RAM  78.72%, NVM  19.83
+%)
+E0512 12:30:24.798889 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:30:48.233887 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:31:02.351560 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:31:14.971690 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:31:21    5198.62M ops completed. Hit Ratio  84.23% (RAM  80.39%, NVM  19.58
+%)
+E0512 12:31:29.377167 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:31:45.432375 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:31:56.071208 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:32:13.301980 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:32:21    5235.46M ops completed. Hit Ratio  82.33% (RAM  78.18%, NVM  19.01
+%)
+E0512 12:32:24.881852 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:32:36.008949 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:32:55.411302 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:33:07.290421 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:33:17.933114 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:33:21    5272.76M ops completed. Hit Ratio  83.00% (RAM  78.74%, NVM  20.00
+%)
+E0512 12:33:35.165198 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:33:45.163598 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:33:58.316081 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:34:10.134079 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:34:21    5311.99M ops completed. Hit Ratio  85.32% (RAM  81.77%, NVM  19.49
+%)
+E0512 12:34:21.825990 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:34:33.884112 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:34:52.209877 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:35:04.499750 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:35:21    5347.63M ops completed. Hit Ratio  80.84% (RAM  76.29%, NVM  19.18
+%)
+E0512 12:35:21.920285 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:35:35.213728 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:35:46.130544 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:35:56.811459 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:36:14.643702 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:36:21    5385.81M ops completed. Hit Ratio  84.91% (RAM  81.16%, NVM  19.94
+%)
+E0512 12:36:25.972230 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:36:40.742031 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:36:51.365583 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:37:08.021975 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:37:18.655290 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:37:21    5423.23M ops completed. Hit Ratio  83.01% (RAM  78.95%, NVM  19.26
+%)
+E0512 12:37:37.386507 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:37:47.805233 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:37:58.581129 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:38:13.147802 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:38:21    5458.91M ops completed. Hit Ratio  81.19% (RAM  76.64%, NVM  19.49
+%)
+E0512 12:38:26.809784 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:38:40.721792 200877 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:38:50.719585 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:39:05.379382 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:39:16.379121 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:39:21    5498.07M ops completed. Hit Ratio  86.41% (RAM  82.80%, NVM  21.00
+%)
+E0512 12:39:26.748090 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:39:39.019473 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:39:50.264184 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:40:00.263585 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:40:12.466276 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:40:21    5534.60M ops completed. Hit Ratio  82.54% (RAM  78.30%, NVM  19.53
+%)
+E0512 12:40:32.721616 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:40:50.033772 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:41:00.031586 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:41:10.868219 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:41:21    5569.78M ops completed. Hit Ratio  80.83% (RAM  76.11%, NVM  19.73
+%)
+E0512 12:41:32.997891 200872 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:41:44.365946 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:41:54.604660 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:42:07.571817 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:42:18.310214 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:42:21    5609.79M ops completed. Hit Ratio  86.76% (RAM  83.29%, NVM  20.74
+%)
+E0512 12:42:32.074794 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:42:43.820710 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:42:55.094825 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:43:08.313673 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:43:21.333675 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:43:21    5646.30M ops completed. Hit Ratio  82.30% (RAM  77.98%, NVM  19.63
+%)
+E0512 12:43:41.409220 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:44:00.471418 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:44:11.884281 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:44:21    5683.67M ops completed. Hit Ratio  82.94% (RAM  78.77%, NVM  19.61
+%)
+E0512 12:44:23.737235 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:44:33.924688 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:44:43.923586 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:44:58.308966 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:45:10.792849 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:45:21    5722.13M ops completed. Hit Ratio  84.97% (RAM  81.23%, NVM  19.95
+%)
+E0512 12:45:23.923346 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:45:33.992157 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:45:45.820671 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:46:01.399597 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:46:17.111433 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:46:21    5758.52M ops completed. Hit Ratio  82.27% (RAM  77.97%, NVM  19.55
+%)
+E0512 12:46:30.733104 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:46:42.671247 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:46:54.839152 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:47:04.838257 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:47:21.097784 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:47:21    5795.26M ops completed. Hit Ratio  83.57% (RAM  79.34%, NVM  20.48
+%)
+E0512 12:47:35.413244 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:47:52.045622 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:48:02.631319 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:48:13.177115 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:48:21    5834.35M ops completed. Hit Ratio  86.47% (RAM  82.80%, NVM  21.33
+%)
+E0512 12:48:26.619320 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:48:37.334762 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:48:50.490017 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:49:06.546064 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:49:19.668070 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:49:21    5869.50M ops completed. Hit Ratio  81.31% (RAM  76.63%, NVM  20.02
+%)
+E0512 12:49:31.567672 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:49:41.780691 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:49:53.204432 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:50:07.001989 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:50:20.350259 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:50:21    5905.45M ops completed. Hit Ratio  83.57% (RAM  79.12%, NVM  21.31
+%)
+E0512 12:50:39.593540 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:50:54.945551 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:51:16.270881 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:51:21    5944.40M ops completed. Hit Ratio  86.64% (RAM  83.11%, NVM  20.89
+%)
+E0512 12:51:27.512643 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:51:39.027298 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:51:49.031571 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:52:00.917565 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:52:11.818673 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:52:22    5979.75M ops completed. Hit Ratio  80.86% (RAM  76.26%, NVM  19.36
+%)
+E0512 12:52:25.986714 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:52:37.415291 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:52:58.103693 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:53:17.357297 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:53:22    6015.85M ops completed. Hit Ratio  83.65% (RAM  79.12%, NVM  21.69
+%)
+E0512 12:53:32.805645 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:53:45.596623 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:53:55.597288 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:54:06.393434 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:54:22    6054.66M ops completed. Hit Ratio  86.16% (RAM  82.55%, NVM  20.65
+%)
+E0512 12:54:23.024912 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:54:37.541561 200869 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:54:47.560991 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:55:05.157634 200899 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:55:21.168056 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:55:22    6089.65M ops completed. Hit Ratio  81.03% (RAM  76.31%, NVM  19.92
+%)
+E0512 12:55:32.676075 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:55:43.546120 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:55:55.824287 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:56:09.750460 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:56:22    6125.52M ops completed. Hit Ratio  83.50% (RAM  78.93%, NVM  21.70
+%)
+E0512 12:56:34.864609 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:56:50.994229 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:57:04.435528 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:57:22    6164.04M ops completed. Hit Ratio  86.18% (RAM  82.48%, NVM  21.11
+%)
+E0512 12:57:26.973798 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:57:40.254735 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:57:52.973237 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:58:04.274113 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:58:18.986425 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:58:22    6199.56M ops completed. Hit Ratio  81.44% (RAM  76.88%, NVM  19.75
+%)
+E0512 12:58:30.456158 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:58:45.232775 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:59:00.414240 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:59:11.046768 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+12:59:22    6237.54M ops completed. Hit Ratio  85.54% (RAM  81.61%, NVM  21.36
+%)
+E0512 12:59:27.574497 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:59:41.273141 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 12:59:55.196265 200898 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:00:11.532919 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:00:22    6274.67M ops completed. Hit Ratio  84.31% (RAM  80.13%, NVM  21.01
+%)
+E0512 13:00:26.557521 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:00:40.475009 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:00:51.242160 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:01:01.864072 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:01:16.712336 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:01:22    6310.30M ops completed. Hit Ratio  82.05% (RAM  77.29%, NVM  20.96
+%)
+E0512 13:01:32.353386 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:02:03.605046 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:02:18.925542 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:02:22    6349.36M ops completed. Hit Ratio  86.91% (RAM  83.23%, NVM  21.94
+%)
+E0512 13:02:29.524998 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:02:47.110503 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:02:59.485894 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:03:15.054920 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:03:22    6385.10M ops completed. Hit Ratio  83.47% (RAM  78.87%, NVM  21.77
+%)
+E0512 13:03:28.265152 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:03:38.263583 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:03:50.055457 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:04:05.483625 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:04:22    6420.76M ops completed. Hit Ratio  81.82% (RAM  77.15%, NVM  20.43
+%)
+E0512 13:04:25.549548 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:04:39.958788 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:04:53.730876 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:05:05.526327 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:05:17.140787 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:05:22    6459.46M ops completed. Hit Ratio  87.01% (RAM  83.38%, NVM  21.81
+%)
+E0512 13:05:40.816382 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:06:03.865889 200887 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:06:22    6495.92M ops completed. Hit Ratio  83.16% (RAM  78.73%, NVM  20.82
+%)
+E0512 13:06:30.929968 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:06:41.530003 200873 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:06:56.894283 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:07:07.922657 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:07:18.018206 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:07:22    6530.97M ops completed. Hit Ratio  81.19% (RAM  76.36%, NVM  20.45
+%)
+E0512 13:07:30.475548 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:07:42.698245 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:08:00.082195 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:08:12.845671 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:08:22    6569.78M ops completed. Hit Ratio  87.40% (RAM  83.64%, NVM  22.99
+%)
+E0512 13:08:25.478231 200867 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:08:35.477871 200883 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:08:51.316909 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:09:02.866757 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:09:17.150635 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:09:22    6605.85M ops completed. Hit Ratio  83.22% (RAM  78.73%, NVM  21.10
+%)
+E0512 13:09:32.339020 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:09:45.080684 200892 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:09:56.049453 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:10:09.893477 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:10:22.242785 200874 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:10:22    6641.68M ops completed. Hit Ratio  82.40% (RAM  77.80%, NVM  20.73
+%)
+E0512 13:10:33.389987 200886 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:10:43.485594 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:11:03.331013 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:11:13.811146 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:11:22    6679.92M ops completed. Hit Ratio  87.14% (RAM  83.28%, NVM  23.08
+%)
+E0512 13:11:29.846118 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:11:42.660940 200871 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:11:56.079735 200888 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:12:06.079584 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:12:19.419546 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:12:22    6716.12M ops completed. Hit Ratio  82.66% (RAM  78.25%, NVM  20.28
+%)
+E0512 13:12:46.650699 200890 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:12:58.486624 200865 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:13:14.229260 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:13:22    6752.94M ops completed. Hit Ratio  83.88% (RAM  79.45%, NVM  21.55
+%)
+E0512 13:13:26.817042 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:13:43.309297 200889 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:13:57.692540 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:14:15.505280 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:14:22    6790.69M ops completed. Hit Ratio  86.19% (RAM  82.12%, NVM  22.77
+%)
+E0512 13:14:29.806936 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:14:44.104822 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:14:54.237986 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:15:05.390657 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:15:16.504446 200864 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:15:22    6826.68M ops completed. Hit Ratio  82.84% (RAM  78.29%, NVM  20.98
+%)
+E0512 13:15:27.138756 200880 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:15:37.135585 200884 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:15:49.119149 200885 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:16:03.415645 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:16:17.519497 200868 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:16:22    6863.18M ops completed. Hit Ratio  83.89% (RAM  79.43%, NVM  21.69
+%)
+E0512 13:16:30.910568 200875 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:16:41.405733 200896 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:16:53.074377 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:17:03.144447 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:17:13.451264 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:17:22    6900.70M ops completed. Hit Ratio  86.09% (RAM  81.98%, NVM  22.81
+%)
+E0512 13:17:25.304688 200879 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:17:37.390334 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:17:48.803407 200876 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:18:03.959808 200895 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:18:15.723659 200866 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:18:23    6936.45M ops completed. Hit Ratio  82.72% (RAM  78.10%, NVM  21.07
+%)
+E0512 13:18:26.500241 200891 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:18:37.002404 200881 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:18:48.530842 200882 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:19:02.024768 200897 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:19:13.659939 200878 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+13:19:23    6972.94M ops completed. Hit Ratio  84.53% (RAM  80.00%, NVM  22.65
+%)
+E0512 13:19:24.549682 200870 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:19:36.682325 200894 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:19:50.823822 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+E0512 13:20:01.373807 200893 RegionManager.cpp:181] Failed to assign buffers.
+All buffers(2) are being used
+^C== Test Results ==
+== Allocator Stats ==
+Items in RAM  : 89,715,035
+Items in NVM  : 300,875,596
+Alloc Attempts: 997,639,339 Success: 100.00%
+Evict Attempts: 719,903,940 Success: 101.25%
+RAM Evictions : 728,911,675
+Fraction of pool 0 used : 1.00
+Cache Gets    : 6,148,695,161
+Hit Ratio     :  79.60%
+RAM Hit Ratio :  76.56%
+NVM Hit Ratio :  12.96%
+RAM eviction rejects expiry : 0
+RAM eviction rejects clean : 169,311,927
+NVM Read  Latency    p50      :      73.00 us
+NVM Read  Latency    p90      :      93.00 us
+NVM Read  Latency    p99      :     196.00 us
+NVM Read  Latency    p999     :     325.00 us
+NVM Read  Latency    p9999    :     745.00 us
+NVM Read  Latency    p99999   :     919.00 us
+NVM Read  Latency    p999999  :     936.00 us
+NVM Read  Latency    p100     :       0.00 us
+NVM Write Latency    p50      :      14.00 us
+NVM Write Latency    p90      :      23.00 us
+NVM Write Latency    p99      :      85.00 us
+NVM Write Latency    p999     :     128.00 us
+NVM Write Latency    p9999    :     417.00 us
+NVM Write Latency    p99999   :     534.00 us
+NVM Write Latency    p999999  :     546.00 us
+NVM Write Latency    p100     :       0.00 us
+NVM bytes written (physical)  : 2655.54 GB
+NVM bytes written (logical)   : 603.45 GB
+NVM bytes written (nand)      : 2634.09 GB
+NVM app write amplification   :   4.40
+NVM dev write amplification   :   0.99
+NVM Gets      :   1,441,286,104, Coalesced :   0.00%
+NVM Puts      :     559,246,930, Success   : 100.00%, Clean   :   1.06%, Abort
+sFromDel   :   27,554, AbortsFromGet   :      187
+NVM Evicts    :     186,345,998, Clean     :   3.06%, Unclean :       0, Doubl
+e          :        0
+NVM Deletes   :     601,240,497 Skipped Deletes:  81.43%
+Released 4,875 slabs
+  Moves     : attempts:     10,289, success:   0.00%
+  Evictions : attempts:  9,040,748, success: 100.00%
+Total eviction executed 181030283
+
+== Throughput for  ==
+Total Ops : 6999.60 million
+Total sets: 810,818,232
+get       :   610,664/s, success   :  79.60%
+couldExist:         0/s, success   :   0.00%
+set       :    80,527/s, success   : 100.00%
+del       :     3,981/s, found     :   5.10%
+
+== KVReplayGenerator Stats ==
+Total Processed Samples: 18.93 million (parse error: 0)
+
+I0512 13:20:05.190873 200788 BigHash.cpp:514] Flush big hash
+I0512 13:20:05.190917 200788 BlockCache.cpp:699] Flush block cache
+I0512 13:20:05.200587 200788 BlockCache.cpp:793] Starting block cache persist
+I0512 13:21:25.201597 200788 BlockCache.cpp:804] Finished block cache persist
+I0512 13:21:25.201653 200788 BigHash.cpp:215] Starting bighash persist
+I0512 13:21:25.674829 200788 BigHash.cpp:228] bloom filter persist done
+I0512 13:21:25.674865 200788 BigHash.cpp:231] Finished bighash persist
+I0512 13:21:25.674918 200788 NvmCache-inl.h:888] Cache recovery saved to the F
+lash Device
+I0512 13:21:25.917557 200788 Cache-inl.h:321] Shut down succeeded. Metadata is
+ at: /root/cachelib_metadata
+I0512 13:21:25.917665 200788 Driver.cpp:76] Driver: finish scheduler
+I0512 13:21:25.917694 200788 Driver.cpp:78] Driver: finish scheduler successfu
+l
+I0512 13:21:25.917878 200788 ThreadPoolJobScheduler.cpp:72] JobScheduler: join
+ threads for reader_pool
+I0512 13:21:25.919646 200788 ThreadPoolJobScheduler.cpp:76] JobScheduler: join
+ threads for reader_pool successful
+I0512 13:21:25.919780 200788 ThreadPoolJobScheduler.cpp:72] JobScheduler: join
+ threads for writer_pool
+I0512 13:21:25.920882 200788 ThreadPoolJobScheduler.cpp:76] JobScheduler: join
+ threads for writer_pool successful
+Test aborted.
+
+cm@dev:~/dev/fdp/cachebench$ sudo nvme smart-log /dev/nvme0n1
+Smart Log for NVME device:nvme0n1 namespace-id:ffffffff
+critical_warning                        : 0
+temperature                             : 44 °C (317 K)
+available_spare                         : 100%
+available_spare_threshold               : 10%
+percentage_used                         : 0%
+endurance group critical warning summary: 0
+Data Units Read                         : 577491782 (295.68 TB)
+Data Units Written                      : 278550091 (142.62 TB)
+host_read_commands                      : 47766677868
+host_write_commands                     : 23068831426
+controller_busy_time                    : 9011
+power_cycles                            : 77
+power_on_hours                          : 915
+unsafe_shutdowns                        : 68
+media_errors                            : 0
+num_err_log_entries                     : 13
+Warning Temperature Time                : 0
+Critical Composite Temperature Time     : 0
+Temperature Sensor 1           : 67 °C (340 K)
+Temperature Sensor 2           : 48 °C (321 K)
+Thermal Management T1 Trans Count       : 0
+Thermal Management T2 Trans Count       : 0
+Thermal Management T1 Total Time        : 0
+Thermal Management T2 Total Time        : 0
