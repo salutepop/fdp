@@ -5,3 +5,6 @@
 dbbench/db_bench
 dbbench/result
 dbbench/result/*
+*.d
+*.o
+
