@@ -20,16 +20,18 @@ BENCH_TYPE=$3 # flat_kvcache_reg  graph_cache_leader  kvcache_202206  kvcache_20
 
 DEV_CONFIG=$DIR_CONFIG$BENCH_TYPE'/'$DEV'_'$DEV_TYPE'_config_kvcache.json'
 NODEV_CONFIG=$DIR_CONFIG$BENCH_TYPE/$NODEV_JSON
-FILE_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'.out'
+FILE_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_test.txt'
+SMART_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_smart.txt'
 
 # X-1. initialize
-echo START_TIME : `cat /proc/uptime`
 sudo rm $FILE_OUTPUT
 sudo rm $DEV_CONFIG
+sudo rm $SMART_OUTPUT
+echo START_TIME : `cat /proc/uptime` >> $SMART_OUTPUT
 sudo umount /dev/$DEV
 mkdir -p $DIR_OUTPUT
 
-sudo nvme smart-log /dev/$DEV
+sudo nvme smart-log /dev/$DEV >> $SMART_OUTPUT
 sed 's/DEVICE/'$DEV'/g' $NODEV_CONFIG > $DEV_CONFIG
 if [ $DEV_TYPE == 'cns' ]; then
     sed -i '/FDP/d' $DEV_CONFIG
@@ -47,5 +49,5 @@ sudo fio --name=trim --filename=/dev/$DEV --rw=trim --bs=3G
 sudo $CACHEBENCH -json_test_config $DEV_CONFIG -progress_stats_file $FILE_OUTPUT --progress 60
 
 # 3. end
-echo END_TIME : `cat /proc/uptime`
-sudo nvme smart-log /dev/$DEV
+echo END_TIME : `cat /proc/uptime` >> $SMART_OUTPUT
+sudo nvme smart-log /dev/$DEV >> $SMART_OUTPUT
