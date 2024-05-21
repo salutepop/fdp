@@ -2,7 +2,7 @@
 
 # 컴파일러 설정
 CXX = g++
-CXXFLAGS = -Wall -O2 -std=c++17
+CXXFLAGS = -Wall -O2 -std=c++17 -g
 INCLUDES = -I/usr/local/include
 
 # liburing 라이브러리 설정

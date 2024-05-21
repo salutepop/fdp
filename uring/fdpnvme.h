@@ -19,6 +19,8 @@
 #include "util.h"
 #include <liburing.h>
 #include <vector>
+#include <linux/nvme_ioctl.h>
+#include <sys/ioctl.h>
 
 // Reference: https://github.com/axboe/fio/blob/master/engines/nvme.h
 // If the uapi headers installed on the system lacks nvme uring command
@@ -166,7 +168,7 @@ class NvmeData {
 // as of now; and not supported through conventional block interfaces.
 class FdpNvme {
  public:
-  explicit FdpNvme(const std::string& fileName);
+  explicit FdpNvme(const std::string& fileName, uint32_t qdepth);
 
   FdpNvme(const FdpNvme&) = delete;
   FdpNvme& operator=(const FdpNvme&) = delete;
@@ -193,6 +195,9 @@ class FdpNvme {
                             size_t size,
                             off_t start,
                             int handle);
+  int fd(){return fd_;}
+  io_uring* getRing() {return &ring_; };
+  
 
  private:
   // Open Nvme Character device for the given block dev @fileName.
@@ -215,6 +220,7 @@ class FdpNvme {
 
   // Initialize the FDP device and populate necessary info.
   void initializeFDP(const std::string& blockDevice);
+  void initializeIoUring(uint32_t qdepth);
 
   // Generic NVMe IO mgmnt receive cmd
   int nvmeIOMgmtRecv(uint32_t nsid,
@@ -236,6 +242,10 @@ class FdpNvme {
   // NVMe character device interface, a separate file instance is kept from
   // that of FileDevice.
   int fd_;
+
+  // for io_uring
+  struct io_uring ring_;
+
 };
 
 struct nvme_data {

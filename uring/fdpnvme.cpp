@@ -17,13 +17,12 @@
 #include "fdpnvme.h"
 
 #include <errno.h>
-#include <linux/nvme_ioctl.h>
-#include <sys/ioctl.h>
 
 #include <cstring>
 
-FdpNvme::FdpNvme(const std::string& bdevName)
+FdpNvme::FdpNvme(const std::string& bdevName, uint32_t qdepth)
 : fd_(openNvmeCharFile(bdevName)) {
+  initializeIoUring(qdepth);
   initializeFDP(bdevName);
 }
 
@@ -40,6 +39,14 @@ int FdpNvme::allocateFdpHandle() {
   return static_cast<uint16_t>(phndl);
 }
 
+void FdpNvme::initializeIoUring(uint32_t qdepth) {
+  int err;
+  err = io_uring_queue_init(qdepth, &ring_, 0);
+  if (err) {
+    throw std::invalid_argument("Failed to initialize IoUring");
+  }
+}
+
 void FdpNvme::initializeFDP(const std::string& bdevName) {
   struct nvme_fdp_ruh_status *ruh_status; 
   int bytes, err;
@@ -54,6 +61,9 @@ void FdpNvme::initializeFDP(const std::string& bdevName) {
 
   if (err) {
     throw std::invalid_argument("Failed to initialize FDP; nruhsd is 0");
+  }
+  else {
+    std::cout << ruh_status->nruhsd << std::endl;
   }
   placementIDs_.reserve(ruh_status->nruhsd);
   maxPIDIdx_ = ruh_status->nruhsd - 1;
@@ -201,7 +211,8 @@ std::string getNvmeCharDevice(const std::string& bdevName) {
 // Open Nvme Character device for the given block dev @bdevName.
 // Throws std::system_error if failed.
 int FdpNvme::openNvmeCharFile(const std::string& bdevName) {
-  int flags{O_RDONLY};
+  //int flags{O_RDONLY};
+  int flags{O_RDWR};
   int fd;
 
   try {

@@ -4,122 +4,47 @@
 #include <unistd.h>
 #include <cstring>
 
-// 이 함수는 주어진 character device 경로에서 데이터를 읽어와 output에 저장합니다.
-bool read_character_device(const std::string &device_path, std::string &output) {
-    const size_t buffer_size = 4096;
-    char buffer[buffer_size];
-    int fd = open(device_path.c_str(), O_RDONLY);
-    if (fd < 0) {
-        std::cerr << "Failed to open device: " << strerror(errno) << std::endl;
-        return false;
-    }
+#define QDEPTH 128
+#define BS 4096
+#define BUFF_SIZE 4096
 
-    struct io_uring ring;
-    if (io_uring_queue_init(32, &ring, 0) < 0) {
-        std::cerr << "Failed to initialize io_uring" << std::endl;
-        close(fd);
-        return false;
-    }
+void prepFdpUringCmdSqe(struct io_uring_sqe *sqe,
+                        int fd,
+                        int nsid,
+                        void* buf,
+                        size_t size,
+                        off_t start,
+                        uint8_t opcode,
+                        uint8_t dtype,
+                        uint16_t dspec) {
+  // Clear the SQE entry to avoid some arbitrary flags being set.
+  //memset(&sqe, 0, sizeof(struct io_uring_sqe));
 
-    struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
-    if (!sqe) {
-        std::cerr << "Failed to get submission queue entry" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
+  sqe->cmd_op = NVME_URING_CMD_IO;
+  sqe->opcode = IORING_OP_URING_CMD;
 
-    // io_uring_cmd로 I/O 명령 준비
-    io_uring_prep_read(sqe, fd, buffer, buffer_size, 0);
+  struct nvme_uring_cmd* cmd = (struct nvme_uring_cmd*)sqe->cmd;
+    std::cout << cmd << std::endl;
+  if (cmd == nullptr) {
+    throw std::invalid_argument("Uring cmd is NULL!");
+  }
+  memset(cmd, 0, sizeof(struct nvme_uring_cmd));
+  cmd->opcode = opcode;
 
-    struct io_uring_cqe *cqe;
-    if (io_uring_submit_and_wait(&ring, 1) < 0) {
-        std::cerr << "Failed to submit and wait" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
+  // start LBA of the IO = Req_start (offset in partition) + Partition_start
+  uint64_t sLba = 0;
+  uint32_t nLb = 0; // nLb is 0 based
 
-    if (io_uring_wait_cqe(&ring, &cqe) < 0) {
-        std::cerr << "Failed to wait for completion queue entry" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
+  /* cdw10 and cdw11 represent starting lba */
+  cmd->cdw10 = sLba & 0xffffffff;
+  cmd->cdw11 = sLba >> 32;
+  /* cdw12 represent number of lba's for read/write */
+  cmd->cdw12 = (dtype & 0xFF) << 20 | nLb;
+  cmd->cdw13 = (dspec << 16);
+  cmd->addr = (uint64_t)buf;
+  cmd->data_len = size;
 
-    if (cqe->res < 0) {
-        std::cerr << "I/O error: " << strerror(-cqe->res) << std::endl;
-        io_uring_cqe_seen(&ring, cqe);
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
-
-    // I/O 성공 시, 결과를 버퍼에 저장
-    output.assign(buffer, cqe->res);
-
-    io_uring_cqe_seen(&ring, cqe);
-    io_uring_queue_exit(&ring);
-    close(fd);
-    return true;
-}
-
-// 이 함수는 주어진 파일 경로에서 데이터를 읽어와 output에 저장합니다.
-bool read_file(const std::string &file_path, std::string &output) {
-    const size_t buffer_size = 4096;
-    char buffer[buffer_size];
-    int fd = open(file_path.c_str(), O_RDONLY);
-    if (fd < 0) {
-        std::cerr << "Failed to open file: " << strerror(errno) << std::endl;
-        return false;
-    }
-
-    struct io_uring ring;
-    if (io_uring_queue_init(32, &ring, 0) < 0) {
-        std::cerr << "Failed to initialize io_uring" << std::endl;
-        close(fd);
-        return false;
-    }
-
-    struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
-    if (!sqe) {
-        std::cerr << "Failed to get submission queue entry" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
-
-    io_uring_prep_read(sqe, fd, buffer, buffer_size, 0);
-    struct io_uring_cqe *cqe;
-    if (io_uring_submit_and_wait(&ring, 1) < 0) {
-        std::cerr << "Failed to submit and wait" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
-
-    if (io_uring_wait_cqe(&ring, &cqe) < 0) {
-        std::cerr << "Failed to wait for completion queue entry" << std::endl;
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
-
-    if (cqe->res < 0) {
-        std::cerr << "I/O error: " << strerror(-cqe->res) << std::endl;
-        io_uring_cqe_seen(&ring, cqe);
-        io_uring_queue_exit(&ring);
-        close(fd);
-        return false;
-    }
-
-    // I/O 성공 시, 결과를 버퍼에 저장
-    output.assign(buffer, cqe->res);
-
-    io_uring_cqe_seen(&ring, cqe);
-    io_uring_queue_exit(&ring);
-    close(fd);
-    return true;
+  cmd->nsid = nsid;
 }
 
 int main(int argc, char *argv[]) {
@@ -129,10 +54,143 @@ int main(int argc, char *argv[]) {
     }
 
     std::string device_path = argv[1];
+    char buffer[BUFF_SIZE];
+    int offset = 0;
+    int err;
 
-    FdpNvme fdp = FdpNvme(device_path);
-    std::cout << "Pass" << std::endl;
+    struct io_uring ring;
+    struct iovec *iovecs;
+
+    iovecs = (struct iovec*) malloc(sizeof(struct iovec));
+    err = posix_memalign(&iovecs[0].iov_base, BS, BS);
+    if (err < 0) {
+        std::cout << "posix_memalign : " << err << std::endl;
+    }
+    iovecs[0].iov_len = BUFF_SIZE;
 
 
+    
+    /*
+    //FdpNvme fdp = FdpNvme(device_path, QDEPTH);
+    int fd = open("/dev/nvme0n1", O_RDONLY);
+	struct nvme_id_ns ns;
+    uint32_t nsid = ioctl(fd, NVME_IOCTL_ID);
+
+	  struct nvme_passthru_cmd pcmd = {
+		  .opcode         = nvme_admin_identify,
+		  .nsid           = nsid,
+		  .addr           = (__u64)(uintptr_t)&ns,
+		  .data_len       = NVME_IDENTIFY_DATA_SIZE,
+		  .cdw10          = NVME_IDENTIFY_CNS_NS,
+		  .cdw11          = NVME_CSI_NVM << NVME_IDENTIFY_CSI_SHIFT,
+		  .timeout_ms     = NVME_DEFAULT_IOCTL_TIMEOUT,
+	  };
+
+	ioctl(fd, NVME_IOCTL_ADMIN_CMD, &pcmd);
+
+	__u32  lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
+	__u32  lba_shift = ilog2(lba_size);
+    //close(fd);
+    std::cout << "[Pass] fd =" << fd << ", nsid= " << nsid << std::endl;
+    std::cout << "[Pass] lba_size= " << lba_size << ", lba_shift= " << lba_shift << std::endl;
+    */
+
+    uint32_t nsid = 1;
+	__u32  lba_size = 4096;
+	__u32  lba_shift = 12;
+    int fd = open(device_path.c_str(), O_RDWR);
+
+    std::cout << "[Pass] fd =" << fd << ", nsid= " << nsid << std::endl;
+    struct io_uring_params p;
+    memset(&p, 0, sizeof(p));
+	p.flags |= IORING_SETUP_SQE128;
+	p.flags |= IORING_SETUP_CQE32;
+    p.flags |= IORING_SETUP_CQSIZE;
+    p.cq_entries = QDEPTH;
+	p.flags |= IORING_SETUP_COOP_TASKRUN;
+	p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
+
+    io_uring_queue_init_params(QDEPTH, &ring, &p);
+    struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
+    struct io_uring_cqe *cqe;
+    struct nvme_uring_cmd *cmd;
+
+    /*
+    struct iovec iov;
+    const char *data = "HELLOWORLD";
+    size_t data_len = strlen(data);
+    iov.iov_base = const_cast<char*>(data);
+    iov.iov_len = data_len;
+    io_uring_prep_write(sqe, fd, iov.iov_base, iov.iov_len, offset);
+    */
+
+    //err = io_uring_submit(&ring);
+    //err = io_uring_wait_cqe(&ring, &cqe);
+
+    //fdp.prepReadUringCmdSqe(*sqe, &iov, BUFF_SIZE, offset);
+
+    /*
+    struct iovec iov;
+    iov.iov_base = buffer;
+    iov.iov_len = BUFF_SIZE;
+    io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+    */
+    //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
+    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+    
+    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+    sqe->fd = fd;
+	sqe->cmd_op = NVME_URING_CMD_IO_VEC;
+    std::cout << sqe->cmd_op << std::endl;
+	sqe->opcode = IORING_OP_URING_CMD;
+	//sqe->opcode = IORING_OP_READ;
+	sqe->user_data = 0;
+	cmd = (struct nvme_uring_cmd *)sqe->cmd;
+	memset(cmd, 0, sizeof(struct nvme_uring_cmd));
+
+	cmd->opcode = nvme_cmd_read;
+	__u64 slba;
+	__u32 nlb;
+	slba = offset >> lba_shift;
+	nlb = (BS >> lba_shift) - 1;
+
+    std::cout << "slba, nlba, lba_shift : " << slba << ", " << nlb << ", " << lba_shift << std::endl;
+
+	cmd->cdw10 = slba & 0xffffffff;
+	cmd->cdw11 = slba >> 32;
+	cmd->cdw12 = nlb;
+
+	//cmd->addr = (__u64)(uintptr_t)iovecs[0].iov_base;
+	//cmd->data_len = iovecs[0].iov_len;
+
+	cmd->addr = (__u64)(uintptr_t)&iovecs[0];
+	cmd->data_len = 1;
+	cmd->nsid = nsid;
+
+    //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
+    //prepFdpUringCmdSqe(sqe, fd, nsid, &iovecs[0].iov_base, iovecs[0].iov_len, offset, nvme_cmd_read, 0, 0); 
+    err = io_uring_submit(&ring);
+
+    if (err < 0) {
+        std::cout << "io_uring_submit : " << err << std::endl;
+    }
+
+    err = io_uring_wait_cqe(&ring, &cqe);
+
+    if (err < 0) {
+        std::cout << "io_uring_wait_cqe : " << err << std::endl;
+    }
+
+    if (cqe->res < 0) {
+        std::cerr << "Async read failed: " << cqe->res << strerror(-cqe->res) << std::endl;
+    } else {
+        std::cout << "Read buffer, " << cqe->res << " bytes: " << std::string(buffer, cqe->res) << std::endl;
+        std::cout << "Read iovec, " << cqe->res << " bytes: " << std::string((char *)iovecs[0].iov_base, cqe->res) << std::endl;
+    } 
+
+    io_uring_cqe_seen(&ring, cqe);
+
+    close(fd);
     return 0;
 }
