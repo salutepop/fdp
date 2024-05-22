@@ -18,9 +18,9 @@
 
 #include "util.h"
 #include <liburing.h>
-#include <vector>
 #include <linux/nvme_ioctl.h>
 #include <sys/ioctl.h>
+#include <vector>
 
 // Reference: https://github.com/axboe/fio/blob/master/engines/nvme.h
 // If the uapi headers installed on the system lacks nvme uring command
@@ -31,67 +31,66 @@
 #define NVME_IDENTIFY_CNS_NS 0
 #define NVME_CSI_NVM 0
 
-#define BLK_DEF_MAX_SECTORS 256  // 256KB
+#define BLK_DEF_MAX_SECTORS 256 // 256KB
 #define FDP_MAX_RUHS 128
 
 struct nvme_lbaf {
-	__le16			ms;
-	__u8			ds;
-	__u8			rp;
+  __le16 ms;
+  __u8 ds;
+  __u8 rp;
 };
 
 struct nvme_id_ns {
-	__le64			nsze;
-	__le64			ncap;
-	__le64			nuse;
-	__u8			nsfeat;
-	__u8			nlbaf;
-	__u8			flbas;
-	__u8			mc;
-	__u8			dpc;
-	__u8			dps;
-	__u8			nmic;
-	__u8			rescap;
-	__u8			fpi;
-	__u8			dlfeat;
-	__le16			nawun;
-	__le16			nawupf;
-	__le16			nacwu;
-	__le16			nabsn;
-	__le16			nabo;
-	__le16			nabspf;
-	__le16			noiob;
-	__u8			nvmcap[16];
-	__le16			npwg;
-	__le16			npwa;
-	__le16			npdg;
-	__le16			npda;
-	__le16			nows;
-	__le16			mssrl;
-	__le32			mcl;
-	__u8			msrc;
-	__u8			rsvd81[11];
-	__le32			anagrpid;
-	__u8			rsvd96[3];
-	__u8			nsattr;
-	__le16			nvmsetid;
-	__le16			endgid;
-	__u8			nguid[16];
-	__u8			eui64[8];
-	struct nvme_lbaf	lbaf[16];
-	__u8			rsvd192[192];
-	__u8			vs[3712];
+  __le64 nsze;
+  __le64 ncap;
+  __le64 nuse;
+  __u8 nsfeat;
+  __u8 nlbaf;
+  __u8 flbas;
+  __u8 mc;
+  __u8 dpc;
+  __u8 dps;
+  __u8 nmic;
+  __u8 rescap;
+  __u8 fpi;
+  __u8 dlfeat;
+  __le16 nawun;
+  __le16 nawupf;
+  __le16 nacwu;
+  __le16 nabsn;
+  __le16 nabo;
+  __le16 nabspf;
+  __le16 noiob;
+  __u8 nvmcap[16];
+  __le16 npwg;
+  __le16 npwa;
+  __le16 npdg;
+  __le16 npda;
+  __le16 nows;
+  __le16 mssrl;
+  __le32 mcl;
+  __u8 msrc;
+  __u8 rsvd81[11];
+  __le32 anagrpid;
+  __u8 rsvd96[3];
+  __u8 nsattr;
+  __le16 nvmsetid;
+  __le16 endgid;
+  __u8 nguid[16];
+  __u8 eui64[8];
+  struct nvme_lbaf lbaf[16];
+  __u8 rsvd192[192];
+  __u8 vs[3712];
 };
 
-static inline int ilog2(uint32_t i)
-{
-	int log = -1;
+static inline int ilog2(uint32_t i) {
+  int log = -1;
 
-	while (i) {
-		i >>= 1;
-		log++;
-	}
-	return log;
+  while (i) {
+    i >>= 1;
+    log++;
+  }
+  return log;
 }
 
 enum nvme_io_mgmt_recv_mo {
@@ -113,14 +112,7 @@ struct nvme_fdp_ruh_status {
 };
 
 enum nvme_admin_opcode {
-	nvme_admin_identify		= 0x06,
-};
-
-enum nvme_io_opcode {
-  nvme_cmd_write = 0x01,
-  nvme_cmd_read = 0x02,
-  nvme_cmd_io_mgmt_recv = 0x12,
-  nvme_cmd_io_mgmt_send = 0x1d,
+  nvme_admin_identify = 0x06,
 };
 
 // NVMe specific data for a device
@@ -128,22 +120,19 @@ enum nvme_io_opcode {
 // This is needed because FDP-IO have to be sent through Io_Uring_Cmd interface.
 // So NVMe data is needed for initialization and IO cmd formation.
 class NvmeData {
- public:
+public:
   NvmeData() = default;
-  NvmeData& operator=(const NvmeData&) = default;
+  NvmeData &operator=(const NvmeData &) = default;
 
-  explicit NvmeData(uint32_t nsId,
-                    uint32_t lbaShift,
-                    uint32_t maxTfrSize,
-                    uint64_t startLba)
-      : nsId_(nsId),
-        lbaShift_(lbaShift),
-        maxTfrSize_(maxTfrSize),
-        startLba_(startLba) {}
+  explicit NvmeData(uint32_t nsId, uint32_t blockSize, uint32_t lbaShift,
+                    uint32_t maxTfrSize, uint64_t startLba)
+      : nsId_(nsId), blockSize_(blockSize), lbaShift_(lbaShift),
+        maxTfrSize_(maxTfrSize), startLba_(startLba) {}
 
   // NVMe Namespace ID
   uint32_t nsId() const { return nsId_; }
 
+  uint32_t blockSize() const { return blockSize_; }
   // LBA shift number to calculate blocksize
   uint32_t lbaShift() const { return lbaShift_; }
 
@@ -154,8 +143,9 @@ class NvmeData {
   // It will be 0, if there is no partition and just an NS.
   uint64_t partStartLba() const { return startLba_; }
 
- private:
+private:
   uint32_t nsId_;
+  uint32_t blockSize_;
   uint32_t lbaShift_;
   uint32_t maxTfrSize_;
   uint64_t startLba_;
@@ -167,11 +157,11 @@ class NvmeData {
 // Note: IO with FDP semantics need to be sent through Io_Uring_cmd interface
 // as of now; and not supported through conventional block interfaces.
 class FdpNvme {
- public:
-  explicit FdpNvme(const std::string& fileName, uint32_t qdepth);
+public:
+  explicit FdpNvme(const std::string &fileName);
 
-  FdpNvme(const FdpNvme&) = delete;
-  FdpNvme& operator=(const FdpNvme&) = delete;
+  FdpNvme(const FdpNvme &) = delete;
+  FdpNvme &operator=(const FdpNvme &) = delete;
 
   // Allocates an FDP specific placement handle. This handle will be
   // interpreted by the device for data placement.
@@ -181,52 +171,39 @@ class FdpNvme {
   uint32_t getMaxIOSize() { return nvmeData_.getMaxTfrSize(); }
 
   // Get the NVMe specific info on this device.
-  NvmeData& getNvmeData() { return nvmeData_; }
+  NvmeData &getNvmeData() { return nvmeData_; }
 
   // Prepares the Uring_Cmd sqe for read command.
-  void prepReadUringCmdSqe(struct io_uring_sqe& sqe,
-                           void* buf,
-                           size_t size,
+  void prepReadUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
                            off_t start);
 
   // Prepares the Uring_Cmd sqe for write command with FDP handle.
-  void prepWriteUringCmdSqe(struct io_uring_sqe& sqe,
-                            void* buf,
-                            size_t size,
-                            off_t start,
-                            int handle);
-  int fd(){return fd_;}
-  io_uring* getRing() {return &ring_; };
-  
+  void prepWriteUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
+                            off_t start, int handle);
+  int fd() { return fd_; }
+  io_uring *getRing() { return &ring_; };
 
- private:
+private:
   // Open Nvme Character device for the given block dev @fileName.
-  int openNvmeCharFile(const std::string& fileName);
+  int openNvmeCharFile(const std::string &fileName);
 
   // Prepares the Uring_Cmd sqe for read/write command with FDP directives.
-  void prepFdpUringCmdSqe(struct io_uring_sqe& sqe,
-                          void* buf,
-                          size_t size,
-                          off_t start,
-                          uint8_t opcode,
-                          uint8_t dtype,
+  void prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
+                          off_t start, uint8_t opcode, uint8_t dtype,
                           uint16_t dspec);
 
   // Get FDP PlacementID for a NVMe NS specific PHNDL
   uint16_t getFdpPID(uint16_t fdpPHNDL) { return placementIDs_[fdpPHNDL]; }
 
   // Reads NvmeData for a NVMe device
-  NvmeData readNvmeInfo(const std::string& blockDevice);
+  NvmeData readNvmeInfo(const std::string &blockDevice);
 
   // Initialize the FDP device and populate necessary info.
-  void initializeFDP(const std::string& blockDevice);
+  void initializeFDP(const std::string &blockDevice);
   void initializeIoUring(uint32_t qdepth);
 
   // Generic NVMe IO mgmnt receive cmd
-  int nvmeIOMgmtRecv(uint32_t nsid,
-                     void* data,
-                     uint32_t data_len,
-                     uint8_t op,
+  int nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len, uint8_t op,
                      uint16_t op_specific);
 
   // 0u is considered as the default placement ID
@@ -245,17 +222,16 @@ class FdpNvme {
 
   // for io_uring
   struct io_uring ring_;
-
 };
 
 struct nvme_data {
-	__u32 nsid;
-	__u32 lba_shift;
-	__u32 lba_size;
-	__u32 lba_ext;
-	__u16 ms;
-	__u16 pi_size;
-	__u8 pi_type;
-	__u8 guard_type;
-	__u8 pi_loc;
+  __u32 nsid;
+  __u32 lba_shift;
+  __u32 lba_size;
+  __u32 lba_ext;
+  __u16 ms;
+  __u16 pi_size;
+  __u8 pi_type;
+  __u8 guard_type;
+  __u8 pi_loc;
 };

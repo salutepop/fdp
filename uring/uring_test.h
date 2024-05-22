@@ -1,11 +1,9 @@
 #ifndef URING_TEST_H
 #define URING_TEST_H
 
-#include <string>
 #include "fdpnvme.h"
+#include "uring_cmd.h"
+#include "util.h"
 
-bool read_file(const std::string &file_path, std::string &output);
-bool read_character_device(const std::string &device_path, std::string &output);
-
+#include <chrono>
 #endif // URING_TEST_H
-

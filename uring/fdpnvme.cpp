@@ -15,14 +15,10 @@
  */
 
 #include "fdpnvme.h"
+#include "uring_cmd.h"
 
-#include <errno.h>
-
-#include <cstring>
-
-FdpNvme::FdpNvme(const std::string& bdevName, uint32_t qdepth)
-: fd_(openNvmeCharFile(bdevName)) {
-  initializeIoUring(qdepth);
+FdpNvme::FdpNvme(const std::string &bdevName)
+    : fd_(openNvmeCharFile(bdevName)) {
   initializeFDP(bdevName);
 }
 
@@ -47,22 +43,22 @@ void FdpNvme::initializeIoUring(uint32_t qdepth) {
   }
 }
 
-void FdpNvme::initializeFDP(const std::string& bdevName) {
-  struct nvme_fdp_ruh_status *ruh_status; 
+void FdpNvme::initializeFDP(const std::string &bdevName) {
+  struct nvme_fdp_ruh_status *ruh_status;
   int bytes, err;
 
   nvmeData_ = readNvmeInfo(bdevName);
 
-  bytes = sizeof(*ruh_status) + FDP_MAX_RUHS * sizeof(struct nvme_fdp_ruh_status_desc);
-  ruh_status = (nvme_fdp_ruh_status*) malloc(bytes);
+  bytes = sizeof(*ruh_status) +
+          FDP_MAX_RUHS * sizeof(struct nvme_fdp_ruh_status_desc);
+  ruh_status = (nvme_fdp_ruh_status *)malloc(bytes);
 
   err = nvmeIOMgmtRecv(nvmeData_.nsId(), ruh_status, bytes,
                        NVME_IO_MGMT_RECV_RUH_STATUS, 0);
 
   if (err) {
     throw std::invalid_argument("Failed to initialize FDP; nruhsd is 0");
-  }
-  else {
+  } else {
     std::cout << ruh_status->nruhsd << std::endl;
   }
   placementIDs_.reserve(ruh_status->nruhsd);
@@ -73,11 +69,8 @@ void FdpNvme::initializeFDP(const std::string& bdevName) {
 }
 
 // NVMe IO Mnagement Receive fn for specific config reading
-int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid,
-                            void* data,
-                            uint32_t data_len,
-                            uint8_t op,
-                            uint16_t op_specific) {
+int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len,
+                            uint8_t op, uint16_t op_specific) {
   // Build the I/O management receive command
   // For further details on the CDB format, consult the specification
   // available as "TP4146 Flexible Data Placement 2022.11.30 Ratified"
@@ -87,25 +80,21 @@ int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid,
   uint32_t cdw11 = (data_len >> 2) - 1; // cdw11 is 0 based
 
   struct nvme_passthru_cmd cmd = {
-    .opcode = nvme_cmd_io_mgmt_recv,
-    .nsid = nsid,
-    .addr = (uint64_t)(uintptr_t)data,
-    .data_len = data_len,
-    .cdw10 = cdw10,
-    .cdw11 = cdw11,
-    .timeout_ms = NVME_DEFAULT_IOCTL_TIMEOUT,
+      .opcode = nvme_cmd_io_mgmt_recv,
+      .nsid = nsid,
+      .addr = (uint64_t)(uintptr_t)data,
+      .data_len = data_len,
+      .cdw10 = cdw10,
+      .cdw11 = cdw11,
+      .timeout_ms = NVME_DEFAULT_IOCTL_TIMEOUT,
   };
 
   return ioctl(fd_, NVME_IOCTL_IO_CMD, &cmd);
 }
 
-void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe& sqe,
-                                 void* buf,
-                                 size_t size,
-                                 off_t start,
-                                 uint8_t opcode,
-                                 uint8_t dtype,
-                                 uint16_t dspec) {
+void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
+                                 size_t size, off_t start, uint8_t opcode,
+                                 uint8_t dtype, uint16_t dspec) {
   uint32_t maxTfrSize = nvmeData_.getMaxTfrSize();
   if ((maxTfrSize != 0) && (size > maxTfrSize)) {
     throw std::invalid_argument("Exceeds max Transfer size");
@@ -117,7 +106,7 @@ void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe& sqe,
   sqe.opcode = IORING_OP_URING_CMD;
   sqe.cmd_op = NVME_URING_CMD_IO;
 
-  struct nvme_uring_cmd* cmd = (struct nvme_uring_cmd*)&sqe.cmd;
+  struct nvme_uring_cmd *cmd = (struct nvme_uring_cmd *)&sqe.cmd;
   if (cmd == nullptr) {
     throw std::invalid_argument("Uring cmd is NULL!");
   }
@@ -140,16 +129,14 @@ void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe& sqe,
   cmd->nsid = nvmeData_.nsId();
 }
 
-void FdpNvme::prepReadUringCmdSqe(struct io_uring_sqe& sqe,
-                                  void* buf,
-                                  size_t size,
-                                  off_t start) {
+void FdpNvme::prepReadUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
+                                  size_t size, off_t start) {
   // Placement Handle is not used for read.
   prepFdpUringCmdSqe(sqe, buf, size, start, nvme_cmd_read, 0, 0);
 }
 
-void FdpNvme::prepWriteUringCmdSqe(
-  struct io_uring_sqe& sqe, void* buf, size_t size, off_t start, int handle) {
+void FdpNvme::prepWriteUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
+                                   size_t size, off_t start, int handle) {
   static constexpr uint8_t kPlacementMode = 2;
   uint16_t pid;
 
@@ -166,40 +153,40 @@ void FdpNvme::prepWriteUringCmdSqe(
 }
 
 // Reads the NVMe related info from a valid NVMe device path
-NvmeData FdpNvme::readNvmeInfo(const std::string& bdevName) {
-	struct nvme_id_ns ns;
-	int fd;
-	__u32 nsid = 0, lba_size = 0, lba_shift = 0;
+NvmeData FdpNvme::readNvmeInfo(const std::string &bdevName) {
+  struct nvme_id_ns ns;
+  int fd;
+  __u32 nsid = 0, lba_size = 0, lba_shift = 0;
   uint64_t startLba{0};
 
   try {
-	  fd = open(bdevName.c_str(), O_RDONLY);
-	  nsid = ioctl(fd, NVME_IOCTL_ID);
+    fd = open(bdevName.c_str(), O_RDONLY);
+    nsid = ioctl(fd, NVME_IOCTL_ID);
 
-	  struct nvme_passthru_cmd cmd = {
-		  .opcode         = nvme_admin_identify,
-		  .nsid           = nsid,
-		  .addr           = (__u64)(uintptr_t)&ns,
-		  .data_len       = NVME_IDENTIFY_DATA_SIZE,
-		  .cdw10          = NVME_IDENTIFY_CNS_NS,
-		  .cdw11          = NVME_CSI_NVM << NVME_IDENTIFY_CSI_SHIFT,
-		  .timeout_ms     = NVME_DEFAULT_IOCTL_TIMEOUT,
-	  };
+    struct nvme_passthru_cmd cmd = {
+        .opcode = nvme_admin_identify,
+        .nsid = nsid,
+        .addr = (__u64)(uintptr_t)&ns,
+        .data_len = NVME_IDENTIFY_DATA_SIZE,
+        .cdw10 = NVME_IDENTIFY_CNS_NS,
+        .cdw11 = NVME_CSI_NVM << NVME_IDENTIFY_CSI_SHIFT,
+        .timeout_ms = NVME_DEFAULT_IOCTL_TIMEOUT,
+    };
 
-	  ioctl(fd, NVME_IOCTL_ADMIN_CMD, &cmd);
+    ioctl(fd, NVME_IOCTL_ADMIN_CMD, &cmd);
 
-	  lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
-	  lba_shift = ilog2(lba_size);
-	} catch (const std::exception& e) {
-	  std::cout << e.what() << std::endl;
-	}
+    lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
+    lba_shift = ilog2(lba_size);
+  } catch (const std::exception &e) {
+    std::cout << e.what() << std::endl;
+  }
 
-  return NvmeData{nsid, lba_shift, BLK_DEF_MAX_SECTORS, startLba};
+  return NvmeData{nsid, lba_size, lba_shift, BLK_DEF_MAX_SECTORS, startLba};
 }
 
 // Converts an nvme block device name (ex: /dev/nvme0n1p1) to corresponding
 // nvme char device name (ex: /dev/ng0n1), to use Nvme FDP directives.
-std::string getNvmeCharDevice(const std::string& bdevName) {
+std::string getNvmeCharDevice(const std::string &bdevName) {
   // Extract dev and NS IDs, and ignore partition ID.
   // Example: extract the string '0n1' from '/dev/nvme0n1p1'
   size_t devPos = bdevName.find_first_of("0123456789");
@@ -210,15 +197,17 @@ std::string getNvmeCharDevice(const std::string& bdevName) {
 
 // Open Nvme Character device for the given block dev @bdevName.
 // Throws std::system_error if failed.
-int FdpNvme::openNvmeCharFile(const std::string& bdevName) {
-  //int flags{O_RDONLY};
+int FdpNvme::openNvmeCharFile(const std::string &bdevName) {
+  // int flags{O_RDONLY};
   int flags{O_RDWR};
   int fd;
 
   try {
     auto cdevName = getNvmeCharDevice(bdevName);
+    LOG("CharDEV", cdevName);
     fd = open(cdevName.c_str(), flags);
-  } catch (const std::system_error&) {
+    LOG("FD", fd);
+  } catch (const std::system_error &) {
     throw;
   }
 

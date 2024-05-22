@@ -10,8 +10,8 @@ LDFLAGS = -L/usr/local/lib
 LDLIBS = -luring
 
 # 소스 파일과 타겟 파일 설정
-SRCS = uring_test.cpp fdpnvme.cpp
-HEADERS = uring_test.h fdpnvme.h util.h
+SRCS = uring_test.cpp fdpnvme.cpp util.cpp uring_cmd.cpp
+HEADERS = uring_test.h fdpnvme.h util.h uring_cmd.h
 OBJS = $(SRCS:.cpp=.o)
 TARGET = uring_test
 

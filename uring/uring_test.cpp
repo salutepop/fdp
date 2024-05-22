@@ -1,233 +1,46 @@
 #include "uring_test.h"
-#include <iostream>
-#include <fcntl.h>
-#include <unistd.h>
-#include <cstring>
 #include "flexfs.h"
+#include <cstring>
+#include <fcntl.h>
+#include <iostream>
+#include <unistd.h>
 
 #define QDEPTH 4
 #define BS 4096
 #define PAGE_SIZE 4096
-#define BUFF_SIZE 256
-
-// roundup_pow2 함수 정의
-unsigned int roundup_pow2(unsigned int depth) {
-    if (depth == 0) return 1; // 0일 경우 1을 반환
-
-    depth--; // depth보다 큰 가장 작은 2의 거듭제곱을 찾기 위해 depth를 하나 감소
-    depth |= depth >> 1;
-    depth |= depth >> 2;
-    depth |= depth >> 4;
-    depth |= depth >> 8;
-    depth |= depth >> 16;
-#if (UINT_MAX == 0xFFFFFFFFFFFFFFFF)
-    depth |= depth >> 32; // 64비트 시스템에서 추가로 필요한 연산
-#endif
-    return depth + 1;
-}
-
-void prepFdpUringCmdSqe(struct io_uring_sqe *sqe,
-                        int fd,
-                        int nsid,
-                        void* buf,
-                        size_t size,
-                        off_t start,
-                        uint8_t opcode,
-                        uint8_t dtype,
-                        uint16_t dspec) {
-  // Clear the SQE entry to avoid some arbitrary flags being set.
-  //memset(&sqe, 0, sizeof(struct io_uring_sqe));
-
-  sqe->cmd_op = NVME_URING_CMD_IO;
-  sqe->opcode = IORING_OP_URING_CMD;
-
-  struct nvme_uring_cmd* cmd = (struct nvme_uring_cmd*)sqe->cmd;
-    std::cout << cmd << std::endl;
-  if (cmd == nullptr) {
-    throw std::invalid_argument("Uring cmd is NULL!");
-  }
-  memset(cmd, 0, sizeof(struct nvme_uring_cmd));
-  cmd->opcode = opcode;
-
-  // start LBA of the IO = Req_start (offset in partition) + Partition_start
-  uint64_t sLba = 0;
-  uint32_t nLb = 0; // nLb is 0 based
-
-  /* cdw10 and cdw11 represent starting lba */
-  cmd->cdw10 = sLba & 0xffffffff;
-  cmd->cdw11 = sLba >> 32;
-  /* cdw12 represent number of lba's for read/write */
-  cmd->cdw12 = (dtype & 0xFF) << 20 | nLb;
-  cmd->cdw13 = (dspec << 16);
-  cmd->addr = (uint64_t)buf;
-  cmd->data_len = size;
-
-  cmd->nsid = nsid;
-}
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <device_path>" << std::endl;
-        return 1;
-    }
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <device_path>" << std::endl;
+    return 1;
+  }
 
-    std::string device_path = argv[1];
-    char buffer[BUFF_SIZE];
-    int offset = 0;
-    int err;
+  std::string device_path = argv[1];
+  std::cout << device_path << std::endl;
 
-    struct io_uring ring;
-    struct iovec *iovecs;
+  uint32_t qdepth = QDEPTH;
+  off_t offset = 0;
 
-    iovecs = (struct iovec*) calloc(QDEPTH, sizeof(struct iovec));
-    if (err < 0) {
-        std::cout << "posix_memalign : " << err << std::endl;
-    }
+  FdpNvme fdp = FdpNvme{device_path};
+  NvmeData nvme = fdp.getNvmeData();
+  Uring_cmd uring_cmd =
+      Uring_cmd{qdepth, nvme.blockSize(), nvme.lbaShift(), io_uring_params{}};
 
-        void* buf;
-    for(int i = 0; i < roundup_pow2(QDEPTH); i++){
-        //std::cout << "POW i = " << i << std::endl;
-        err = posix_memalign(&buf, PAGE_SIZE, BS);
-        if (err) {
-            std::cerr << "failed mem align, err= " << err << std::endl;
-        }
-        std::cout << "i, buf= "<< i << ", " << buf << std::endl;
-        iovecs[i].iov_base = buf;
-        iovecs[i].iov_len = BS;
-    }
-    //iovecs[0].iov_len = BUFF_SIZE;
-
-
-    
-    /*
-    //FdpNvme fdp = FdpNvme(device_path, QDEPTH);
-    int fd = open("/dev/nvme0n1", O_RDONLY);
-	struct nvme_id_ns ns;
-    uint32_t nsid = ioctl(fd, NVME_IOCTL_ID);
-
-	  struct nvme_passthru_cmd pcmd = {
-		  .opcode         = nvme_admin_identify,
-		  .nsid           = nsid,
-		  .addr           = (__u64)(uintptr_t)&ns,
-		  .data_len       = NVME_IDENTIFY_DATA_SIZE,
-		  .cdw10          = NVME_IDENTIFY_CNS_NS,
-		  .cdw11          = NVME_CSI_NVM << NVME_IDENTIFY_CSI_SHIFT,
-		  .timeout_ms     = NVME_DEFAULT_IOCTL_TIMEOUT,
-	  };
-
-	ioctl(fd, NVME_IOCTL_ADMIN_CMD, &pcmd);
-
-	__u32  lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
-	__u32  lba_shift = ilog2(lba_size);
-    //close(fd);
-    std::cout << "[Pass] fd =" << fd << ", nsid= " << nsid << std::endl;
-    std::cout << "[Pass] lba_size= " << lba_size << ", lba_shift= " << lba_shift << std::endl;
-    */
-
-    uint32_t nsid = 1;
-	__u32  lba_size = 4096;
-	__u32  lba_shift = 12;
-    int fd = open(device_path.c_str(), O_RDWR);
-
-    std::cout << "[Pass] fd =" << fd << ", nsid= " << nsid << std::endl;
-    struct io_uring_params p;
-    memset(&p, 0, sizeof(p));
-	p.flags |= IORING_SETUP_SQE128;
-	p.flags |= IORING_SETUP_CQE32;
-
-    p.flags |= IORING_SETUP_CQSIZE;
-    p.cq_entries = QDEPTH;
-	p.flags |= IORING_SETUP_COOP_TASKRUN;
-	p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
-
-    io_uring_queue_init_params(QDEPTH, &ring, &p);
-    //io_uring_queue_init(QDEPTH, &ring, 0);
-    struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
-    struct io_uring_cqe *cqe;
-    struct nvme_uring_cmd *cmd;
-
-    Superblock sb = Superblock(1);
-    std::cout << sb.GetUUID() << std::endl;
-    /*
-    struct iovec iov;
-    const char *data = "HELLOWORLD";
-    size_t data_len = strlen(data);
-    iov.iov_base = const_cast<char*>(data);
-    iov.iov_len = data_len;
-    io_uring_prep_write(sqe, fd, iov.iov_base, iov.iov_len, offset);
-    */
-
-    //err = io_uring_submit(&ring);
-    //err = io_uring_wait_cqe(&ring, &cqe);
-
-    //fdp.prepReadUringCmdSqe(*sqe, &iov, BUFF_SIZE, offset);
-
-    /*
-    struct iovec iov;
-    iov.iov_base = buffer;
-    iov.iov_len = BUFF_SIZE;
-    io_uring_prep_read(sqe, fd, iov.iov_base, iov.iov_len, 0);
-    */
-    //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
-    //io_uring_prep_readv(sqe, fd, &iovecs[0], 1, offset);
-    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
-    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
-    
-	memset(sqe, 0, sizeof(*sqe));
-    sqe->fd = fd;
-	sqe->cmd_op = NVME_URING_CMD_IO_VEC;
-    std::cout << sqe->cmd_op << std::endl;
-	sqe->opcode = IORING_OP_URING_CMD;
-	//sqe->opcode = IORING_OP_READ;
-	sqe->user_data = 0;
-	cmd = (struct nvme_uring_cmd *)sqe->cmd;
-	memset(cmd, 0, sizeof(struct nvme_uring_cmd));
-
-	cmd->opcode = nvme_cmd_read;
-	__u64 slba;
-	__u32 nlb;
-	slba = offset >> lba_shift;
-	nlb = (BS >> lba_shift) - 1;
-
-    std::cout << "slba, nlba, lba_shift : " << slba << ", " << nlb << ", " << lba_shift << std::endl;
-
-	cmd->cdw10 = slba & 0xffffffff;
-	cmd->cdw11 = slba >> 32;
-	cmd->cdw12 = nlb;
-
-	//cmd->addr = (__u64)(uintptr_t)iovecs[0].iov_base;
-	//cmd->data_len = iovecs[0].iov_len;
-
-	//cmd->addr = (__u64)(uintptr_t)iovecs;
-	cmd->addr = (uint64_t)&iovecs[0];
-	cmd->data_len = 1;
-	cmd->nsid = nsid;
-
-    //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
-    //prepFdpUringCmdSqe(sqe, fd, nsid, &iovecs[0].iov_base, iovecs[0].iov_len, offset, nvme_cmd_read, 0, 0); 
-    err = io_uring_submit(&ring);
-    std::cout << "io_uring_submit : " << err << std::endl;
-
-    if (err < 0) {
-        std::cout << "io_uring_submit : " << err << std::endl;
-    }
-
-    err = io_uring_wait_cqe(&ring, &cqe);
-    std::cout << "io_uring_wait_cqe : " << err << std::endl;
-
-    if (err < 0) {
-        std::cout << "io_uring_wait_cqe : " << err << std::endl;
-    }
-
-    if (cqe->res < 0) {
-        std::cerr << "Async read failed: " << cqe->res << strerror(-cqe->res) << std::endl;
-    } else {
-        std::cout << "Read buffer, " << cqe->res << " bytes: " << std::string(buffer, cqe->res) << std::endl;
-        std::cout << "Read iovec, " << cqe->res << " bytes: " << std::string((char *)iovecs[0].iov_base, BS) << std::endl;
-    } 
-
-    io_uring_cqe_seen(&ring, cqe);
-
-    close(fd);
-    return 0;
+  char buffer[4096];
+  memset(&buffer, 0, sizeof(buffer));
+  //  for (int i = 0; i < sizeof(buffer); i++) {
+  //   buffer[i] = (i + 20) % 125;
+  //}
+  Superblock sb = Superblock(1);
+  // memcpy(&buffer, &sb, sizeof(sb));
+  //  std::chrono::system_clock::time_point start =
+  //      std::chrono::system_clock::now();
+  // uring_cmd.UringCmdWrite(fdp.fd(), nvme.nsId(), offset, sizeof(sb), &sb, 0);
+  // std::chrono::duration<double> sec = std::chrono::system_clock::now() -
+  // start; LOG("1M times(sec)", sec.count());
+  //  uring_cmd.UringCmdRead(fdp.fd(), nvme.nsId(), offset, sizeof(Superblock),
+  //  &sb);
+  uring_cmd.UringRead(fdp.fd(), nvme.nsId(), offset, sizeof(buffer), &buffer);
+  //  uring_cmd.UringCmdRead(fdp.fd(), nvme.nsId(), offset, sizeof(buffer),
+  //                        &buffer);
 }
