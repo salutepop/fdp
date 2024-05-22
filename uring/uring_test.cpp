@@ -3,10 +3,28 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cstring>
+#include "flexfs.h"
 
-#define QDEPTH 128
+#define QDEPTH 4
 #define BS 4096
-#define BUFF_SIZE 4096
+#define PAGE_SIZE 4096
+#define BUFF_SIZE 256
+
+// roundup_pow2 함수 정의
+unsigned int roundup_pow2(unsigned int depth) {
+    if (depth == 0) return 1; // 0일 경우 1을 반환
+
+    depth--; // depth보다 큰 가장 작은 2의 거듭제곱을 찾기 위해 depth를 하나 감소
+    depth |= depth >> 1;
+    depth |= depth >> 2;
+    depth |= depth >> 4;
+    depth |= depth >> 8;
+    depth |= depth >> 16;
+#if (UINT_MAX == 0xFFFFFFFFFFFFFFFF)
+    depth |= depth >> 32; // 64비트 시스템에서 추가로 필요한 연산
+#endif
+    return depth + 1;
+}
 
 void prepFdpUringCmdSqe(struct io_uring_sqe *sqe,
                         int fd,
@@ -61,12 +79,23 @@ int main(int argc, char *argv[]) {
     struct io_uring ring;
     struct iovec *iovecs;
 
-    iovecs = (struct iovec*) malloc(sizeof(struct iovec));
-    err = posix_memalign(&iovecs[0].iov_base, BS, BS);
+    iovecs = (struct iovec*) calloc(QDEPTH, sizeof(struct iovec));
     if (err < 0) {
         std::cout << "posix_memalign : " << err << std::endl;
     }
-    iovecs[0].iov_len = BUFF_SIZE;
+
+        void* buf;
+    for(int i = 0; i < roundup_pow2(QDEPTH); i++){
+        //std::cout << "POW i = " << i << std::endl;
+        err = posix_memalign(&buf, PAGE_SIZE, BS);
+        if (err) {
+            std::cerr << "failed mem align, err= " << err << std::endl;
+        }
+        std::cout << "i, buf= "<< i << ", " << buf << std::endl;
+        iovecs[i].iov_base = buf;
+        iovecs[i].iov_len = BS;
+    }
+    //iovecs[0].iov_len = BUFF_SIZE;
 
 
     
@@ -105,16 +134,20 @@ int main(int argc, char *argv[]) {
     memset(&p, 0, sizeof(p));
 	p.flags |= IORING_SETUP_SQE128;
 	p.flags |= IORING_SETUP_CQE32;
+
     p.flags |= IORING_SETUP_CQSIZE;
     p.cq_entries = QDEPTH;
 	p.flags |= IORING_SETUP_COOP_TASKRUN;
 	p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
 
     io_uring_queue_init_params(QDEPTH, &ring, &p);
+    //io_uring_queue_init(QDEPTH, &ring, 0);
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
     struct io_uring_cqe *cqe;
     struct nvme_uring_cmd *cmd;
 
+    Superblock sb = Superblock(1);
+    std::cout << sb.GetUUID() << std::endl;
     /*
     struct iovec iov;
     const char *data = "HELLOWORLD";
@@ -133,13 +166,14 @@ int main(int argc, char *argv[]) {
     struct iovec iov;
     iov.iov_base = buffer;
     iov.iov_len = BUFF_SIZE;
-    io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+    io_uring_prep_read(sqe, fd, iov.iov_base, iov.iov_len, 0);
     */
     //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
+    //io_uring_prep_readv(sqe, fd, &iovecs[0], 1, offset);
     //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
     //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
     
-    //io_uring_prep_read(sqe, fd, iovecs[0].iov_base, iovecs[0].iov_len, 0);
+	memset(sqe, 0, sizeof(*sqe));
     sqe->fd = fd;
 	sqe->cmd_op = NVME_URING_CMD_IO_VEC;
     std::cout << sqe->cmd_op << std::endl;
@@ -164,19 +198,22 @@ int main(int argc, char *argv[]) {
 	//cmd->addr = (__u64)(uintptr_t)iovecs[0].iov_base;
 	//cmd->data_len = iovecs[0].iov_len;
 
-	cmd->addr = (__u64)(uintptr_t)&iovecs[0];
+	//cmd->addr = (__u64)(uintptr_t)iovecs;
+	cmd->addr = (uint64_t)&iovecs[0];
 	cmd->data_len = 1;
 	cmd->nsid = nsid;
 
     //io_uring_prep_readv(sqe, fd, iovecs, 1, 0);
     //prepFdpUringCmdSqe(sqe, fd, nsid, &iovecs[0].iov_base, iovecs[0].iov_len, offset, nvme_cmd_read, 0, 0); 
     err = io_uring_submit(&ring);
+    std::cout << "io_uring_submit : " << err << std::endl;
 
     if (err < 0) {
         std::cout << "io_uring_submit : " << err << std::endl;
     }
 
     err = io_uring_wait_cqe(&ring, &cqe);
+    std::cout << "io_uring_wait_cqe : " << err << std::endl;
 
     if (err < 0) {
         std::cout << "io_uring_wait_cqe : " << err << std::endl;
@@ -186,7 +223,7 @@ int main(int argc, char *argv[]) {
         std::cerr << "Async read failed: " << cqe->res << strerror(-cqe->res) << std::endl;
     } else {
         std::cout << "Read buffer, " << cqe->res << " bytes: " << std::string(buffer, cqe->res) << std::endl;
-        std::cout << "Read iovec, " << cqe->res << " bytes: " << std::string((char *)iovecs[0].iov_base, cqe->res) << std::endl;
+        std::cout << "Read iovec, " << cqe->res << " bytes: " << std::string((char *)iovecs[0].iov_base, BS) << std::endl;
     } 
 
     io_uring_cqe_seen(&ring, cqe);
