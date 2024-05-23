@@ -4,7 +4,7 @@
 #include <liburing.h>
 #include <linux/nvme_ioctl.h>
 
-#define BS 4096
+#define BS (4 * 1024)
 #define PAGE_SIZE 4096
 
 #define op_read true

@@ -60,7 +60,6 @@ void Uring_cmd::prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns,
   struct iovec iovec;
   iovec.iov_base = buf;
   iovec.iov_len = size;
-  LOG("BUFFER ADD4", buf);
 
   memset(sqe, 0, sizeof(*sqe));
   sqe->fd = fd;
@@ -96,6 +95,8 @@ void Uring_cmd::prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns,
   cmd->addr = (__u64)(uintptr_t)buf;
   cmd->data_len = size;
   cmd->nsid = ns;
+  DBG("IS_READ", is_read);
+  DBG("DATA", std::string((char *)buf, size));
 }
 
 void Uring_cmd::UringCmdWrite(int fd, int ns, off_t offset, size_t size,
@@ -105,6 +106,7 @@ void Uring_cmd::UringCmdWrite(int fd, int ns, off_t offset, size_t size,
   int err;
 
   prepUringCmdWrite(sqe, fd, ns, offset, size, buf, pid);
+  /*
   LOG("FD", sqe->fd);
   LOG("NSID", ((struct nvme_uring_cmd *)sqe->cmd)->nsid);
   LOG("OPCODE", +((struct nvme_uring_cmd *)sqe->cmd)->opcode);
@@ -115,10 +117,11 @@ void Uring_cmd::UringCmdWrite(int fd, int ns, off_t offset, size_t size,
   LOG("SIZE", size);
   LOG("ADDR", ((struct nvme_uring_cmd *)sqe->cmd)->addr);
   LOG("LEN", ((struct nvme_uring_cmd *)sqe->cmd)->data_len);
+  */
   err = io_uring_submit(&ring_);
-  LOG("uring_submit", err);
+  DBG("uring_submit", err);
   err = io_uring_wait_cqe(&ring_, &cqe);
-  LOG("uring_wait_cqe", err);
+  DBG("uring_wait_cqe", err);
   io_uring_cqe_seen(&ring_, cqe);
   if (cqe->res != 0) {
     std::cout << "cqe->res= " << cqe->res << std::endl;
@@ -132,6 +135,7 @@ void Uring_cmd::UringCmdRead(int fd, int ns, off_t offset, size_t size,
   int err;
 
   prepUringCmdRead(sqe, fd, ns, offset, size, buf);
+  /*
   LOG("FD", sqe->fd);
   LOG("NSID", ((struct nvme_uring_cmd *)sqe->cmd)->nsid);
   LOG("OPCODE", +((struct nvme_uring_cmd *)sqe->cmd)->opcode);
@@ -142,10 +146,11 @@ void Uring_cmd::UringCmdRead(int fd, int ns, off_t offset, size_t size,
   LOG("SIZE", size);
   LOG("ADDR", ((struct nvme_uring_cmd *)sqe->cmd)->addr);
   LOG("LEN", ((struct nvme_uring_cmd *)sqe->cmd)->data_len);
+  */
   err = io_uring_submit(&ring_);
-  LOG("uring_submit", err);
+  DBG("uring_submit", err);
   err = io_uring_wait_cqe(&ring_, &cqe);
-  LOG("uring_wait_cqe", err);
+  DBG("uring_wait_cqe", err);
   io_uring_cqe_seen(&ring_, cqe);
 
   std::cout << "Read iovec, " << std::string((char *)buf, size) << std::endl;
@@ -163,13 +168,15 @@ void Uring_cmd::UringWrite(int fd, int ns, off_t offset, size_t size,
   iov.iov_len = size;
   io_uring_prep_write(sqe, fd, iov.iov_base, iov.iov_len, offset);
   err = io_uring_submit(&ring_);
-  LOG("uring_submit", err);
+  DBG("uring_submit", err);
   err = io_uring_wait_cqe(&ring_, &cqe);
-  LOG("uring_wait_cqe", err);
+  DBG("uring_wait_cqe", err);
   io_uring_cqe_seen(&ring_, cqe);
+  /*
   if (cqe->res != 0) {
     std::cout << "cqe->res= " << cqe->res << std::endl;
   }
+  */
 }
 void Uring_cmd::UringRead(int fd, int ns, off_t offset, size_t size,
                           void *buf) {
@@ -183,14 +190,16 @@ void Uring_cmd::UringRead(int fd, int ns, off_t offset, size_t size,
 
   io_uring_prep_read(sqe, fd, iov.iov_base, iov.iov_len, offset);
   err = io_uring_submit(&ring_);
-  LOG("uring_submit", err);
+  DBG("uring_submit", err);
   err = io_uring_wait_cqe(&ring_, &cqe);
-  LOG("uring_wait_cqe", err);
+  DBG("uring_wait_cqe", err);
   io_uring_cqe_seen(&ring_, cqe);
 
+  /*
   if (cqe->res > 0) {
     std::cout << "Read iovec, " << std::string((char *)buf, cqe->res)
               << std::endl;
   }
   std::cout << "cqe->res= " << cqe->res << std::endl;
+  */
 }

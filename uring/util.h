@@ -11,14 +11,22 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define DEBUG
-#ifdef DEBUG
-// #define LOG(x) std::cout << x << "\n"
+#define D_LOG
+#define D_DBG
+#ifdef D_LOG
 #define LOG(x, y)                                                              \
   std::cout << "[LOG] " << __FILE__ << "(" << __LINE__ << ") : " << x << "= "  \
             << y << "\n"
 #else
-#define LOG(x)
+#define LOG(x, y)
+#endif
+
+#ifdef D_DBG
+#define DBG(x, y)                                                              \
+  std::cout << "[DBG] " << __FILE__ << "(" << __LINE__ << ") : " << x << "= "  \
+            << y << "\n"
+#else
+#define DBG(x, y)
 #endif
 
 int roundup_pow2(unsigned int depth);
