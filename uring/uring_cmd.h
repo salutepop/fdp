@@ -51,5 +51,6 @@ public:
   void UringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,
                      int pid);
   void UringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf);
+  void UringWrite(int fd, int ns, off_t offset, size_t size, void *buf);
   void UringRead(int fd, int ns, off_t offset, size_t size, void *buf);
 };

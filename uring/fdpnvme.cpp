@@ -17,8 +17,8 @@
 #include "fdpnvme.h"
 #include "uring_cmd.h"
 
-FdpNvme::FdpNvme(const std::string &bdevName)
-    : fd_(openNvmeCharFile(bdevName)) {
+FdpNvme::FdpNvme(const std::string &bdevName, bool useChar)
+    : fd_(openNvmeFile(bdevName, useChar)) {
   initializeFDP(bdevName);
 }
 
@@ -197,14 +197,17 @@ std::string getNvmeCharDevice(const std::string &bdevName) {
 
 // Open Nvme Character device for the given block dev @bdevName.
 // Throws std::system_error if failed.
-int FdpNvme::openNvmeCharFile(const std::string &bdevName) {
+int FdpNvme::openNvmeFile(const std::string &bdevName, bool useChar) {
   // int flags{O_RDONLY};
   int flags{O_RDWR};
   int fd;
 
   try {
-    auto cdevName = getNvmeCharDevice(bdevName);
-    LOG("CharDEV", cdevName);
+    auto cdevName = bdevName;
+    if (useChar) {
+      cdevName = getNvmeCharDevice(bdevName);
+    }
+    LOG("OpenDevice", cdevName);
     fd = open(cdevName.c_str(), flags);
     LOG("FD", fd);
   } catch (const std::system_error &) {

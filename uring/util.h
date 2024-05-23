@@ -6,6 +6,7 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
+#include <stdlib.h>
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>

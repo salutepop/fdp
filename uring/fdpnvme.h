@@ -158,7 +158,7 @@ private:
 // as of now; and not supported through conventional block interfaces.
 class FdpNvme {
 public:
-  explicit FdpNvme(const std::string &fileName);
+  explicit FdpNvme(const std::string &fileName, bool useChar);
 
   FdpNvme(const FdpNvme &) = delete;
   FdpNvme &operator=(const FdpNvme &) = delete;
@@ -185,7 +185,7 @@ public:
 
 private:
   // Open Nvme Character device for the given block dev @fileName.
-  int openNvmeCharFile(const std::string &fileName);
+  int openNvmeFile(const std::string &fileName, bool useChar);
 
   // Prepares the Uring_Cmd sqe for read/write command with FDP directives.
   void prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
