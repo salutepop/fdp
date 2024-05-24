@@ -3,7 +3,8 @@
 
 Uring_cmd::Uring_cmd(uint32_t qd, uint32_t blocksize, uint32_t lbashift,
                      io_uring_params params)
-    : qd_(qd), blocksize_(blocksize), lbashift_(lbashift) {
+    : qd_(qd), blocksize_(blocksize), lbashift_(lbashift), req_limitmax_(qd),
+      req_limitlow_(qd >> 1), req_inflight_(0) {
   initBuffer();
   initUring(params);
 }
@@ -40,7 +41,7 @@ void Uring_cmd::initUring(io_uring_params &params) {
     p.flags |= IORING_SETUP_CQE32;
 
     p.flags |= IORING_SETUP_CQSIZE;
-    p.cq_entries = qd_;
+    p.cq_entries = qd_ * 2; // cq size = sq size * 2, to dealwith cq overflow
 
     p.flags |= IORING_SETUP_COOP_TASKRUN;
     p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
@@ -53,13 +54,14 @@ void Uring_cmd::initUring(io_uring_params &params) {
   io_uring_queue_init_params(qd_, &ring_, &params_);
 }
 
-void Uring_cmd::prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns,
-                             bool is_read, off_t offset, size_t size, void *buf,
-                             uint32_t dtype, uint32_t dspec) {
+void Uring_cmd::prepUringCmd(int fd, int ns, bool is_read, off_t offset,
+                             size_t size, void *buf, uint32_t dtype,
+                             uint32_t dspec) {
+  struct io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
   struct nvme_uring_cmd *cmd;
-  struct iovec iovec;
-  iovec.iov_base = buf;
-  iovec.iov_len = size;
+  // struct iovec iovec;
+  // iovec.iov_base = buf;
+  // iovec.iov_len = size;
 
   memset(sqe, 0, sizeof(*sqe));
   sqe->fd = fd;
@@ -84,9 +86,9 @@ void Uring_cmd::prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns,
 
   cmd->cdw10 = slba & 0xffffffff;
   cmd->cdw11 = slba >> 32;
-  cmd->cdw12 = nlb;
-  // cmd->cdw12 = (dtype & 0xFF) << 20 | nLb;
-  // cmd->cdw13 = (dspec << 16);
+  // cmd->cdw12 = nlb; //non fdp
+  cmd->cdw12 = (dtype & 0xFF) << 20 | nlb;
+  cmd->cdw13 = (dspec << 16);
 
   // cmd->addr = (__u64)(uintptr_t)iovecs[0].iov_base;
   // cmd->data_len = iovecs[0].iov_len;
@@ -99,107 +101,47 @@ void Uring_cmd::prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns,
   DBG("DATA", std::string((char *)buf, size));
 }
 
-void Uring_cmd::UringCmdWrite(int fd, int ns, off_t offset, size_t size,
-                              void *buf, int pid) {
+void Uring_cmd::prepUring(int fd, int ns, bool is_read, off_t offset,
+                          size_t size, void *buf) {
   struct io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
-  struct io_uring_cqe *cqe;
-  int err;
-
-  prepUringCmdWrite(sqe, fd, ns, offset, size, buf, pid);
-  /*
-  LOG("FD", sqe->fd);
-  LOG("NSID", ((struct nvme_uring_cmd *)sqe->cmd)->nsid);
-  LOG("OPCODE", +((struct nvme_uring_cmd *)sqe->cmd)->opcode);
-  LOG("FLAG", ((struct nvme_uring_cmd *)sqe->cmd)->flags);
-  LOG("CDW10_LBA", ((struct nvme_uring_cmd *)sqe->cmd)->cdw10);
-  LOG("CDW11_LBA", ((struct nvme_uring_cmd *)sqe->cmd)->cdw11);
-  LOG("CDW12_SIZE", ((struct nvme_uring_cmd *)sqe->cmd)->cdw12);
-  LOG("SIZE", size);
-  LOG("ADDR", ((struct nvme_uring_cmd *)sqe->cmd)->addr);
-  LOG("LEN", ((struct nvme_uring_cmd *)sqe->cmd)->data_len);
-  */
-  err = io_uring_submit(&ring_);
-  DBG("uring_submit", err);
-  err = io_uring_wait_cqe(&ring_, &cqe);
-  DBG("uring_wait_cqe", err);
-  io_uring_cqe_seen(&ring_, cqe);
-  if (cqe->res != 0) {
-    std::cout << "cqe->res= " << cqe->res << std::endl;
-  }
-}
-
-void Uring_cmd::UringCmdRead(int fd, int ns, off_t offset, size_t size,
-                             void *buf) {
-  struct io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
-  struct io_uring_cqe *cqe;
-  int err;
-
-  prepUringCmdRead(sqe, fd, ns, offset, size, buf);
-  /*
-  LOG("FD", sqe->fd);
-  LOG("NSID", ((struct nvme_uring_cmd *)sqe->cmd)->nsid);
-  LOG("OPCODE", +((struct nvme_uring_cmd *)sqe->cmd)->opcode);
-  LOG("FLAG", +((struct nvme_uring_cmd *)sqe->cmd)->flags);
-  LOG("CDW10_LBA", ((struct nvme_uring_cmd *)sqe->cmd)->cdw10);
-  LOG("CDW11_LBA", ((struct nvme_uring_cmd *)sqe->cmd)->cdw11);
-  LOG("CDW12_SIZE", ((struct nvme_uring_cmd *)sqe->cmd)->cdw12);
-  LOG("SIZE", size);
-  LOG("ADDR", ((struct nvme_uring_cmd *)sqe->cmd)->addr);
-  LOG("LEN", ((struct nvme_uring_cmd *)sqe->cmd)->data_len);
-  */
-  err = io_uring_submit(&ring_);
-  DBG("uring_submit", err);
-  err = io_uring_wait_cqe(&ring_, &cqe);
-  DBG("uring_wait_cqe", err);
-  io_uring_cqe_seen(&ring_, cqe);
-
-  std::cout << "Read iovec, " << std::string((char *)buf, size) << std::endl;
-  std::cout << "cqe->res= " << cqe->res << std::endl;
-}
-
-void Uring_cmd::UringWrite(int fd, int ns, off_t offset, size_t size,
-                           void *buf) {
-  struct io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
-  struct io_uring_cqe *cqe;
-  int err;
-
-  struct iovec iov;
-  iov.iov_base = buf;
-  iov.iov_len = size;
-  io_uring_prep_write(sqe, fd, iov.iov_base, iov.iov_len, offset);
-  err = io_uring_submit(&ring_);
-  DBG("uring_submit", err);
-  err = io_uring_wait_cqe(&ring_, &cqe);
-  DBG("uring_wait_cqe", err);
-  io_uring_cqe_seen(&ring_, cqe);
-  /*
-  if (cqe->res != 0) {
-    std::cout << "cqe->res= " << cqe->res << std::endl;
-  }
-  */
-}
-void Uring_cmd::UringRead(int fd, int ns, off_t offset, size_t size,
-                          void *buf) {
-  struct io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
-  struct io_uring_cqe *cqe;
-  int err;
-
   struct iovec iov;
   iov.iov_base = buf;
   iov.iov_len = size;
 
-  io_uring_prep_read(sqe, fd, iov.iov_base, iov.iov_len, offset);
-  err = io_uring_submit(&ring_);
-  DBG("uring_submit", err);
-  err = io_uring_wait_cqe(&ring_, &cqe);
-  DBG("uring_wait_cqe", err);
-  io_uring_cqe_seen(&ring_, cqe);
+  if (is_read) {
+    io_uring_prep_read(sqe, fd, iov.iov_base, iov.iov_len, offset);
+  } else {
+    io_uring_prep_write(sqe, fd, iov.iov_base, iov.iov_len, offset);
+  }
+}
+
+int Uring_cmd::submitCommand() {
+  int err;
 
   /*
-  if (cqe->res > 0) {
-    std::cout << "Read iovec, " << std::string((char *)buf, cqe->res)
-              << std::endl;
+  if (((*ring_.sq.kflags) & IORING_SQ_CQ_OVERFLOW)) {
+    LOG("uring_submit", err);
+    LOG("flag", ring_.sq.kflags);
+    WaitCompleted();
   }
-  std::cout << "cqe->res= " << cqe->res << std::endl;
   */
+  err = io_uring_submit(&ring_);
+  DBG("uring_submit", err);
+  return err;
+}
+
+int Uring_cmd::waitCompleted() {
+  struct io_uring_cqe *cqe;
+  int err;
+
+  err = io_uring_wait_cqe(&ring_, &cqe);
+  if (err != 0) {
+    LOG("uring_wait_cqe", err);
+  }
+  io_uring_cqe_seen(&ring_, cqe);
+  if (cqe->res != 0) {
+    std::cout << "cqe->res= " << cqe->res << std::endl;
+  }
+  DBG("[ERR] cq_has_overflow", io_uring_cq_has_overflow(&ring_));
+  return cqe->res;
 }

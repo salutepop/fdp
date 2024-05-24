@@ -23,34 +23,63 @@ private:
   uint32_t blocksize_;
   uint32_t lbashift_;
 
+  uint32_t req_limitmax_;
+  uint32_t req_limitlow_;
+  uint32_t req_inflight_;
+
   io_uring_params params_;
   struct io_uring ring_;
   struct iovec *iovecs_;
 
-  void prepUringCmd(struct io_uring_sqe *sqe, int fd, int ns, bool is_read,
-                    off_t offset, size_t size, void *buf, uint32_t dtype = 0,
-                    uint32_t dspec = 0);
-  void prepUringCmdRead(struct io_uring_sqe *sqe, int fd, int ns, off_t offset,
-                        size_t size, void *buf) {
-    prepUringCmd(sqe, fd, ns, op_read, offset, size, buf);
-  }
-  void prepUringCmdWrite(struct io_uring_sqe *sqe, int fd, int ns, off_t offset,
-                         size_t size, void *buf, uint32_t dspec) {
-    const uint32_t kPlacementMode = 2;
-    prepUringCmd(sqe, fd, ns, op_write, offset, size, buf, kPlacementMode,
-                 dspec);
-  }
   void initBuffer();
   void initUring(io_uring_params &params);
+  void prepUringCmd(int fd, int ns, bool is_read, off_t offset, size_t size,
+                    void *buf, uint32_t dtype = 0, uint32_t dspec = 0);
+  void prepUring(int fd, int ns, bool is_read, off_t offset, size_t size,
+                 void *buf);
 
 public:
   Uring_cmd(){};
   Uring_cmd(uint32_t qd, uint32_t blocksize, uint32_t lbashift,
             io_uring_params params);
   // size = byte
-  void UringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,
-                     int pid);
-  void UringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf);
-  void UringWrite(int fd, int ns, off_t offset, size_t size, void *buf);
-  void UringRead(int fd, int ns, off_t offset, size_t size, void *buf);
+  void prepUringRead(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUring(fd, ns, op_read, offset, size, buf);
+  }
+  void prepUringWrite(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUring(fd, ns, op_write, offset, size, buf);
+  }
+  void prepUringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUringCmd(fd, ns, op_read, offset, size, buf);
+  }
+  void prepUringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,
+                         uint32_t dspec) {
+    const uint32_t kPlacementMode = 2;
+    prepUringCmd(fd, ns, op_write, offset, size, buf, kPlacementMode, dspec);
+  }
+  int submitCommand();
+  int waitCompleted();
+
+  int uringRead(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUring(fd, ns, op_read, offset, size, buf);
+    submitCommand();
+    return waitCompleted();
+  }
+  int uringWrite(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUring(fd, ns, op_write, offset, size, buf);
+    submitCommand();
+    return waitCompleted();
+  }
+  int uringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf) {
+    prepUringCmd(fd, ns, op_read, offset, size, buf);
+    submitCommand();
+    return waitCompleted();
+  }
+  int uringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,
+                    uint32_t dspec) {
+    const uint32_t kPlacementMode = 2;
+    prepUringCmd(fd, ns, op_write, offset, size, buf, kPlacementMode, dspec);
+    submitCommand();
+    return waitCompleted();
+  }
 };
