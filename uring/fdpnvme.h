@@ -158,7 +158,7 @@ private:
 // as of now; and not supported through conventional block interfaces.
 class FdpNvme {
 public:
-  explicit FdpNvme(const std::string &fileName, bool useChar);
+  explicit FdpNvme(const std::string &fileName);
 
   FdpNvme(const FdpNvme &) = delete;
   FdpNvme &operator=(const FdpNvme &) = delete;
@@ -180,12 +180,13 @@ public:
   // Prepares the Uring_Cmd sqe for write command with FDP handle.
   void prepWriteUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
                             off_t start, int handle);
-  int fd() { return fd_; }
+  int cfd() { return cfd_; }
+  int bfd() { return bfd_; }
   io_uring *getRing() { return &ring_; };
 
 private:
   // Open Nvme Character device for the given block dev @fileName.
-  int openNvmeFile(const std::string &fileName, bool useChar);
+  void openNvmeDevice(const std::string &fileName);
 
   // Prepares the Uring_Cmd sqe for read/write command with FDP directives.
   void prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf, size_t size,
@@ -215,10 +216,9 @@ private:
   uint16_t maxPIDIdx_{0};
   uint16_t nextPIDIdx_{kDefaultPIDIdx + 1};
   NvmeData nvmeData_{};
-  // File handle for IO with FDP directives. Since FDP IO requires the use of
-  // NVMe character device interface, a separate file instance is kept from
-  // that of FileDevice.
-  int fd_;
+
+  int cfd_; /* char device, ng0n1 */
+  int bfd_; /* block device, nvme0n1 */
 
   // for io_uring
   struct io_uring ring_;

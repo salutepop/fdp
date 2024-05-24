@@ -57,7 +57,7 @@ public:
     const uint32_t kPlacementMode = 2;
     prepUringCmd(fd, ns, op_write, offset, size, buf, kPlacementMode, dspec);
   }
-  int submitCommand();
+  int submitCommand(int nr_reqs = 0);
   int waitCompleted();
 
   int uringRead(int fd, int ns, off_t offset, size_t size, void *buf) {
@@ -82,4 +82,5 @@ public:
     submitCommand();
     return waitCompleted();
   }
+  int isCqOverflow();
 };

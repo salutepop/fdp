@@ -17,8 +17,8 @@
 #include "fdpnvme.h"
 #include "uring_cmd.h"
 
-FdpNvme::FdpNvme(const std::string &bdevName, bool useChar)
-    : fd_(openNvmeFile(bdevName, useChar)) {
+FdpNvme::FdpNvme(const std::string &bdevName) {
+  openNvmeDevice(bdevName);
   initializeFDP(bdevName);
 }
 
@@ -89,7 +89,7 @@ int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len,
       .timeout_ms = NVME_DEFAULT_IOCTL_TIMEOUT,
   };
 
-  return ioctl(fd_, NVME_IOCTL_IO_CMD, &cmd);
+  return ioctl(cfd_, NVME_IOCTL_IO_CMD, &cmd);
 }
 
 void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
@@ -102,7 +102,7 @@ void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
   // Clear the SQE entry to avoid some arbitrary flags being set.
   memset(&sqe, 0, sizeof(struct io_uring_sqe));
 
-  sqe.fd = fd_;
+  sqe.fd = cfd_;
   sqe.opcode = IORING_OP_URING_CMD;
   sqe.cmd_op = NVME_URING_CMD_IO;
 
@@ -177,6 +177,7 @@ NvmeData FdpNvme::readNvmeInfo(const std::string &bdevName) {
 
     lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
     lba_shift = ilog2(lba_size);
+    close(fd);
   } catch (const std::exception &e) {
     std::cout << e.what() << std::endl;
   }
@@ -197,22 +198,17 @@ std::string getNvmeCharDevice(const std::string &bdevName) {
 
 // Open Nvme Character device for the given block dev @bdevName.
 // Throws std::system_error if failed.
-int FdpNvme::openNvmeFile(const std::string &bdevName, bool useChar) {
+void FdpNvme::openNvmeDevice(const std::string &bdevName) {
   // int flags{O_RDONLY};
   int flags{O_RDWR};
-  int fd;
 
   try {
-    auto cdevName = bdevName;
-    if (useChar) {
-      cdevName = getNvmeCharDevice(bdevName);
-    }
-    LOG("OpenDevice", cdevName);
-    fd = open(cdevName.c_str(), flags);
-    LOG("FD", fd);
+    auto cdevName = getNvmeCharDevice(bdevName);
+    cfd_ = open(cdevName.c_str(), flags);
+    bfd_ = open(bdevName.c_str(), flags);
+    LOG("Char FD", cfd_);
+    LOG("Block FD", bfd_);
   } catch (const std::system_error &) {
     throw;
   }
-
-  return fd;
 }

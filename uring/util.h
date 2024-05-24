@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <limits>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <stdlib.h>

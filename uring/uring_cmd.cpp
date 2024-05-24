@@ -44,7 +44,8 @@ void Uring_cmd::initUring(io_uring_params &params) {
     p.cq_entries = qd_ * 2; // cq size = sq size * 2, to dealwith cq overflow
 
     p.flags |= IORING_SETUP_COOP_TASKRUN;
-    p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
+    // p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
+    p.flags |= IORING_SETUP_SINGLE_ISSUER;
 
     params_ = p;
   } else {
@@ -115,7 +116,7 @@ void Uring_cmd::prepUring(int fd, int ns, bool is_read, off_t offset,
   }
 }
 
-int Uring_cmd::submitCommand() {
+int Uring_cmd::submitCommand(int nr_reqs) {
   int err;
 
   /*
@@ -125,7 +126,11 @@ int Uring_cmd::submitCommand() {
     WaitCompleted();
   }
   */
-  err = io_uring_submit(&ring_);
+  if (nr_reqs > 0) {
+    err = io_uring_submit_and_wait(&ring_, nr_reqs);
+  } else {
+    err = io_uring_submit(&ring_);
+  }
   DBG("uring_submit", err);
   return err;
 }
@@ -139,9 +144,11 @@ int Uring_cmd::waitCompleted() {
     LOG("uring_wait_cqe", err);
   }
   io_uring_cqe_seen(&ring_, cqe);
-  if (cqe->res != 0) {
-    std::cout << "cqe->res= " << cqe->res << std::endl;
+  if (cqe->res < 0) {
+    LOG("cqe->res", cqe->res);
   }
   DBG("[ERR] cq_has_overflow", io_uring_cq_has_overflow(&ring_));
   return cqe->res;
 }
+
+int Uring_cmd::isCqOverflow() { return io_uring_cq_has_overflow(&ring_); }
