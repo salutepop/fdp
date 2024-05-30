@@ -11,7 +11,7 @@ LDLIBS = -luring
 
 # 소스 파일과 타겟 파일 설정
 SRCS = uring_test.cpp fdpnvme.cpp util.cpp uring_cmd.cpp
-HEADERS = uring_test.h fdpnvme.h util.h uring_cmd.h
+HEADERS = uring_test.h fdpnvme.h util.h uring_cmd.h flexfs.h
 OBJS = $(SRCS:.cpp=.o)
 TARGET = uring_test
 
@@ -19,7 +19,7 @@ TARGET = uring_test
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -g -O0 -o $(TARGET) $(LDFLAGS) $(LDLIBS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@

@@ -17,8 +17,12 @@
 #include "fdpnvme.h"
 #include "uring_cmd.h"
 
-FdpNvme::FdpNvme(const std::string &bdevName) {
-  openNvmeDevice(bdevName);
+#include <endian.h>
+
+FdpNvme::FdpNvme(const std::string &bdevName, bool isTest) {
+  if (isTest) {
+    openNvmeDevice(bdevName);
+  }
   initializeFDP(bdevName);
 }
 
@@ -45,7 +49,8 @@ void FdpNvme::initializeIoUring(uint32_t qdepth) {
 
 void FdpNvme::initializeFDP(const std::string &bdevName) {
   struct nvme_fdp_ruh_status *ruh_status;
-  int bytes, err;
+  int cfd, bytes, err;
+  cfd = openNvmeDevice(true, getNvmeCharDevice(bdevName).c_str(), O_RDONLY);
 
   nvmeData_ = readNvmeInfo(bdevName);
 
@@ -53,8 +58,9 @@ void FdpNvme::initializeFDP(const std::string &bdevName) {
           FDP_MAX_RUHS * sizeof(struct nvme_fdp_ruh_status_desc);
   ruh_status = (nvme_fdp_ruh_status *)malloc(bytes);
 
-  err = nvmeIOMgmtRecv(nvmeData_.nsId(), ruh_status, bytes,
+  err = nvmeIOMgmtRecv(cfd, nvmeData_.nsId(), ruh_status, bytes,
                        NVME_IO_MGMT_RECV_RUH_STATUS, 0);
+  close(cfd);
 
   if (err) {
     throw std::invalid_argument("Failed to initialize FDP; nruhsd is 0");
@@ -69,8 +75,9 @@ void FdpNvme::initializeFDP(const std::string &bdevName) {
 }
 
 // NVMe IO Mnagement Receive fn for specific config reading
-int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len,
-                            uint8_t op, uint16_t op_specific) {
+int FdpNvme::nvmeIOMgmtRecv(uint32_t cfd, uint32_t nsid, void *data,
+                            uint32_t data_len, uint8_t op,
+                            uint16_t op_specific) {
   // Build the I/O management receive command
   // For further details on the CDB format, consult the specification
   // available as "TP4146 Flexible Data Placement 2022.11.30 Ratified"
@@ -89,13 +96,13 @@ int FdpNvme::nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len,
       .timeout_ms = NVME_DEFAULT_IOCTL_TIMEOUT,
   };
 
-  return ioctl(cfd_, NVME_IOCTL_IO_CMD, &cmd);
+  return ioctl(cfd, NVME_IOCTL_IO_CMD, &cmd);
 }
 
 void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
                                  size_t size, off_t start, uint8_t opcode,
                                  uint8_t dtype, uint16_t dspec) {
-  uint32_t maxTfrSize = nvmeData_.getMaxTfrSize();
+  uint32_t maxTfrSize = nvmeData_.maxTfrSize();
   if ((maxTfrSize != 0) && (size > maxTfrSize)) {
     throw std::invalid_argument("Exceeds max Transfer size");
   }
@@ -114,7 +121,7 @@ void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,
   cmd->opcode = opcode;
 
   // start LBA of the IO = Req_start (offset in partition) + Partition_start
-  uint64_t sLba = (start >> nvmeData_.lbaShift()) + nvmeData_.partStartLba();
+  uint64_t sLba = (start >> nvmeData_.lbaShift()) + nvmeData_.startLba();
   uint32_t nLb = (size >> nvmeData_.lbaShift()) - 1; // nLb is 0 based
 
   /* cdw10 and cdw11 represent starting lba */
@@ -157,6 +164,7 @@ NvmeData FdpNvme::readNvmeInfo(const std::string &bdevName) {
   struct nvme_id_ns ns;
   int fd;
   __u32 nsid = 0, lba_size = 0, lba_shift = 0;
+  uint64_t nuse = 0;
   uint64_t startLba{0};
 
   try {
@@ -177,17 +185,22 @@ NvmeData FdpNvme::readNvmeInfo(const std::string &bdevName) {
 
     lba_size = 1 << ns.lbaf[(ns.flbas & 0x0f)].ds;
     lba_shift = ilog2(lba_size);
+    nuse = ns.nuse;
+    // LOG("LE: nuse", nuse);
+    // LOG("HO: nuse", le64toh(nuse));
+
     close(fd);
   } catch (const std::exception &e) {
     std::cout << e.what() << std::endl;
   }
 
-  return NvmeData{nsid, lba_size, lba_shift, BLK_DEF_MAX_SECTORS, startLba};
+  return NvmeData{nsid,    nuse, lba_size, lba_shift, BLK_DEF_MAX_SECTORS,
+                  startLba};
 }
 
 // Converts an nvme block device name (ex: /dev/nvme0n1p1) to corresponding
 // nvme char device name (ex: /dev/ng0n1), to use Nvme FDP directives.
-std::string getNvmeCharDevice(const std::string &bdevName) {
+std::string FdpNvme::getNvmeCharDevice(const std::string &bdevName) {
   // Extract dev and NS IDs, and ignore partition ID.
   // Example: extract the string '0n1' from '/dev/nvme0n1p1'
   size_t devPos = bdevName.find_first_of("0123456789");
@@ -211,4 +224,19 @@ void FdpNvme::openNvmeDevice(const std::string &bdevName) {
   } catch (const std::system_error &) {
     throw;
   }
+}
+
+int FdpNvme::openNvmeDevice(bool isChar, const std::string &bdevName,
+                            int flags) {
+  int fd = -1;
+  try {
+    if (isChar) {
+      fd = open(getNvmeCharDevice(bdevName).c_str(), flags);
+    } else {
+      fd = open(bdevName.c_str(), flags | O_DIRECT);
+    }
+  } catch (const std::system_error &) {
+    throw;
+  }
+  return fd;
 }

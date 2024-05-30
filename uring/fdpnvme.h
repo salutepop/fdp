@@ -33,6 +33,8 @@
 
 #define BLK_DEF_MAX_SECTORS 256 // 256KB
 #define FDP_MAX_RUHS 128
+// TODO: get FDP Config (Reclaim Unit Nominal Size (RUNS))
+#define RU_SIZE 13079937024 // bytes
 
 struct nvme_lbaf {
   __le16 ms;
@@ -124,9 +126,9 @@ public:
   NvmeData() = default;
   NvmeData &operator=(const NvmeData &) = default;
 
-  explicit NvmeData(uint32_t nsId, uint32_t blockSize, uint32_t lbaShift,
-                    uint32_t maxTfrSize, uint64_t startLba)
-      : nsId_(nsId), blockSize_(blockSize), lbaShift_(lbaShift),
+  explicit NvmeData(uint32_t nsId, uint64_t nuse, uint32_t blockSize,
+                    uint32_t lbaShift, uint32_t maxTfrSize, uint64_t startLba)
+      : nsId_(nsId), nuse_(nuse), blockSize_(blockSize), lbaShift_(lbaShift),
         maxTfrSize_(maxTfrSize), startLba_(startLba) {}
 
   // NVMe Namespace ID
@@ -137,14 +139,16 @@ public:
   uint32_t lbaShift() const { return lbaShift_; }
 
   // Get the max transfer size of NVMe device.
-  uint32_t getMaxTfrSize() { return maxTfrSize_; }
+  uint32_t maxTfrSize() { return maxTfrSize_; }
 
   // Start LBA of the disk partition.
   // It will be 0, if there is no partition and just an NS.
-  uint64_t partStartLba() const { return startLba_; }
+  uint64_t startLba() const { return startLba_; }
+  uint64_t nuse() const { return nuse_; }
 
 private:
   uint32_t nsId_;
+  uint64_t nuse_; // Namespace Utilization
   uint32_t blockSize_;
   uint32_t lbaShift_;
   uint32_t maxTfrSize_;
@@ -158,17 +162,18 @@ private:
 // as of now; and not supported through conventional block interfaces.
 class FdpNvme {
 public:
-  explicit FdpNvme(const std::string &fileName);
+  explicit FdpNvme(const std::string &fileName, bool isTest = false);
 
   FdpNvme(const FdpNvme &) = delete;
   FdpNvme &operator=(const FdpNvme &) = delete;
 
+  int openNvmeDevice(bool isChar, const std::string &bdevName, int flags);
   // Allocates an FDP specific placement handle. This handle will be
   // interpreted by the device for data placement.
   int allocateFdpHandle();
 
   // Get the max IO transfer size of NVMe device.
-  uint32_t getMaxIOSize() { return nvmeData_.getMaxTfrSize(); }
+  uint32_t getMaxIOSize() { return nvmeData_.maxTfrSize(); }
 
   // Get the NVMe specific info on this device.
   NvmeData &getNvmeData() { return nvmeData_; }
@@ -182,9 +187,11 @@ public:
                             off_t start, int handle);
   int cfd() { return cfd_; }
   int bfd() { return bfd_; }
-  io_uring *getRing() { return &ring_; };
+  io_uring *getRing() { return &ring_; }
+  uint16_t getMaxPid() { return maxPIDIdx_; }
 
 private:
+  std::string getNvmeCharDevice(const std::string &bdevName);
   // Open Nvme Character device for the given block dev @fileName.
   void openNvmeDevice(const std::string &fileName);
 
@@ -204,8 +211,8 @@ private:
   void initializeIoUring(uint32_t qdepth);
 
   // Generic NVMe IO mgmnt receive cmd
-  int nvmeIOMgmtRecv(uint32_t nsid, void *data, uint32_t data_len, uint8_t op,
-                     uint16_t op_specific);
+  int nvmeIOMgmtRecv(uint32_t cfd, uint32_t nsid, void *data, uint32_t data_len,
+                     uint8_t op, uint16_t op_specific);
 
   // 0u is considered as the default placement ID
   static constexpr uint16_t kDefaultPIDIdx = 0u;

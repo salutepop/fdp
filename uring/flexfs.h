@@ -1,3 +1,4 @@
+#include "util.h"
 class Superblock {
   uint32_t magic_ = 0;
   char uuid_[37] = {0};
@@ -17,8 +18,6 @@ public:
         std::min(uuid.length(),
                  sizeof(uuid_) - 1); /* make sure uuid is nullterminated */
     memcpy((void *)uuid_, uuid.c_str(), uuid_len);
-    magic_ = MAGIC;
-    magic_ = 0x58585858;
     finish_treshold_ = finish_threshold;
     block_size_ = 512;
     ru_size_ = 1024;
