@@ -25,7 +25,6 @@ void tBenchmark(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd,
                 int test_cnt) {
   off_t offset = 0;
   uint32_t blocksize = 256 * 1024;
-  char buffer[blocksize];
   int err;
   int cnt = 0;
   std::random_device rd;
@@ -42,7 +41,8 @@ void tBenchmark(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd,
     std::chrono::system_clock::time_point start =
         std::chrono::system_clock::now();
     void *buffer[QDEPTH];
-    struct iovec *iovecs = (struct iovec *)calloc(QDEPTH, sizeof(struct iovec));
+    // struct iovec *iovecs = (struct iovec *)calloc(QDEPTH, sizeof(struct
+    // iovec));
     for (int i = 0; i < QDEPTH; i++) {
       if (posix_memalign(&buffer[i], PAGE_SIZE, blocksize)) {
         LOG("[ERROR] MEM Align, idx", i);
@@ -74,7 +74,9 @@ void tBenchmark(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd,
       err = uring_cmd.submitCommand(QDEPTH);
       // LOG("REQS", err);
       for (int reqs = 0; reqs < err; reqs++) {
-        uring_cmd.waitCompleted();
+        err = uring_cmd.waitCompleted();
+        if (err > 0)
+          break;
       }
       if (uring_cmd.isCqOverflow() != 0) {
         LOG("overflow", uring_cmd.isCqOverflow());
@@ -218,17 +220,18 @@ void tWriteSB(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
 
 void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
   off_t offset = 0;
+  offset = 13080264704;
   int err;
-  uint32_t blocksize = 16;
+  uint32_t blocksize = 4096;
   char data[blocksize];
   for (uint32_t i = 0; i < blocksize; i++) {
-    // data[i] = (i + 20) % 125;
-    data[i] = 68;
-    // data[i] = 26;
+    data[i] = (i + 20) % 125;
+    // data[i] = 68;
+    //  data[i] = 26;
   }
 
   for (uint32_t test_idx = URING_READ; test_idx < TEST_TYPE_MAX; test_idx++) {
-    if ((test_idx == URING_READ) || test_idx == URINGCMD_READ) {
+    if ((test_idx == URING_READ) || (test_idx == URINGCMD_READ)) {
       LOG("SKIP", test_idx);
       continue;
     }
@@ -275,11 +278,11 @@ void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
 
 void tReadSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
   off_t offset = 0;
-  uint32_t blocksize = 8;
+  uint32_t blocksize = 512;
   int err;
 
   for (uint32_t test_idx = URING_READ; test_idx < TEST_TYPE_MAX; test_idx++) {
-    if ((test_idx == URING_WRITE) || test_idx == URINGCMD_WRITE) {
+    if ((test_idx == URING_WRITE) || (test_idx == URINGCMD_WRITE)) {
       LOG("SKIP", test_idx);
       continue;
     }
@@ -326,6 +329,193 @@ void tReadSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
   }
 }
 
+void tUringCmdDataAligned(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
+
+  int err;
+  size_t size = 0;
+  off_t offset = 0;
+  void *buffer;
+
+  /*
+  // INFO: mis-aligned offset & small size
+  LOG("[TEST 1]", "mis-aligned offset & small-size");
+  offset = 8;
+  size = 16;
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, size)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), offset, size, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  LOG("[EXPECTED]", size);
+  LOG("[RESULT]", err);
+
+  memset(buffer, 0, size);
+  err =
+      uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), offset, size, buffer, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  LOG("[EXPECTED]", -EINVAL);
+  LOG("[RESULT]", err);
+  free(buffer);
+
+  // INFO: mis-aligned offset & over-size
+  LOG("[TEST 2]", "mis-aligned offset & over-size");
+  offset = 8;
+  size = 5000;
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, size)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), offset, size, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  LOG("[EXPECTED]", size);
+  LOG("[RESULT]", err);
+
+  memset(buffer, 0, size);
+  err =
+      uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), offset, size, buffer, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  LOG("[EXPECTED]", -EINVAL);
+  LOG("[RESULT]", err);
+  free(buffer);
+
+  // INFO: exceed max transfer size (64)
+  LOG("[TEST 3]", "exceed max transfer size");
+  offset = 8;
+  size = 100 * 4096;
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, size)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), offset, size, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  LOG("[EXPECTED]", -EINVAL);
+  LOG("[RESULT]", err);
+
+  memset(buffer, 0, size);
+  err =
+      uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), offset, size, buffer, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  LOG("[EXPECTED]", -EINVAL);
+  LOG("[RESULT]", err);
+  free(buffer);
+  */
+
+  // INFO: large transfer size (4KB * 50)
+  LOG("[TEST 4]", "large transfer size");
+  offset = 8;
+  size = 50 * 4096;
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, size)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), offset, size, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  LOG("[EXPECTED]", size);
+  LOG("[RESULT]", err);
+
+  memset(buffer, '4', size);
+  err =
+      uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), offset, size, buffer, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  LOG("[EXPECTED]", size);
+  LOG("[RESULT]", err);
+  free(buffer);
+}
+
+void tMisAlignedWrite(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
+
+  int err;
+  size_t size = 4;
+  off_t offset = 8;
+  char data[size];
+
+  for (uint32_t i = 0; i < size; i++) {
+    // data[i] = (i + 20) % 125;
+    data[i] = 68;
+    //  data[i] = 26;
+  }
+
+  void *buffer;
+
+  LOG("[WRITE]", "BACK-PATTERN, fill 'A'");
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, 32)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  memset(buffer, 'A', 32);
+  err = uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), 0, 32, buffer, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  LOG("[READ]", "BEFORE");
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), 0, 32, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  free(buffer);
+
+  LOG("[WRITE]", "fill D");
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, size)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdWrite(fdp.cfd(), nvme.nsId(), offset, size, data, 0);
+  if (err > 0) {
+    LOG("Write cmd done, write bytes", err);
+  } else {
+    LOG("Write ERROR", err);
+  }
+  free(buffer);
+
+  LOG("[READ]", "AFTER");
+  if (posix_memalign((void **)&buffer, PAGE_SIZE, 32)) {
+    LOG("ERR", "mem aligned fail");
+  }
+  err = uring_cmd.uringCmdRead(fdp.cfd(), nvme.nsId(), 0, 32, buffer);
+  if (err > 0) {
+    LOG("Read cmd done, read bytes", err);
+    LOG("Read data", std::string((char *)buffer, err));
+  } else {
+    LOG("Read ERROR", err);
+  }
+  free(buffer);
+}
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <device_path>" << std::endl;
@@ -341,10 +531,13 @@ int main(int argc, char *argv[]) {
   UringCmd uring_cmd =
       UringCmd{QDEPTH, nvme.blockSize(), nvme.lbaShift(), io_uring_params{}};
 
-  // tWriteSingle(fdp, nvme, uring_cmd);
+  tWriteSingle(fdp, nvme, uring_cmd);
   // tReadSingle(fdp, nvme, uring_cmd);
-  tWriteSB(fdp, nvme, uring_cmd); // TODO FIX
-  tReadSingle(fdp, nvme, uring_cmd);
+  // tWriteSB(fdp, nvme, uring_cmd); // TODO FIX
+  // tReadSingle(fdp, nvme, uring_cmd);
   //   tWriteFDP(fdp, nvme, uring_cmd);
-  //    tBenchmark(fdp, nvme, uring_cmd, 100);
+  // tBenchmark(fdp, nvme, uring_cmd, 100);
+  // tUringCmdDataAligned(fdp, nvme, uring_cmd);
+  // tUringCmdDataAligned(fdp, nvme, uring_cmd);
+  // tMisAlignedWrite(fdp, nvme, uring_cmd);
 }
