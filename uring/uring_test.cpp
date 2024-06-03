@@ -220,9 +220,9 @@ void tWriteSB(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
 
 void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
   off_t offset = 0;
-  offset = 13080264704;
+  offset = 0;
   int err;
-  uint32_t blocksize = 4096;
+  uint32_t blocksize = 4096 * 256;
   char data[blocksize];
   for (uint32_t i = 0; i < blocksize; i++) {
     data[i] = (i + 20) % 125;
@@ -234,6 +234,16 @@ void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
     if ((test_idx == URING_READ) || (test_idx == URINGCMD_READ)) {
       LOG("SKIP", test_idx);
       continue;
+    }
+
+    if (test_idx == URING_READ) {
+      LOG("TEST", "URING_READ");
+    } else if (test_idx == URING_WRITE) {
+      LOG("TEST", "URING_WRITE");
+    } else if (test_idx == URINGCMD_READ) {
+      LOG("TEST", "URINGCMD_READ");
+    } else if (test_idx == URINGCMD_WRITE) {
+      LOG("TEST", "URINGCMD_WRITE");
     }
 
     void *buffer;
@@ -255,16 +265,6 @@ void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {
     default:
       LOG("[ERR] test_idx", test_idx);
       break;
-    }
-
-    if (test_idx == URING_READ) {
-      LOG("TEST", "URING_READ");
-    } else if (test_idx == URING_WRITE) {
-      LOG("TEST", "URING_WRITE");
-    } else if (test_idx == URINGCMD_READ) {
-      LOG("TEST", "URINGCMD_READ");
-    } else if (test_idx == URINGCMD_WRITE) {
-      LOG("TEST", "URINGCMD_WRITE");
     }
 
     if (err < 0) {

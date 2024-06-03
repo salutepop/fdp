@@ -1,0 +1,6327 @@
+cscope 15 $HOME/dev/fdp/uring -q 0000000419 0000031746
+	@fdpnvme.cpp
+
+17 
+	~"fd≤vme.h
+"
+
+18 
+	~"urög_cmd.h
+"
+
+20 
+	~<ídün.h
+>
+
+22 
+	gFdpNvme
+::
+	$FdpNvme
+(c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+, 
+boﬁ
+ 
+isTe°
+) {
+
+23 i‡(
+isTe°
+) {
+
+24 
+	`›íNvmeDevi˚
+(
+bdevName
+);
+
+26 
+	`öôülizeFDP
+(
+bdevName
+);
+
+27 
+	}
+}
+
+29 
+	gFdpNvme
+::
+	$ÆloˇãFdpH™dÀ
+() {
+
+30 
+uöt16_t
+ 
+phndl
+;
+
+33 i‡(
+√xtPIDIdx_
+ <
+maxPIDIdx_
+) {
+
+34 
+phndl
+ = 
+√xtPIDIdx_
+++;
+
+36 
+phndl
+ = 
+kDeÁu…PIDIdx
+;
+
+39  
+°©ic_ˇ°
+<
+uöt16_t
+>(
+phndl
+);
+
+40 
+	}
+}
+
+42 
+	gFdpNvme
+::
+	$öôülizeIoUrög
+(
+uöt32_t
+ 
+qdïth
+) {
+
+43 
+îr
+;
+
+44 
+îr
+ = 
+	`io_urög_queue_öô
+(
+qdïth
+, &
+rög_
+, 0);
+
+45 i‡(
+îr
+) {
+
+46 
+throw
+ 
+°d
+::
+	`övÆid_¨gumít
+("FailedÅo initialize IoUring");
+
+48 
+	}
+}
+
+50 
+	gFdpNvme
+::
+	$öôülizeFDP
+(c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+) {
+
+51 
+nvme_fdp_ruh_°©us
+ *
+ruh_°©us
+;
+
+52 
+cfd
+, 
+byãs
+, 
+îr
+;
+
+53 
+cfd
+ = 
+	`›íNvmeDevi˚
+(
+åue
+, 
+	`gëNvmeCh¨Devi˚
+(
+bdevName
+).
+	`c_°r
+(), 
+O_RDONLY
+);
+
+55 
+nvmeD©a_
+ = 
+	`ªadNvmeInfo
+(
+bdevName
+);
+
+57 
+byãs
+ = (*
+ruh_°©us
+) +
+
+58 
+FDP_MAX_RUHS
+ * (
+nvme_fdp_ruh_°©us_desc
+);
+
+59 
+ruh_°©us
+ = (
+nvme_fdp_ruh_°©us
+ *)
+	`mÆloc
+(
+byãs
+);
+
+61 
+îr
+ = 
+	`nvmeIOMgmtRecv
+(
+cfd
+, 
+nvmeD©a_
+.
+	`nsId
+(), 
+ruh_°©us
+, 
+byãs
+,
+
+62 
+NVME_IO_MGMT_RECV_RUH_STATUS
+, 0);
+
+63 
+	`˛o£
+(
+cfd
+);
+
+65 i‡(
+îr
+) {
+
+66 
+throw
+ 
+°d
+::
+	`övÆid_¨gumít
+("FailedÅo initialize FDP;Çruhsd is 0");
+
+68 
+°d
+::
+cout
+ << 
+ruh_°©us
+->
+ƒuhsd
+ << std::
+ídl
+;
+
+70 
+∂a˚mítIDs_
+.
+	`ª£rve
+(
+ruh_°©us
+->
+ƒuhsd
+);
+
+71 
+maxPIDIdx_
+ = 
+ruh_°©us
+->
+ƒuhsd
+ - 1;
+
+72 
+uöt16_t
+ 
+i
+ = 0; i <
+maxPIDIdx_
+; ++i) {
+
+73 
+∂a˚mítIDs_
+[
+i
+] = 
+ruh_°©us
+->
+ruhss
+[i].
+pid
+;
+
+75 
+	}
+}
+
+78 
+	gFdpNvme
+::
+	$nvmeIOMgmtRecv
+(
+uöt32_t
+ 
+cfd
+, uöt32_à
+nsid
+, *
+d©a
+,
+
+79 
+uöt32_t
+ 
+d©a_Àn
+, 
+uöt8_t
+ 
+›
+,
+
+80 
+uöt16_t
+ 
+›_•ecific
+) {
+
+86 
+uöt32_t
+ 
+cdw10
+ = (
+›
+ & 0xfË| (
+›_•ecific
+ & 0xff << 16);
+
+87 
+uöt32_t
+ 
+cdw11
+ = (
+d©a_Àn
+ >> 2) - 1;
+
+89 
+nvme_∑s°hru_cmd
+ 
+cmd
+ = {
+
+90 .
+›code
+ = 
+nvme_cmd_io_mgmt_ªcv
+,
+
+91 .
+nsid
+ =Çsid,
+
+92 .
+addr
+ = (
+uöt64_t
+)(
+uöçå_t
+)
+d©a
+,
+
+93 .
+d©a_Àn
+ = data_len,
+
+94 .
+cdw10
+ = cdw10,
+
+95 .
+cdw11
+ = cdw11,
+
+96 .
+timeout_ms
+ = 
+NVME_DEFAULT_IOCTL_TIMEOUT
+,
+
+99  
+	`io˘l
+(
+cfd
+, 
+NVME_IOCTL_IO_CMD
+, &
+cmd
+);
+
+100 
+	}
+}
+
+102 
+	gFdpNvme
+::
+	$¥ïFdpUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+,
+
+103 
+size_t
+ 
+size
+, 
+off_t
+ 
+°¨t
+, 
+uöt8_t
+ 
+›code
+,
+
+104 
+uöt8_t
+ 
+dty≥
+, 
+uöt16_t
+ 
+d•ec
+) {
+
+105 
+uöt32_t
+ 
+maxT‰Size
+ = 
+nvmeD©a_
+.
+	`maxT‰Size
+();
+
+106 i‡((
+maxT‰Size
+ !0Ë&& (
+size
+ > maxTfrSize)) {
+
+107 
+throw
+ 
+°d
+::
+	`övÆid_¨gumít
+("Exceeds max Transfer size");
+
+110 
+	`mem£t
+(&
+sqe
+, 0, (
+io_urög_sqe
+));
+
+112 
+sqe
+.
+fd
+ = 
+cfd_
+;
+
+113 
+sqe
+.
+›code
+ = 
+IORING_OP_URING_CMD
+;
+
+114 
+sqe
+.
+cmd_›
+ = 
+NVME_URING_CMD_IO
+;
+
+116 
+nvme_urög_cmd
+ *
+cmd
+ = (nvme_urög_cmd *)&
+sqe
+.cmd;
+
+117 i‡(
+cmd
+ =
+nuŒ±r
+) {
+
+118 
+throw
+ 
+°d
+::
+	`övÆid_¨gumít
+("Uring cmd is NULL!");
+
+120 
+	`mem£t
+(
+cmd
+, 0, (
+nvme_urög_cmd
+));
+
+121 
+cmd
+->
+›code
+ = opcode;
+
+124 
+uöt64_t
+ 
+sLba
+ = (
+°¨t
+ >> 
+nvmeD©a_
+.
+	`lbaShi·
+()Ë+ÇvmeD©a_.
+	`°¨tLba
+();
+
+125 
+uöt32_t
+ 
+nLb
+ = (
+size
+ >> 
+nvmeD©a_
+.
+	`lbaShi·
+()) - 1;
+
+128 
+cmd
+->
+cdw10
+ = 
+sLba
+ & 0xffffffff;
+
+129 
+cmd
+->
+cdw11
+ = 
+sLba
+ >> 32;
+
+131 
+cmd
+->
+cdw12
+ = (
+dty≥
+ & 0xFFË<< 20 | 
+nLb
+;
+
+132 
+cmd
+->
+cdw13
+ = (
+d•ec
+ << 16);
+
+133 
+cmd
+->
+addr
+ = (
+uöt64_t
+)
+buf
+;
+
+134 
+cmd
+->
+d©a_Àn
+ = 
+size
+;
+
+136 
+cmd
+->
+nsid
+ = 
+nvmeD©a_
+.
+	`nsId
+();
+
+137 
+	}
+}
+
+139 
+	gFdpNvme
+::
+	$¥ïRódUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+,
+
+140 
+size_t
+ 
+size
+, 
+off_t
+ 
+°¨t
+) {
+
+142 
+	`¥ïFdpUrögCmdSqe
+(
+sqe
+, 
+buf
+, 
+size
+, 
+°¨t
+, 
+nvme_cmd_ªad
+, 0, 0);
+
+143 
+	}
+}
+
+145 
+	gFdpNvme
+::
+	$¥ïWrôeUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+,
+
+146 
+size_t
+ 
+size
+, 
+off_t
+ 
+°¨t
+, 
+h™dÀ
+) {
+
+147 
+c⁄°ex¥
+ 
+uöt8_t
+ 
+kPœ˚mítMode
+ = 2;
+
+148 
+uöt16_t
+ 
+pid
+;
+
+150 i‡(
+h™dÀ
+ == -1) {
+
+151 
+pid
+ = 
+	`gëFdpPID
+(
+kDeÁu…PIDIdx
+);
+
+152 } i‡(
+h™dÀ
+ >0 && h™dÀ <
+maxPIDIdx_
+) {
+
+153 
+pid
+ = 
+	`gëFdpPID
+(
+°©ic_ˇ°
+<
+uöt16_t
+>(
+h™dÀ
+));
+
+155 
+throw
+ 
+°d
+::
+	`övÆid_¨gumít
+("InvalidÖlacement identifier");
+
+158 
+	`¥ïFdpUrögCmdSqe
+(
+sqe
+, 
+buf
+, 
+size
+, 
+°¨t
+, 
+nvme_cmd_wrôe
+, 
+kPœ˚mítMode
+,
+
+159 
+pid
+);
+
+160 
+	}
+}
+
+163 
+NvmeD©a
+ 
+	gFdpNvme
+::
+	$ªadNvmeInfo
+(c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+) {
+
+164 
+nvme_id_ns
+ 
+ns
+;
+
+165 
+fd
+;
+
+166 
+__u32
+ 
+nsid
+ = 0, 
+lba_size
+ = 0, 
+lba_shi·
+ = 0;
+
+167 
+uöt64_t
+ 
+nu£
+ = 0;
+
+168 
+uöt64_t
+ 
+°¨tLba
+{0};
+
+170 
+åy
+ {
+
+171 
+fd
+ = 
+	`›í
+(
+bdevName
+.
+	`c_°r
+(), 
+O_RDONLY
+);
+
+172 
+nsid
+ = 
+	`io˘l
+(
+fd
+, 
+NVME_IOCTL_ID
+);
+
+174 
+nvme_∑s°hru_cmd
+ 
+cmd
+ = {
+
+175 .
+›code
+ = 
+nvme_admö_idítify
+,
+
+176 .
+nsid
+ =Çsid,
+
+177 .
+addr
+ = (
+__u64
+)(
+uöçå_t
+)&
+ns
+,
+
+178 .
+d©a_Àn
+ = 
+NVME_IDENTIFY_DATA_SIZE
+,
+
+179 .
+cdw10
+ = 
+NVME_IDENTIFY_CNS_NS
+,
+
+180 .
+cdw11
+ = 
+NVME_CSI_NVM
+ << 
+NVME_IDENTIFY_CSI_SHIFT
+,
+
+181 .
+timeout_ms
+ = 
+NVME_DEFAULT_IOCTL_TIMEOUT
+,
+
+184 
+	`io˘l
+(
+fd
+, 
+NVME_IOCTL_ADMIN_CMD
+, &
+cmd
+);
+
+186 
+lba_size
+ = 1 << 
+ns
+.
+lbaf
+[“s.
+Êbas
+ & 0x0f)].
+ds
+;
+
+187 
+lba_shi·
+ = 
+	`ûog2
+(
+lba_size
+);
+
+188 
+nu£
+ = 
+ns
+.nuse;
+
+192 
+	`˛o£
+(
+fd
+);
+
+193 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+ex˚±i⁄
+ &
+e
+) {
+
+194 
+°d
+::
+cout
+ << 
+e
+.
+	`wh©
+(Ë<< std::
+ídl
+;
+
+197  
+NvmeD©a
+{
+nsid
+, 
+nu£
+, 
+lba_size
+, 
+lba_shi·
+, 
+BLK_DEF_MAX_SECTORS
+,
+
+198 
+°¨tLba
+};
+
+199 
+	}
+}
+
+203 
+	g°d
+::
+°rög
+ 
+FdpNvme
+::
+	$gëNvmeCh¨Devi˚
+(c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+) {
+
+206 
+size_t
+ 
+devPos
+ = 
+bdevName
+.
+	`föd_fú°_of
+("0123456789");
+
+207 
+size_t
+ 
+pPos
+ = 
+bdevName
+.
+	`föd
+('p', 
+devPos
+);
+
+209  "/dev/ng" + 
+bdevName
+.
+	`sub°r
+(
+devPos
+, 
+pPos
+ - devPos);
+
+210 
+	}
+}
+
+214 
+	gFdpNvme
+::
+	$›íNvmeDevi˚
+(c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+) {
+
+216 
+Êags
+{
+O_RDWR
+};
+
+218 
+åy
+ {
+
+219 autÿ
+cdevName
+ = 
+	`gëNvmeCh¨Devi˚
+(
+bdevName
+);
+
+220 
+cfd_
+ = 
+	`›í
+(
+cdevName
+.
+	`c_°r
+(), 
+Êags
+);
+
+221 
+bfd_
+ = 
+	`›í
+(
+bdevName
+.
+	`c_°r
+(), 
+Êags
+);
+
+222 
+	`LOG
+("Ch¨ FD", 
+cfd_
+);
+
+223 
+	`LOG
+("Block FD", 
+bfd_
+);
+
+224 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+sy°em_îr‹
+ &) {
+
+225 
+throw
+;
+
+227 
+	}
+}
+
+229 
+	gFdpNvme
+::
+	$›íNvmeDevi˚
+(
+boﬁ
+ 
+isCh¨
+, c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+,
+
+230 
+Êags
+) {
+
+231 
+fd
+ = -1;
+
+232 
+åy
+ {
+
+233 i‡(
+isCh¨
+) {
+
+234 
+fd
+ = 
+	`›í
+(
+	`gëNvmeCh¨Devi˚
+(
+bdevName
+).
+	`c_°r
+(), 
+Êags
+);
+
+236 
+fd
+ = 
+	`›í
+(
+bdevName
+.
+	`c_°r
+(), 
+Êags
+ | 
+O_DIRECT
+);
+
+238 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+sy°em_îr‹
+ &) {
+
+239 
+throw
+;
+
+241  
+fd
+;
+
+242 
+	}
+}
+
+	@fdpnvme.h
+
+17 #¥agm®
+⁄˚
+
+
+19 
+	~"utû.h
+"
+
+20 
+	~<liburög.h
+>
+
+21 
+	~<löux/nvme_io˘l.h
+>
+
+22 
+	~<sys/io˘l.h
+>
+
+23 
+	~<ve˘‹
+>
+
+28 
+	#NVME_DEFAULT_IOCTL_TIMEOUT
+ 0
+
+	)
+
+29 
+	#NVME_IDENTIFY_DATA_SIZE
+ 4096
+
+	)
+
+30 
+	#NVME_IDENTIFY_CSI_SHIFT
+ 24
+
+	)
+
+31 
+	#NVME_IDENTIFY_CNS_NS
+ 0
+
+	)
+
+32 
+	#NVME_CSI_NVM
+ 0
+
+	)
+
+34 
+	#BLK_DEF_MAX_SECTORS
+ 256
+
+35 
+	#FDP_MAX_RUHS
+ 128
+
+	)
+
+37 
+	#RU_SIZE
+ 13079937024
+
+38 
+
+	)
+
+39 
+	snvme_lbaf
+ {
+
+40 
+__À16
+ 
+	mms
+;
+
+41 
+__u8
+ 
+	mds
+;
+
+42 
+__u8
+ 
+	mΩ
+;
+
+45 
+	snvme_id_ns
+ {
+
+46 
+__À64
+ 
+	mnsze
+;
+
+47 
+__À64
+ 
+	mnˇp
+;
+
+48 
+__À64
+ 
+	mnu£
+;
+
+49 
+__u8
+ 
+	mns„©
+;
+
+50 
+__u8
+ 
+	m∆baf
+;
+
+51 
+__u8
+ 
+	mÊbas
+;
+
+52 
+__u8
+ 
+	mmc
+;
+
+53 
+__u8
+ 
+	mdpc
+;
+
+54 
+__u8
+ 
+	mdps
+;
+
+55 
+__u8
+ 
+	mnmic
+;
+
+56 
+__u8
+ 
+	mªsˇp
+;
+
+57 
+__u8
+ 
+	mÂi
+;
+
+58 
+__u8
+ 
+	mdl„©
+;
+
+59 
+__À16
+ 
+	m«wun
+;
+
+60 
+__À16
+ 
+	m«wupf
+;
+
+61 
+__À16
+ 
+	m«cwu
+;
+
+62 
+__À16
+ 
+	m«b¢
+;
+
+63 
+__À16
+ 
+	m«bo
+;
+
+64 
+__À16
+ 
+	m«b•f
+;
+
+65 
+__À16
+ 
+	mnoiob
+;
+
+66 
+__u8
+ 
+	mnvmˇp
+[16];
+
+67 
+__À16
+ 
+	m≈wg
+;
+
+68 
+__À16
+ 
+	m≈wa
+;
+
+69 
+__À16
+ 
+	m≈dg
+;
+
+70 
+__À16
+ 
+	m≈da
+;
+
+71 
+__À16
+ 
+	mnows
+;
+
+72 
+__À16
+ 
+	mms§l
+;
+
+73 
+__À32
+ 
+	mm˛
+;
+
+74 
+__u8
+ 
+	mm§c
+;
+
+75 
+__u8
+ 
+	mrsvd81
+[11];
+
+76 
+__À32
+ 
+	m™agΩid
+;
+
+77 
+__u8
+ 
+	mrsvd96
+[3];
+
+78 
+__u8
+ 
+	mnßâr
+;
+
+79 
+__À16
+ 
+	mnvm£tid
+;
+
+80 
+__À16
+ 
+	mídgid
+;
+
+81 
+__u8
+ 
+	mnguid
+[16];
+
+82 
+__u8
+ 
+	meui64
+[8];
+
+83 
+nvme_lbaf
+ 
+	mlbaf
+[16];
+
+84 
+__u8
+ 
+	mrsvd192
+[192];
+
+85 
+__u8
+ 
+	mvs
+[3712];
+
+88 
+ölöe
+ 
+	$ûog2
+(
+uöt32_t
+ 
+i
+) {
+
+89 
+log
+ = -1;
+
+91 
+i
+) {
+
+92 
+i
+ >>= 1;
+
+93 
+log
+++;
+
+95  
+log
+;
+
+96 
+	}
+}
+
+98 
+	envme_io_mgmt_ªcv_mo
+ {
+
+99 
+	mNVME_IO_MGMT_RECV_RUH_STATUS
+ = 0x1,
+
+102 
+	snvme_fdp_ruh_°©us_desc
+ {
+
+103 
+uöt16_t
+ 
+	mpid
+;
+
+104 
+uöt16_t
+ 
+	mruhid
+;
+
+105 
+uöt32_t
+ 
+	móruå
+;
+
+106 
+uöt64_t
+ 
+	mruamw
+;
+
+107 
+uöt8_t
+ 
+	mrsvd16
+[16];
+
+110 
+	snvme_fdp_ruh_°©us
+ {
+
+111 
+uöt8_t
+ 
+	mrsvd0
+[14];
+
+112 
+uöt16_t
+ 
+	mƒuhsd
+;
+
+113 
+nvme_fdp_ruh_°©us_desc
+ 
+	mruhss
+[];
+
+116 
+	envme_admö_›code
+ {
+
+117 
+	mnvme_admö_idítify
+ = 0x06,
+
+124 ˛as†
+	cNvmeD©a
+ {
+
+125 
+	mpublic
+:
+
+126 
+NvmeD©a
+() = ;
+
+127 
+	mNvmeD©a
+ &
+	m›î©‹
+=(c⁄° 
+NvmeD©a
+ &) = ;
+
+129 
+ex∂icô
+ 
+	$NvmeD©a
+(
+uöt32_t
+ 
+nsId
+, 
+uöt64_t
+ 
+nu£
+, uöt32_à
+blockSize
+,
+
+130 
+uöt32_t
+ 
+lbaShi·
+, uöt32_à
+maxT‰Size
+, 
+uöt64_t
+ 
+°¨tLba
+)
+
+131 : 
+	`nsId_
+(
+nsId
+), 
+	`nu£_
+(
+nu£
+), 
+	`blockSize_
+(
+blockSize
+), 
+	`lbaShi·_
+(
+lbaShi·
+),
+
+132 
+	`maxT‰Size_
+(
+maxT‰Size
+), 
+	$°¨tLba_
+(
+°¨tLba
+) {}
+
+135 
+uöt32_t
+ 
+	$nsId
+(Ëc⁄° {  
+nsId_
+; 
+	}
+}
+
+137 
+uöt32_t
+ 
+	$blockSize
+(Ëc⁄° {  
+blockSize_
+; 
+	}
+}
+
+139 
+uöt32_t
+ 
+	$lbaShi·
+(Ëc⁄° {  
+lbaShi·_
+; 
+	}
+}
+
+142 
+uöt32_t
+ 
+	$maxT‰Size
+(Ë{  
+maxT‰Size_
+; 
+	}
+}
+
+146 
+uöt64_t
+ 
+	$°¨tLba
+(Ëc⁄° {  
+°¨tLba_
+; 
+	}
+}
+
+147 
+uöt64_t
+ 
+	$nu£
+(Ëc⁄° {  
+nu£_
+; 
+	}
+}
+
+149 
+	g¥iv©e
+:
+
+150 
+uöt32_t
+ 
+nsId_
+;
+
+151 
+uöt64_t
+ 
+	gnu£_
+;
+
+152 
+uöt32_t
+ 
+	gblockSize_
+;
+
+153 
+uöt32_t
+ 
+	glbaShi·_
+;
+
+154 
+uöt32_t
+ 
+	gmaxT‰Size_
+;
+
+155 
+uöt64_t
+ 
+	g°¨tLba_
+;
+
+163 ˛as†
+	cFdpNvme
+ {
+
+164 
+	mpublic
+:
+
+165 
+ex∂icô
+ 
+FdpNvme
+(c⁄° 
+°d
+::
+°rög
+ &
+fûeName
+, 
+boﬁ
+ 
+isTe°
+ = 
+Ál£
+);
+
+167 
+FdpNvme
+(c⁄° FdpNvmê&Ë
+dñëe
+;
+
+168 
+	mFdpNvme
+ &
+	m›î©‹
+=(c⁄° 
+FdpNvme
+ &Ë
+dñëe
+;
+
+170 
+›íNvmeDevi˚
+(
+boﬁ
+ 
+isCh¨
+, c⁄° 
+°d
+::
+°rög
+ &
+bdevName
+, 
+Êags
+);
+
+173 
+ÆloˇãFdpH™dÀ
+();
+
+176 
+uöt32_t
+ 
+	$gëMaxIOSize
+(Ë{  
+nvmeD©a_
+.
+	`maxT‰Size
+(); }
+
+179 
+NvmeD©a
+ &
+	$gëNvmeD©a
+(Ë{  
+nvmeD©a_
+; 
+	}
+}
+
+182 
+¥ïRódUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+, 
+size_t
+ 
+size
+,
+
+183 
+off_t
+ 
+°¨t
+);
+
+186 
+¥ïWrôeUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+, 
+size_t
+ 
+size
+,
+
+187 
+off_t
+ 
+°¨t
+, 
+h™dÀ
+);
+
+188 
+	$cfd
+(Ë{  
+cfd_
+; 
+	}
+}
+
+189 
+	$bfd
+(Ë{  
+bfd_
+; 
+	}
+}
+
+190 
+io_urög
+ *
+	$gëRög
+(Ë{  &
+rög_
+; 
+	}
+}
+
+191 
+uöt16_t
+ 
+	$gëMaxPid
+(Ë{  
+maxPIDIdx_
+; 
+	}
+}
+
+193 
+	g¥iv©e
+:
+
+194 
+°d
+::
+°rög
+ 
+gëNvmeCh¨Devi˚
+(c⁄° std::°rög &
+bdevName
+);
+
+196 
+›íNvmeDevi˚
+(c⁄° 
+°d
+::
+°rög
+ &
+fûeName
+);
+
+199 
+¥ïFdpUrögCmdSqe
+(
+io_urög_sqe
+ &
+sqe
+, *
+buf
+, 
+size_t
+ 
+size
+,
+
+200 
+off_t
+ 
+°¨t
+, 
+uöt8_t
+ 
+›code
+, uöt8_à
+dty≥
+,
+
+201 
+uöt16_t
+ 
+d•ec
+);
+
+204 
+uöt16_t
+ 
+	$gëFdpPID
+(
+uöt16_t
+ 
+fdpPHNDL
+Ë{  
+∂a˚mítIDs_
+[fdpPHNDL]; 
+	}
+}
+
+207 
+NvmeD©a
+ 
+ªadNvmeInfo
+(c⁄° 
+°d
+::
+°rög
+ &
+blockDevi˚
+);
+
+210 
+öôülizeFDP
+(c⁄° 
+°d
+::
+°rög
+ &
+blockDevi˚
+);
+
+211 
+öôülizeIoUrög
+(
+uöt32_t
+ 
+qdïth
+);
+
+214 
+nvmeIOMgmtRecv
+(
+uöt32_t
+ 
+cfd
+, uöt32_à
+nsid
+, *
+d©a
+, uöt32_à
+d©a_Àn
+,
+
+215 
+uöt8_t
+ 
+›
+, 
+uöt16_t
+ 
+›_•ecific
+);
+
+218 
+c⁄°ex¥
+ 
+uöt16_t
+ 
+	gkDeÁu…PIDIdx
+ = 0u;
+
+221 
+	g°d
+::
+ve˘‹
+<
+uöt16_t
+> 
+∂a˚mítIDs_
+{};
+
+223 
+uöt16_t
+ 
+	gmaxPIDIdx_
+{0};
+
+224 
+uöt16_t
+ 
+	g√xtPIDIdx_
+{
+	gkDeÁu…PIDIdx
+ + 1};
+
+225 
+NvmeD©a
+ 
+	gnvmeD©a_
+{};
+
+227 
+	gcfd_
+;
+
+228 
+	gbfd_
+;
+
+231 
+io_urög
+ 
+	grög_
+;
+
+234 
+	snvme_d©a
+ {
+
+235 
+__u32
+ 
+	mnsid
+;
+
+236 
+__u32
+ 
+	mlba_shi·
+;
+
+237 
+__u32
+ 
+	mlba_size
+;
+
+238 
+__u32
+ 
+	mlba_ext
+;
+
+239 
+__u16
+ 
+	mms
+;
+
+240 
+__u16
+ 
+	mpi_size
+;
+
+241 
+__u8
+ 
+	mpi_ty≥
+;
+
+242 
+__u8
+ 
+	mgu¨d_ty≥
+;
+
+243 
+__u8
+ 
+	mpi_loc
+;
+
+	@flexfs.h
+
+1 
+	~"utû.h
+"
+
+2 ˛as†
+	cSu≥rblock
+ {
+
+3 
+uöt32_t
+ 
+	mmagic_
+ = 0;
+
+4 
+	muuid_
+[37] = {0};
+
+5 
+uöt32_t
+ 
+	gblock_size_
+ = 0;
+
+6 
+uöt32_t
+ 
+	gru_size_
+ = 0;
+
+7 
+uöt32_t
+ 
+	gföish_åeshﬁd_
+ = 0;
+
+10 
+	gpublic
+:
+
+11 
+	$Su≥rblock
+(Ë{
+	}
+}
+
+15 
+	$Su≥rblock
+(
+uöt32_t
+ 
+föish_thªshﬁd
+ = 0) {
+
+16 
+°d
+::
+°rög
+ 
+uuid
+ = "CHANGMIN!!";
+
+17 
+uuid_Àn
+ =
+
+18 
+°d
+::
+	`mö
+(
+uuid
+.
+	`Àngth
+(),
+
+19 (
+uuid_
+) - 1);
+
+20 
+	`mem˝y
+((*)
+uuid_
+, 
+uuid
+.
+	`c_°r
+(), 
+uuid_Àn
+);
+
+21 
+föish_åeshﬁd_
+ = 
+föish_thªshﬁd
+;
+
+22 
+block_size_
+ = 512;
+
+23 
+ru_size_
+ = 1024;
+
+26 
+	}
+}
+
+28 c⁄° 
+uöt32_t
+ 
+	gMAGIC
+ = 0x464C4558;
+
+29 
+	g°d
+::
+°rög
+ 
+	$GëUUID
+(Ë{  
+°d
+::
+	`°rög
+(
+uuid_
+); 
+	}
+}
+
+30 
+uöt32_t
+ 
+	$GëFöishTªshﬁd
+(Ë{  
+föish_åeshﬁd_
+; 
+	}
+}
+
+	@temp.cpp
+
+1 
+	~"urög_ã°.h
+"
+
+2 
+	~<io°ªam
+>
+
+3 
+	~<f˙é.h
+>
+
+4 
+	~<uni°d.h
+>
+
+5 
+	~<c°rög
+>
+
+7 
+	#QUEUE_DEPTH
+ 32
+
+	)
+
+8 
+	#BLOCK_SIZE
+ 128
+
+	)
+
+9 
+	#OFFSET
+ 1024
+
+	)
+
+11 
+	$maö
+() {
+
+12 
+io_urög
+ 
+rög
+;
+
+15 i‡(
+	`io_urög_queue_öô
+(
+QUEUE_DEPTH
+, &
+rög
+, 0) < 0) {
+
+16 
+°d
+::
+˚º
+ << "io_urög_queue_öô faûed" << std::
+ídl
+;
+
+21 c⁄° *
+fûe_∑th
+ = "/dev/nvme0n1";
+
+22 
+fd
+ = 
+	`›í
+(
+fûe_∑th
+, 
+O_RDONLY
+);
+
+23 i‡(
+fd
+ < 0) {
+
+24 
+°d
+::
+˚º
+ << "FaûedÅÿ›í fûe" << std::
+ídl
+;
+
+29 
+buf„r
+[
+BLOCK_SIZE
+];
+
+32 
+io_urög_sqe
+ *
+sqe
+ = 
+	`io_urög_gë_sqe
+(&
+rög
+);
+
+33 i‡(!
+sqe
+) {
+
+34 
+°d
+::
+˚º
+ << "FaûedÅÿgë SQE" << std::
+ídl
+;
+
+39 
+	`io_urög_¥ï_ªad
+(
+sqe
+, 
+fd
+, 
+buf„r
+, 
+BLOCK_SIZE
+, 
+OFFSET
+);
+
+42 
+	`io_urög_submô
+(&
+rög
+);
+
+44 
+io_urög_cqe
+ *
+cqe
+;
+
+45 
+ªt
+ = 
+	`io_urög_waô_cqe
+(&
+rög
+, &
+cqe
+);
+
+46 i‡(
+ªt
+ < 0) {
+
+47 
+°d
+::
+˚º
+ << "io_urög_waô_cqêÁûed" << std::
+ídl
+;
+
+52 i‡(
+cqe
+->
+ªs
+ < 0) {
+
+53 
+°d
+::
+˚º
+ << "Asyn¯ªad faûed" << std::
+ídl
+;
+
+55 
+°d
+::
+cout
+ << "Ród " << 
+cqe
+->
+ªs
+ << " byã†‰om fûe" << std::
+ídl
+;
+
+56 
+°d
+::
+cout
+.
+	`wrôe
+(
+buf„r
+, 
+cqe
+->
+ªs
+);
+
+60 
+	`io_urög_cqe_£í
+(&
+rög
+, 
+cqe
+);
+
+63 
+	`˛o£
+(
+fd
+);
+
+66 
+	`io_urög_queue_exô
+(&
+rög
+);
+
+69 
+	}
+}
+
+	@uring_cmd.cpp
+
+1 
+	~"urög_cmd.h
+"
+
+2 
+	~<liburög.h
+>
+
+4 
+	gUrögCmd
+::
+	$UrögCmd
+(
+uöt32_t
+ 
+qd
+, uöt32_à
+blocksize
+, uöt32_à
+lbashi·
+,
+
+5 
+io_urög_∑øms
+ 
+∑øms
+)
+
+6 : 
+	`qd_
+(
+qd
+), 
+	`blocksize_
+(
+blocksize
+), 
+	`lbashi·_
+(
+lbashi·
+), 
+	`ªq_limômax_
+(qd),
+
+7 
+	`ªq_limôlow_
+(
+qd
+ >> 1), 
+	$ªq_öÊight_
+(0) {
+
+8 
+	`öôBuf„r
+();
+
+9 
+	`öôUrög
+(
+∑øms
+);
+
+10 
+	}
+}
+
+13 
+	gUrögCmd
+::
+	$öôBuf„r
+() {
+
+14 
+îr
+;
+
+15 *
+buf
+;
+
+17 
+iovecs_
+ = (
+iovec
+ *)
+	`ˇŒoc
+(
+qd_
+, (iovec));
+
+19 
+i
+ = 0; i < 
+	`roundup_pow2
+(
+qd_
+); i++) {
+
+21 
+îr
+ = 
+	`posix_memÆign
+(&
+buf
+, 
+PAGE_SIZE
+, 
+blocksize_
+ * 
+qd_
+);
+
+22 i‡(
+îr
+) {
+
+23 
+°d
+::
+˚º
+ << "Áûed memálign,Éº" << 
+îr
+ << std::
+ídl
+;
+
+26 
+iovecs_
+[
+i
+].
+iov_ba£
+ = 
+buf
+;
+
+27 
+iovecs_
+[
+i
+].
+iov_Àn
+ = 
+BS
+;
+
+29 
+	}
+}
+
+31 
+	gUrögCmd
+::
+	$öôUrög
+(
+io_urög_∑øms
+ &
+∑øms
+) {
+
+33 
+io_urög_∑øms
+ 
+em±y_∑øms
+;
+
+34 
+	`mem£t
+(&
+em±y_∑øms
+, 0, (empty_params));
+
+37 i‡(
+	`memcmp
+(&
+∑øms
+, &
+em±y_∑øms
+, (
+io_urög_∑øms
+)) == 0) {
+
+38 
+io_urög_∑øms
+ 
+p
+;
+
+39 
+	`mem£t
+(&
+p
+, 0, (p));
+
+40 
+p
+.
+Êags
+ |
+IORING_SETUP_SQE128
+;
+
+41 
+p
+.
+Êags
+ |
+IORING_SETUP_CQE32
+;
+
+43 
+p
+.
+Êags
+ |
+IORING_SETUP_CQSIZE
+;
+
+44 
+p
+.
+cq_íåõs
+ = 
+qd_
+ * 2;
+
+46 
+p
+.
+Êags
+ |
+IORING_SETUP_COOP_TASKRUN
+;
+
+48 
+p
+.
+Êags
+ |
+IORING_SETUP_SINGLE_ISSUER
+;
+
+50 
+∑øms_
+ = 
+p
+;
+
+52 
+∑øms_
+ = 
+∑øms
+;
+
+55 
+	`io_urög_queue_öô_∑øms
+(
+qd_
+, &
+rög_
+, &
+∑øms_
+);
+
+56 
+	}
+}
+
+58 
+	gUrögCmd
+::
+	$¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+boﬁ
+ 
+is_ªad
+, 
+off_t
+ 
+off£t
+,
+
+59 
+size_t
+ 
+size
+, *
+buf
+, 
+uöt32_t
+ 
+dty≥
+,
+
+60 
+uöt32_t
+ 
+d•ec
+) {
+
+61 
+io_urög_sqe
+ *
+sqe
+ = 
+	`io_urög_gë_sqe
+(&
+rög_
+);
+
+62 
+nvme_urög_cmd
+ *
+cmd
+;
+
+66 i‡(!
+sqe
+) {
+
+67 
+	`LOG
+("Can't get sqe", "");
+
+70 
+	`DBG
+("urögRód-buf", 
+buf
+);
+
+71 
+	`DBG
+("DEBUG", "prepUringCmd");
+
+72 
+	`mem£t
+(
+sqe
+, 0, (*sqe));
+
+73 
+sqe
+->
+fd
+ = fd;
+
+74 
+sqe
+->
+cmd_›
+ = 
+NVME_URING_CMD_IO
+;
+
+76 
+sqe
+->
+›code
+ = 
+IORING_OP_URING_CMD
+;
+
+77 
+sqe
+->
+u£r_d©a
+ = 0;
+
+79 
+cmd
+ = (
+nvme_urög_cmd
+ *)
+sqe
+->cmd;
+
+80 
+	`mem£t
+(
+cmd
+, 0, (
+nvme_urög_cmd
+));
+
+81 
+cmd
+->
+›code
+ = 
+is_ªad
+ ? 
+nvme_cmd_ªad
+ : 
+nvme_cmd_wrôe
+;
+
+82 
+__u64
+ 
+¶ba
+;
+
+83 
+__u32
+ 
+∆b
+;
+
+84 
+¶ba
+ = 
+off£t
+ >> 
+lbashi·_
+;
+
+85 i‡(
+size
+ < 
+blocksize_
+) {
+
+86 
+size
+ = 
+blocksize_
+;
+
+88 
+∆b
+ = (
+size
+ >> 
+lbashi·_
+) - 1;
+
+93 
+cmd
+->
+cdw10
+ = 
+¶ba
+ & 0xffffffff;
+
+94 
+cmd
+->
+cdw11
+ = 
+¶ba
+ >> 32;
+
+96 
+cmd
+->
+cdw12
+ = (
+dty≥
+ & 0xFFË<< 20 | 
+∆b
+;
+
+97 
+cmd
+->
+cdw13
+ = (
+d•ec
+ << 16);
+
+103 
+cmd
+->
+addr
+ = (
+__u64
+)(
+uöçå_t
+)
+buf
+;
+
+104 
+cmd
+->
+d©a_Àn
+ = 
+size
+;
+
+105 
+cmd
+->
+nsid
+ = 
+ns
+;
+
+106 
+	`DBG
+("IS_READ", 
+is_ªad
+);
+
+107 
+	`DBG
+("DATA", 
+°d
+::
+	`°rög
+((*)
+buf
+, 
+size
+));
+
+108 
+	}
+}
+
+110 
+	gUrögCmd
+::
+	$¥ïUrög
+(
+fd
+, 
+boﬁ
+ 
+is_ªad
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+,
+
+111 *
+buf
+) {
+
+112 
+io_urög_sqe
+ *
+sqe
+ = 
+	`io_urög_gë_sqe
+(&
+rög_
+);
+
+113 
+iovec
+ 
+iov
+;
+
+114 
+iov
+.
+iov_ba£
+ = 
+buf
+;
+
+115 
+iov
+.
+iov_Àn
+ = 
+size
+;
+
+116 i‡(!
+sqe
+) {
+
+117 
+	`LOG
+("Can't get sqe", "");
+
+120 i‡(
+is_ªad
+) {
+
+121 
+	`io_urög_¥ï_ªad
+(
+sqe
+, 
+fd
+, 
+iov
+.
+iov_ba£
+, iov.
+iov_Àn
+, 
+off£t
+);
+
+123 
+	`io_urög_¥ï_wrôe
+(
+sqe
+, 
+fd
+, 
+iov
+.
+iov_ba£
+, iov.
+iov_Àn
+, 
+off£t
+);
+
+125 
+	}
+}
+
+127 
+	gUrögCmd
+::
+	$submôComm™d
+(
+ƒ_ªqs
+) {
+
+128 
+îr
+;
+
+137 i‡(
+ƒ_ªqs
+ > 0) {
+
+138 
+îr
+ = 
+	`io_urög_submô_™d_waô
+(&
+rög_
+, 
+ƒ_ªqs
+);
+
+140 
+îr
+ = 
+	`io_urög_submô
+(&
+rög_
+);
+
+142 
+	`DBG
+("urög_submô", 
+îr
+);
+
+143  
+îr
+;
+
+144 
+	}
+}
+
+146 
+	gUrögCmd
+::
+	$waôCom∂ëed
+() {
+
+147 
+io_urög_cqe
+ *
+cqe
+ = 
+NULL
+;
+
+148 
+îr
+;
+
+150 
+îr
+ = 
+	`io_urög_waô_cqe
+(&
+rög_
+, &
+cqe
+);
+
+151 i‡(
+îr
+ != 0) {
+
+152 
+	`LOG
+("urög_waô_cqe", 
+îr
+);
+
+154 i‡(
+cqe
+->
+ªs
+ < 0) {
+
+155 
+	`LOG
+("cqe->ªs", 
+cqe
+->
+ªs
+);
+
+157 
+	`DBG
+("[ERR] cq_has_ovîÊow", 
+	`io_urög_cq_has_ovîÊow
+(&
+rög_
+));
+
+158 
+	`io_urög_cqe_£í
+(&
+rög_
+, 
+cqe
+);
+
+159  
+cqe
+->
+ªs
+;
+
+160 
+	}
+}
+
+162 
+	gUrögCmd
+::
+	$isCqOvîÊow
+(Ë{  
+	`io_urög_cq_has_ovîÊow
+(&
+rög_
+); 
+	}
+}
+
+	@uring_cmd.h
+
+1 #¥agm®
+⁄˚
+
+
+3 
+	~"utû.h
+"
+
+4 
+	~<liburög.h
+>
+
+5 
+	~<löux/nvme_io˘l.h
+>
+
+7 
+	#BS
+ (4 * 1024)
+
+	)
+
+8 
+	#PAGE_SIZE
+ 4096
+
+	)
+
+10 
+	#›_ªad
+ 
+åue
+
+
+	)
+
+11 
+	#›_wrôe
+ 
+Ál£
+
+
+	)
+
+13 
+	envme_io_›code
+ {
+
+14 
+	mnvme_cmd_wrôe
+ = 0x01,
+
+15 
+	mnvme_cmd_ªad
+ = 0x02,
+
+16 
+	mnvme_cmd_io_mgmt_ªcv
+ = 0x12,
+
+17 
+	mnvme_cmd_io_mgmt_£nd
+ = 0x1d,
+
+20 ˛as†
+	cUrögCmd
+ {
+
+21 
+	m¥iv©e
+:
+
+22 
+uöt32_t
+ 
+qd_
+;
+
+23 
+uöt32_t
+ 
+	mblocksize_
+;
+
+24 
+uöt32_t
+ 
+	mlbashi·_
+;
+
+26 
+uöt32_t
+ 
+	mªq_limômax_
+;
+
+27 
+uöt32_t
+ 
+	mªq_limôlow_
+;
+
+28 
+uöt32_t
+ 
+	mªq_öÊight_
+;
+
+30 
+io_urög_∑øms
+ 
+	m∑øms_
+;
+
+31 
+io_urög
+ 
+	mrög_
+;
+
+32 
+iovec
+ *
+	miovecs_
+;
+
+34 
+öôBuf„r
+();
+
+35 
+öôUrög
+(
+io_urög_∑øms
+ &
+∑øms
+);
+
+36 
+¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+boﬁ
+ 
+is_ªad
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+,
+
+37 *
+buf
+, 
+uöt32_t
+ 
+dty≥
+ = 0, uöt32_à
+d•ec
+ = 0);
+
+38 
+¥ïUrög
+(
+fd
+, 
+boﬁ
+ 
+is_ªad
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+);
+
+40 
+	mpublic
+:
+
+41 
+	$UrögCmd
+(){};
+
+42 
+	`UrögCmd
+(
+uöt32_t
+ 
+qd
+, uöt32_à
+blocksize
+, uöt32_à
+lbashi·
+,
+
+43 
+io_urög_∑øms
+ 
+∑øms
+);
+
+45 
+	$¥ïUrögRód
+(
+fd
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+46 
+	`¥ïUrög
+(
+fd
+, 
+›_ªad
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+47 
+	}
+}
+
+48 
+	$¥ïUrögWrôe
+(
+fd
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+49 
+	`¥ïUrög
+(
+fd
+, 
+›_wrôe
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+50 
+	}
+}
+
+51 
+	$¥ïUrögCmdRód
+(
+fd
+, 
+ns
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+52 
+	`¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+›_ªad
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+53 
+	}
+}
+
+54 
+	$¥ïUrögCmdWrôe
+(
+fd
+, 
+ns
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+,
+
+55 
+uöt32_t
+ 
+d•ec
+) {
+
+56 c⁄° 
+uöt32_t
+ 
+kPœ˚mítMode
+ = 2;
+
+57 
+	`¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+›_wrôe
+, 
+off£t
+, 
+size
+, 
+buf
+, 
+kPœ˚mítMode
+, 
+d•ec
+);
+
+58 
+	}
+}
+
+59 
+submôComm™d
+(
+ƒ_ªqs
+ = 0);
+
+60 
+waôCom∂ëed
+();
+
+62 
+	$urögRód
+(
+fd
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+63 
+	`LOG
+("urögRód-buf", 
+buf
+);
+
+64 
+	`¥ïUrög
+(
+fd
+, 
+›_ªad
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+65 
+	`submôComm™d
+();
+
+66  
+	`waôCom∂ëed
+();
+
+67 
+	}
+}
+
+68 
+	$urögWrôe
+(
+fd
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+69 
+	`¥ïUrög
+(
+fd
+, 
+›_wrôe
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+70 
+	`submôComm™d
+();
+
+71  
+	`waôCom∂ëed
+();
+
+72 
+	}
+}
+
+73 
+	$urögCmdRód
+(
+fd
+, 
+ns
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+) {
+
+74 
+ªt
+;
+
+75 
+	`¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+›_ªad
+, 
+off£t
+, 
+size
+, 
+buf
+);
+
+76 
+	`submôComm™d
+();
+
+77 
+ªt
+ = 
+	`waôCom∂ëed
+();
+
+78 i‡(
+ªt
+ == 0) {
+
+79 
+ªt
+ = 
+size
+;
+
+81  
+ªt
+;
+
+82 
+	}
+}
+
+83 
+	$urögCmdWrôe
+(
+fd
+, 
+ns
+, 
+off_t
+ 
+off£t
+, 
+size_t
+ 
+size
+, *
+buf
+,
+
+84 
+uöt32_t
+ 
+d•ec
+) {
+
+85 c⁄° 
+uöt32_t
+ 
+kPœ˚mítMode
+ = 2;
+
+86 
+ªt
+;
+
+87 
+	`¥ïUrögCmd
+(
+fd
+, 
+ns
+, 
+›_wrôe
+, 
+off£t
+, 
+size
+, 
+buf
+, 
+kPœ˚mítMode
+, 
+d•ec
+);
+
+88 
+	`submôComm™d
+();
+
+89 
+ªt
+ = 
+	`waôCom∂ëed
+();
+
+90 i‡(
+ªt
+ == 0) {
+
+91 
+ªt
+ = 
+size
+;
+
+93  
+ªt
+;
+
+94 
+	}
+}
+
+95 
+isCqOvîÊow
+();
+
+	@uring_test.cpp
+
+1 
+	~"urög_ã°.h
+"
+
+2 
+	~"Êexfs.h
+"
+
+4 
+	#QDEPTH
+ 16
+
+	)
+
+5 
+	#TEST_PID
+ 2
+
+	)
+
+12 
+	mURING_READ
+ = 0,
+
+13 
+	mURINGCMD_READ
+,
+
+14 
+	mURING_WRITE
+,
+
+15 
+	mURINGCMD_WRITE
+,
+
+16 
+	mTEST_TYPE_MAX
+
+
+19 c⁄° 
+uöt32_t
+ 
+	gtURING_CMD
+ = 1U << 0;
+
+20 c⁄° 
+uöt32_t
+ 
+	gtURING
+ = 0U << 0;
+
+21 c⁄° 
+uöt32_t
+ 
+	gtREAD
+ = 1U << 1;
+
+22 c⁄° 
+uöt32_t
+ 
+	gtWRITE
+ = 0U << 1;
+
+24 
+	$tBíchm¨k
+(
+FdpNvme
+ &
+fdp
+, 
+NvmeD©a
+ &
+nvme
+, 
+UrögCmd
+ &
+urög_cmd
+,
+
+25 
+ã°_˙t
+) {
+
+26 
+off_t
+ 
+off£t
+ = 0;
+
+27 
+uöt32_t
+ 
+blocksize
+ = 256 * 1024;
+
+28 
+buf„r
+[
+blocksize
+];
+
+29 
+îr
+;
+
+30 
+˙t
+ = 0;
+
+31 
+°d
+::
+øndom_devi˚
+ 
+rd
+;
+
+32 
+°d
+::
+mt19937
+ 
+	`gí
+(
+	`rd
+());
+
+33 
+°d
+::
+unif‹m_öt_di°ributi⁄
+<> 
+	`dis
+(1, 100000000);
+
+39 
+uöt32_t
+ 
+ã°_idx
+ = 
+URING_READ
+;Åe°_idx < 
+TEST_TYPE_MAX
+;Åest_idx++) {
+
+42 
+°d
+::
+chr⁄o
+::
+sy°em_˛ock
+::
+time_poöt
+ 
+°¨t
+ =
+
+43 
+°d
+::
+chr⁄o
+::
+sy°em_˛ock
+::
+	`now
+();
+
+44 *
+buf„r
+[
+QDEPTH
+];
+
+45 
+iovec
+ *
+iovecs
+ = (iove¯*)
+	`ˇŒoc
+(
+QDEPTH
+, (iovec));
+
+46 
+i
+ = 0; i < 
+QDEPTH
+; i++) {
+
+47 i‡(
+	`posix_memÆign
+(&
+buf„r
+[
+i
+], 
+PAGE_SIZE
+, 
+blocksize
+)) {
+
+48 
+	`LOG
+("[ERROR] MEM Align, idx", 
+i
+);
+
+51 
+˙t
+ = 0; c¡ < 
+ã°_˙t
+; cnt++) {
+
+52 
+i
+ = 0; i < 
+QDEPTH
+; i++) {
+
+54 
+ã°_idx
+) {
+
+55 
+URING_READ
+:
+
+56 
+urög_cmd
+.
+	`¥ïUrögRód
+(
+fdp
+.
+	`bfd
+(), 
+off£t
+, 
+blocksize
+, 
+buf„r
+[
+i
+]);
+
+58 
+URINGCMD_READ
+:
+
+59 
+urög_cmd
+.
+	`¥ïUrögCmdRód
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+, 
+blocksize
+,
+
+60 
+buf„r
+[
+i
+]);
+
+62 
+URING_WRITE
+:
+
+63 
+urög_cmd
+.
+	`¥ïUrögWrôe
+(
+fdp
+.
+	`bfd
+(), 
+off£t
+, 
+blocksize
+, 
+buf„r
+[
+i
+]);
+
+65 
+URINGCMD_WRITE
+:
+
+66 
+urög_cmd
+.
+	`¥ïUrögCmdWrôe
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+, 
+blocksize
+,
+
+67 
+buf„r
+[
+i
+], 
+TEST_PID
+);
+
+70 
+	`LOG
+("[ERR]Åe°_idx", 
+ã°_idx
+);
+
+74 
+îr
+ = 
+urög_cmd
+.
+	`submôComm™d
+(
+QDEPTH
+);
+
+76 
+ªqs
+ = 0;Ñeq†< 
+îr
+;Ñeqs++) {
+
+77 
+urög_cmd
+.
+	`waôCom∂ëed
+();
+
+79 i‡(
+urög_cmd
+.
+	`isCqOvîÊow
+() != 0) {
+
+80 
+	`LOG
+("ovîÊow", 
+urög_cmd
+.
+	`isCqOvîÊow
+());
+
+82 
+urög_cmd
+.
+	`waôCom∂ëed
+();
+
+102 i‡(
+blocksize
+ == 4096) {
+
+103 
+off£t
+ = 
+	`dis
+(
+gí
+) / 4;
+
+105 
+off£t
+ +(
+blocksize
+ / 
+BS
+);
+
+110 
+îr
+ = 
+urög_cmd
+.
+	`submôComm™d
+();
+
+111 
+ªqs
+ = 0;Ñeq†< 
+îr
+;Ñeqs++) {
+
+112 
+îr
+ = 
+urög_cmd
+.
+	`waôCom∂ëed
+();
+
+113 i‡(
+îr
+ > 0)
+
+116 
+°d
+::
+chr⁄o
+::
+duøti⁄
+<> 
+£c
+ =
+
+117 
+°d
+::
+chr⁄o
+::
+sy°em_˛ock
+::
+	`now
+(Ë- 
+°¨t
+;
+
+118 i‡(
+îr
+ < 0) {
+
+119 
+	`LOG
+("Bíchm¨k ERROR,Éº", 
+îr
+);
+
+121 
+°d
+::
+°rög°ªam
+ 
+öfo
+;
+
+122 
+öfo
+ << "QD-" << 
+QDEPTH
+ << ", ";
+
+123 
+öfo
+ << "BS-" << 
+blocksize
+ / 1024 << "KB" << ", ";
+
+124 
+öfo
+ << "CNT-" << 
+ã°_˙t
+ << ", ";
+
+125 i‡(
+ã°_idx
+ =
+URING_READ
+) {
+
+126 
+öfo
+ << "URING_READ" << ",";
+
+127 } i‡(
+ã°_idx
+ =
+URING_WRITE
+) {
+
+128 
+öfo
+ << "URING_WRITE" << ",";
+
+129 } i‡(
+ã°_idx
+ =
+URINGCMD_READ
+) {
+
+130 
+öfo
+ << "URINGCMD_READ" << ",";
+
+131 } i‡(
+ã°_idx
+ =
+URINGCMD_WRITE
+) {
+
+132 
+öfo
+ << "URINGCMD_WRITE" << ",";
+
+134 
+	`LOG
+("Info", 
+öfo
+.
+	`°r
+());
+
+135 
+	`LOG
+("FöÆ off£t", 
+off£t
+);
+
+136 
+	`LOG
+("Times(£c)", 
+£c
+.
+	`cou¡
+());
+
+137 
+	`LOG
+("IOPS", (
+ã°_˙t
+ * 
+QDEPTH
+Ë/ 
+£c
+.
+	`cou¡
+());
+
+138 
+	`LOG
+("MiB/s",
+
+139 ((
+QDEPTH
+ * 
+ã°_˙t
+ * (
+blocksize
+ / 1024)Ë/ 1024Ë/ 
+£c
+.
+	`cou¡
+());
+
+140 
+	`LOG
+("Bíchm¨k d⁄e,Éº", 
+îr
+);
+
+143 
+	}
+}
+
+146 
+	$tWrôeFDP
+(
+FdpNvme
+ &
+fdp
+, 
+NvmeD©a
+ &
+nvme
+, 
+UrögCmd
+ &
+urög_cmd
+) {
+
+147 
+off_t
+ 
+off£t
+ = 0;
+
+148 
+buf„r
+[
+BS
+];
+
+149 
+Su≥rblock
+ 
+sb
+ = 
+	`Su≥rblock
+(0);
+
+150 
+îr
+ = 0;
+
+152 
+îr
+ = 
+	`posix_memÆign
+((**)&
+buf„r
+, 
+PAGE_SIZE
+, 
+BS
+);
+
+153 
+	`DBG
+("Mem Align", 
+îr
+);
+
+154 
+	`mem˝y
+(
+buf„r
+, &
+sb
+, (sb));
+
+156 
+pid
+ = 0;Öid < 8;Öid++) {
+
+157 
+îr
+ = 
+urög_cmd
+.
+	`urögCmdWrôe
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+,
+
+158 (
+buf„r
+), &buf„r, 
+pid
+);
+
+161 i‡(
+îr
+ != 0) {
+
+162 
+	`LOG
+("WrôeFDP ERROR,Éº", 
+îr
+);
+
+164 
+	`LOG
+("WrôeFDP d⁄e,Éº", 
+îr
+);
+
+166 
+	}
+}
+
+169 
+	$tWrôeSB
+(
+FdpNvme
+ &
+fdp
+, 
+NvmeD©a
+ &
+nvme
+, 
+UrögCmd
+ &
+urög_cmd
+) {
+
+170 
+off_t
+ 
+off£t
+ = 0;
+
+171 
+Su≥rblock
+ 
+sb
+ = 
+	`Su≥rblock
+(0);
+
+172 
+îr
+;
+
+173 
+uöt32_t
+ 
+ã°_idx
+ = 
+URING_READ
+;Åe°_idx < 
+TEST_TYPE_MAX
+;Åest_idx++) {
+
+174 *
+buf„r
+;
+
+175 
+îr
+ = 
+	`posix_memÆign
+((**)&
+buf„r
+, 
+PAGE_SIZE
+, 
+BS
+);
+
+176 
+	`mem˝y
+(
+buf„r
+, &
+sb
+, (sb));
+
+178 
+ã°_idx
+) {
+
+179 
+URING_READ
+:
+
+181 
+URINGCMD_READ
+:
+
+183 
+URING_WRITE
+:
+
+184 
+îr
+ = 
+urög_cmd
+.
+	`urögWrôe
+(
+fdp
+.
+	`bfd
+(), 
+off£t
+, 
+BS
+, 
+buf„r
+);
+
+186 
+URINGCMD_WRITE
+:
+
+187 
+îr
+ = 
+urög_cmd
+.
+	`urögCmdWrôe
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+, 
+BS
+, 
+buf„r
+,
+
+188 
+TEST_PID
+);
+
+191 
+	`LOG
+("[ERR]Åe°_idx", 
+ã°_idx
+);
+
+195 i‡((
+ã°_idx
+ =
+URING_WRITE
+Ë||Åe°_idx =
+URINGCMD_WRITE
+) {
+
+196 
+	`LOG
+("SKIP", 
+ã°_idx
+);
+
+200 i‡(
+ã°_idx
+ =
+URING_READ
+) {
+
+201 
+	`LOG
+("TEST", "URING_READ");
+
+202 } i‡(
+ã°_idx
+ =
+URING_WRITE
+) {
+
+203 
+	`LOG
+("TEST", "URING_WRITE");
+
+204 } i‡(
+ã°_idx
+ =
+URINGCMD_READ
+) {
+
+205 
+	`LOG
+("TEST", "URINGCMD_READ");
+
+206 } i‡(
+ã°_idx
+ =
+URINGCMD_WRITE
+) {
+
+207 
+	`LOG
+("TEST", "URINGCMD_WRITE");
+
+210 i‡(
+îr
+ == 0) {
+
+211 
+	`LOG
+("Ród cmd d⁄e", 
+°d
+::
+	`°rög
+((*)
+buf„r
+, 
+BS
+));
+
+212 } i‡(
+îr
+ > 0) {
+
+213 
+	`LOG
+("Ród d⁄e", 
+°d
+::
+	`°rög
+((*)
+buf„r
+, 
+îr
+));
+
+215 
+	`LOG
+("Ród ERROR", 
+îr
+);
+
+217 
+	`LOG
+("Rëu∫", 
+îr
+);
+
+218 
+	`‰ì
+(
+buf„r
+);
+
+220 
+	}
+}
+
+222 
+	$tWrôeSögÀ
+(
+FdpNvme
+ &
+fdp
+, 
+NvmeD©a
+ &
+nvme
+, 
+UrögCmd
+ &
+urög_cmd
+) {
+
+223 
+off_t
+ 
+off£t
+ = 0;
+
+224 
+îr
+;
+
+225 
+d©a
+[
+BS
+];
+
+226 
+uöt32_t
+ 
+i
+ = 0; i < (
+d©a
+); i++) {
+
+228 
+d©a
+[
+i
+] = 68;
+
+232 
+uöt32_t
+ 
+ã°_idx
+ = 
+URING_READ
+;Åe°_idx < 
+TEST_TYPE_MAX
+;Åest_idx++) {
+
+233 *
+buf„r
+;
+
+234 
+îr
+ = 
+	`posix_memÆign
+((**)&
+buf„r
+, 
+PAGE_SIZE
+, 
+BS
+);
+
+235 
+	`mem˝y
+(
+buf„r
+, &
+d©a
+, (data));
+
+237 i‡(
+ã°_idx
+ =
+URING_WRITE
+) {
+
+238 
+	`LOG
+("SKIP", 
+ã°_idx
+);
+
+241 
+ã°_idx
+) {
+
+242 
+URING_READ
+:
+
+244 
+URINGCMD_READ
+:
+
+246 
+URING_WRITE
+:
+
+249 
+URINGCMD_WRITE
+:
+
+250 
+îr
+ = 
+urög_cmd
+.
+	`urögCmdWrôe
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+, 
+BS
+, 
+buf„r
+,
+
+251 
+TEST_PID
+);
+
+254 
+	`LOG
+("[ERR]Åe°_idx", 
+ã°_idx
+);
+
+258 i‡((
+ã°_idx
+ =
+URING_READ
+Ë||Åe°_idx =
+URINGCMD_READ
+) {
+
+259 
+	`LOG
+("SKIP", 
+ã°_idx
+);
+
+263 i‡(
+ã°_idx
+ =
+URING_READ
+) {
+
+264 
+	`LOG
+("TEST", "URING_READ");
+
+265 } i‡(
+ã°_idx
+ =
+URING_WRITE
+) {
+
+266 
+	`LOG
+("TEST", "URING_WRITE");
+
+267 } i‡(
+ã°_idx
+ =
+URINGCMD_READ
+) {
+
+268 
+	`LOG
+("TEST", "URINGCMD_READ");
+
+269 } i‡(
+ã°_idx
+ =
+URINGCMD_WRITE
+) {
+
+270 
+	`LOG
+("TEST", "URINGCMD_WRITE");
+
+273 i‡(
+îr
+ < 0) {
+
+274 
+	`LOG
+("WrôêERROR", 
+îr
+);
+
+276 
+	`LOG
+("Wrôêcmd d⁄e, wrôã¿byã†cqe->ªs", 
+îr
+);
+
+278 
+	`‰ì
+(
+buf„r
+);
+
+280 
+	}
+}
+
+282 
+	$tRódSögÀ
+(
+FdpNvme
+ &
+fdp
+, 
+NvmeD©a
+ &
+nvme
+, 
+UrögCmd
+ &
+urög_cmd
+) {
+
+283 
+off_t
+ 
+off£t
+ = 0;
+
+284 
+îr
+;
+
+286 
+uöt32_t
+ 
+ã°_idx
+ = 
+URING_READ
+;Åe°_idx < 
+TEST_TYPE_MAX
+;Åest_idx++) {
+
+287 *
+buf„r
+;
+
+288 
+îr
+ = 
+	`posix_memÆign
+((**)&
+buf„r
+, 
+PAGE_SIZE
+, 
+BS
+);
+
+290 
+ã°_idx
+) {
+
+291 
+URING_READ
+:
+
+292 
+îr
+ = 
+urög_cmd
+.
+	`urögRód
+(
+fdp
+.
+	`bfd
+(), 
+off£t
+, 
+BS
+, 
+buf„r
+);
+
+294 
+URINGCMD_READ
+:
+
+295 
+îr
+ = 
+urög_cmd
+.
+	`urögCmdRód
+(
+fdp
+.
+	`cfd
+(), 
+nvme
+.
+	`nsId
+(), 
+off£t
+, 
+BS
+, 
+buf„r
+);
+
+297 
+URING_WRITE
+:
+
+299 
+URINGCMD_WRITE
+:
+
+302 
+	`LOG
+("[ERR]Åe°_idx", 
+ã°_idx
+);
+
+306 i‡((
+ã°_idx
+ =
+URING_WRITE
+Ë||Åe°_idx =
+URINGCMD_WRITE
+) {
+
+307 
+	`LOG
+("SKIP", 
+ã°_idx
+);
+
+311 i‡(
+ã°_idx
+ =
+URING_READ
+) {
+
+312 
+	`LOG
+("TEST", "URING_READ");
+
+313 } i‡(
+ã°_idx
+ =
+URING_WRITE
+) {
+
+314 
+	`LOG
+("TEST", "URING_WRITE");
+
+315 } i‡(
+ã°_idx
+ =
+URINGCMD_READ
+) {
+
+316 
+	`LOG
+("TEST", "URINGCMD_READ");
+
+317 } i‡(
+ã°_idx
+ =
+URINGCMD_WRITE
+) {
+
+318 
+	`LOG
+("TEST", "URINGCMD_WRITE");
+
+321 i‡(
+îr
+ == 0) {
+
+322 
+	`LOG
+("Ród cmd d⁄e", 
+°d
+::
+	`°rög
+((*)
+buf„r
+, 
+BS
+));
+
+323 } i‡(
+îr
+ > 0) {
+
+324 
+	`LOG
+("Ród d⁄e", 
+°d
+::
+	`°rög
+((*)
+buf„r
+, 
+îr
+));
+
+326 
+	`LOG
+("Ród ERROR", 
+îr
+);
+
+328 
+	`LOG
+("Rëu∫", 
+îr
+);
+
+329 
+	`‰ì
+(
+buf„r
+);
+
+331 
+	}
+}
+
+333 
+	$maö
+(
+¨gc
+, *
+¨gv
+[]) {
+
+334 i‡(
+¨gc
+ != 2) {
+
+335 
+°d
+::
+˚º
+ << "Ußge: " << 
+¨gv
+[0] << " <devi˚_∑th>" << std::
+ídl
+;
+
+339 
+°d
+::
+°rög
+ 
+devi˚_∑th
+ = 
+¨gv
+[1];
+
+340 
+°d
+::
+cout
+ << 
+devi˚_∑th
+ << std::
+ídl
+;
+
+342 
+FdpNvme
+ 
+fdp
+ = FdpNvme{
+devi˚_∑th
+, 
+åue
+};
+
+344 
+NvmeD©a
+ 
+nvme
+ = 
+fdp
+.
+	`gëNvmeD©a
+();
+
+345 
+UrögCmd
+ 
+urög_cmd
+ =
+
+346 
+UrögCmd
+{
+QDEPTH
+, 
+nvme
+.
+	`blockSize
+(),Çvme.
+	`lbaShi·
+(), 
+io_urög_∑øms
+{}};
+
+348 
+	`tWrôeSögÀ
+(
+fdp
+, 
+nvme
+, 
+urög_cmd
+);
+
+349 
+	`tRódSögÀ
+(
+fdp
+, 
+nvme
+, 
+urög_cmd
+);
+
+354 
+	}
+}
+
+	@uring_test.h
+
+1 #i‚de‡
+URING_TEST_H
+
+
+2 
+	#URING_TEST_H
+
+
+	)
+
+4 
+	~"fd≤vme.h
+"
+
+5 
+	~"urög_cmd.h
+"
+
+6 
+	~"utû.h
+"
+
+8 
+	~<chr⁄o
+>
+
+	@util.cpp
+
+1 
+	~"utû.h
+"
+
+4 
+	$roundup_pow2
+(
+dïth
+) {
+
+5 i‡(
+dïth
+ == 0)
+
+8 
+dïth
+--;
+
+9 
+dïth
+ |= depth >> 1;
+
+10 
+dïth
+ |= depth >> 2;
+
+11 
+dïth
+ |= depth >> 4;
+
+12 
+dïth
+ |= depth >> 8;
+
+13 
+dïth
+ |= depth >> 16;
+
+14 #i‡(
+UINT_MAX
+ == 0xFFFFFFFFFFFFFFFF)
+
+15 
+dïth
+ |= depth >> 32;
+
+17  ()
+dïth
+ + 1;
+
+18 
+	}
+}
+
+20 
+uöt64_t
+ 
+	$°rToU64
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+) {
+
+21 
+åy
+ {
+
+22 
+uŒ
+ = 
+°d
+::
+	`°ouŒ
+(
+°r
+);
+
+23 i‡(
+uŒ
+ > 
+°d
+::
+numîic_limôs
+<
+uöt64_t
+>::
+	`max
+()) {
+
+24 
+throw
+ 
+°d
+::
+	`out_of_ønge
+("Value out ofÑange for uint64_t");
+
+26  
+°©ic_ˇ°
+<
+uöt64_t
+>(
+uŒ
+);
+
+27 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+övÆid_¨gumít
+ &
+e
+) {
+
+28 
+°d
+::
+˚º
+ << "InvÆidárgumít: " << 
+e
+.
+	`wh©
+() << '\n';
+
+29 
+throw
+;
+
+30 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+out_of_ønge
+ &
+e
+) {
+
+31 
+°d
+::
+˚º
+ << "Ouào‡ønge: " << 
+e
+.
+	`wh©
+() << '\n';
+
+32 
+throw
+;
+
+34 
+	}
+}
+
+36 
+uöt16_t
+ 
+	$°rToU16
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+) {
+
+37 
+åy
+ {
+
+38 
+ul
+ = 
+°d
+::
+	`°oul
+(
+°r
+);
+
+39 i‡(
+ul
+ > 
+°d
+::
+numîic_limôs
+<
+uöt16_t
+>::
+	`max
+()) {
+
+40 
+throw
+ 
+°d
+::
+	`out_of_ønge
+("Value out ofÑange for uint16_t");
+
+42  
+°©ic_ˇ°
+<
+uöt16_t
+>(
+ul
+);
+
+43 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+övÆid_¨gumít
+ &
+e
+) {
+
+44 
+°d
+::
+˚º
+ << "InvÆidárgumít: " << 
+e
+.
+	`wh©
+() << '\n';
+
+45 
+throw
+;
+
+46 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+out_of_ønge
+ &
+e
+) {
+
+47 
+°d
+::
+˚º
+ << "Ouào‡ønge: " << 
+e
+.
+	`wh©
+() << '\n';
+
+48 
+throw
+;
+
+50 
+	}
+}
+
+52 
+uöt32_t
+ 
+	$°rToU32
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+) {
+
+53 
+åy
+ {
+
+54 
+ul
+ = 
+°d
+::
+	`°oul
+(
+°r
+);
+
+55 i‡(
+ul
+ > 
+°d
+::
+numîic_limôs
+<
+uöt32_t
+>::
+	`max
+()) {
+
+56 
+throw
+ 
+°d
+::
+	`out_of_ønge
+("Value out ofÑange for uint32_t");
+
+58  
+°©ic_ˇ°
+<
+uöt32_t
+>(
+ul
+);
+
+59 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+övÆid_¨gumít
+ &
+e
+) {
+
+60 
+°d
+::
+˚º
+ << "InvÆidárgumít: " << 
+e
+.
+	`wh©
+() << '\n';
+
+61 
+throw
+;
+
+62 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+out_of_ønge
+ &
+e
+) {
+
+63 
+°d
+::
+˚º
+ << "Ouào‡ønge: " << 
+e
+.
+	`wh©
+() << '\n';
+
+64 
+throw
+;
+
+66 
+	}
+}
+
+68 
+öt32_t
+ 
+	$°rToI32
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+) {
+
+69 
+åy
+ {
+
+70 
+vÆ
+ = 
+°d
+::
+	`°ﬁ
+(
+°r
+);
+
+71 i‡(
+vÆ
+ < 
+°d
+::
+numîic_limôs
+<
+öt32_t
+>::
+	`mö
+() ||
+
+72 
+vÆ
+ > 
+°d
+::
+numîic_limôs
+<
+öt32_t
+>::
+	`max
+()) {
+
+73 
+throw
+ 
+°d
+::
+	`out_of_ønge
+("Value out ofÑange for int32_t");
+
+75  
+°©ic_ˇ°
+<
+öt32_t
+>(
+vÆ
+);
+
+76 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+övÆid_¨gumít
+ &
+e
+) {
+
+77 
+°d
+::
+˚º
+ << "InvÆidárgumít: " << 
+e
+.
+	`wh©
+() << '\n';
+
+78 
+throw
+;
+
+79 } 
+	`ˇtch
+ (c⁄° 
+°d
+::
+out_of_ønge
+ &
+e
+) {
+
+80 
+°d
+::
+˚º
+ << "Ouào‡ønge: " << 
+e
+.
+	`wh©
+() << '\n';
+
+81 
+throw
+;
+
+83 
+	}
+}
+
+	@util.h
+
+1 #¥agm®
+⁄˚
+
+
+3 
+	~<c°döt
+>
+
+4 
+	~<c°rög
+>
+
+5 
+	~<f˙é.h
+>
+
+6 
+	~<io°ªam
+>
+
+7 
+	~<limôs
+>
+
+8 
+	~<øndom
+>
+
+9 
+	~<s°ªam
+>
+
+10 
+	~<°dex˚±
+>
+
+11 
+	~<°dlib.h
+>
+
+12 
+	~<°rög
+>
+
+13 
+	~<sys/°©.h
+>
+
+14 
+	~<uni°d.h
+>
+
+16 
+	#D_LOG
+
+
+	)
+
+18 #ifde‡
+D_LOG
+
+
+19 
+	#LOG
+(
+x
+, 
+y
+) \
+
+20 
+°d
+::
+cout
+ << "[LOG] " << 
+__FILE__
+ << "(" << 
+__LINE__
+ << "Ë: " << 
+x
+ << "= " \
+
+21 << 
+y
+ << "\n"
+
+	)
+
+23 
+	#LOG
+(
+x
+, 
+y
+)
+
+	)
+
+26 #ifde‡
+D_DBG
+
+
+27 
+	#DBG
+(
+x
+, 
+y
+) \
+
+28 
+°d
+::
+cout
+ << "[DBG] " << 
+__FILE__
+ << "(" << 
+__LINE__
+ << "Ë: " << 
+x
+ << "= " \
+
+29 << 
+y
+ << "\n"
+
+	)
+
+31 
+	#DBG
+(
+x
+, 
+y
+)
+
+	)
+
+34 
+roundup_pow2
+(
+dïth
+);
+
+35 
+uöt16_t
+ 
+°rToU16
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+);
+
+36 
+uöt32_t
+ 
+°rToU32
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+);
+
+37 
+uöt64_t
+ 
+°rToU64
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+);
+
+39 
+öt32_t
+ 
+°rToI32
+(c⁄° 
+°d
+::
+°rög
+ &
+°r
+);
+
+41 
+	gãm∂©e
+ <
+ty≥«me
+ 
+	gT
+> 
+c⁄°ex¥
+ 
+T
+ 
+	$c⁄°ex¥_log2_
+(
+T
+ 
+a
+, T 
+e
+) {
+
+42  
+e
+ =
+	`T
+(1Ë? 
+a
+ : 
+	`c⁄°ex¥_log2_
+(a + T(1),É / T(2));
+
+43 
+	}
+}
+
+45 
+	gãm∂©e
+ <
+ty≥«me
+ 
+	gT
+> 
+c⁄°ex¥
+ 
+T
+ 
+	$c⁄°ex¥_log2_˚û_
+(
+T
+ 
+l2
+, T 
+t
+) {
+
+46  
+l2
+ + 
+	`T
+(T(1Ë<<Ü2 < 
+t
+ ? 1 : 0);
+
+47 
+	}
+}
+
+49 
+	gãm∂©e
+ <
+ty≥«me
+ 
+	gT
+> 
+c⁄°ex¥
+ 
+T
+ 
+	$c⁄°ex¥_log2
+(
+T
+ 
+t
+) {
+
+50  
+	`c⁄°ex¥_log2_
+(
+	`T
+(0), 
+t
+);
+
+51 
+	}
+}
+
+53 
+	gãm∂©e
+ <
+ty≥«me
+ 
+	gT
+> 
+c⁄°ex¥
+ 
+T
+ 
+	$c⁄°ex¥_log2_˚û
+(
+T
+ 
+t
+) {
+
+54  
+	`c⁄°ex¥_log2_˚û_
+(
+	`c⁄°ex¥_log2
+(
+t
+),Å);
+
+55 
+	}
+}
+
+	@
+1
+.
+0
+10
+110
+fdpnvme.cpp
+fdpnvme.h
+flexfs.h
+temp.cpp
+uring_cmd.cpp
+uring_cmd.h
+uring_test.cpp
+uring_test.h
+util.cpp
+util.h

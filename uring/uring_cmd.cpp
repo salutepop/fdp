@@ -5,6 +5,7 @@ UringCmd::UringCmd(uint32_t qd, uint32_t blocksize, uint32_t lbashift,
                    io_uring_params params)
     : qd_(qd), blocksize_(blocksize), lbashift_(lbashift), req_limitmax_(qd),
       req_limitlow_(qd >> 1), req_inflight_(0) {
+  LOG("Construction", "UringCmd");
   initBuffer();
   initUring(params);
 }
@@ -45,7 +46,7 @@ void UringCmd::initUring(io_uring_params &params) {
 
     p.flags |= IORING_SETUP_COOP_TASKRUN;
     // p.flags |= IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN;
-    p.flags |= IORING_SETUP_SINGLE_ISSUER;
+    // p.flags |= IORING_SETUP_SINGLE_ISSUER;
 
     params_ = p;
   } else {
@@ -133,7 +134,7 @@ int UringCmd::submitCommand(int nr_reqs) {
   } else {
     err = io_uring_submit(&ring_);
   }
-  DBG("uring_submit", err);
+  LOG("uring_submit, err=", err);
   return err;
 }
 
@@ -172,6 +173,12 @@ int UringCmd::uringCmdRead(int fd, int ns, off_t offset, size_t size,
   uint32_t nBlocks = ((lastOffset - zOffset) / blocksize_) + 1;
   uint64_t nSize = nBlocks * blocksize_;
   uint32_t maxTfrbytes = 64 * blocksize_; // mdts :6 (2^6) blocks
+  if (size > maxTfrbytes * 8) {
+    return -EINVAL;
+  }
+  if (nSize > maxTfrbytes) {
+    nSize = maxTfrbytes;
+  }
 
   std::stringstream info;
   info << "offset: " << offset << ", ";
@@ -180,11 +187,11 @@ int UringCmd::uringCmdRead(int fd, int ns, off_t offset, size_t size,
   info << "nSize: " << nSize << ", ";
   info << "lastOffset: " << lastOffset << ", ";
   info << "nBlocks: " << nBlocks;
-  DBG("READ Arguments", info.str());
+  LOG("Read Arguments", info.str());
 
-  if (nSize > maxTfrbytes) {
-    return -EINVAL;
-  }
+  // if (nSize > maxTfrbytes) {
+  //   return -EINVAL;
+  // }
   bool isAligned =
       // requested offset == zero based offset
       (zOffset == offset) &&
@@ -216,62 +223,94 @@ int UringCmd::uringCmdRead(int fd, int ns, off_t offset, size_t size,
   }
   return ret;
 }
+
 int UringCmd::uringCmdWrite(int fd, int ns, off_t offset, size_t size,
                             void *buf, uint32_t dspec) {
   const uint32_t kPlacementMode = 2;
   int ret;
+  int maxBlocks = 64;
+  uint32_t maxTfrbytes = maxBlocks * blocksize_; // mdts :6 (2^6) blocks
+
+  // zero-based offset(aligned)
   off_t zOffset = (offset / blocksize_) * blocksize_;
+  off_t misOffset = offset - zOffset;
   off_t lastOffset = offset + size - 1;
-  uint32_t nBlocks = ((lastOffset - zOffset) / blocksize_) + 1;
-  uint64_t nSize = nBlocks * blocksize_;
-  uint32_t maxTfrbytes = 64 * blocksize_; // mdts :6 (2^6) blocks
+  uint32_t left = lastOffset - zOffset + 1;
+  uint32_t nWritten = 0;
 
   std::stringstream info;
-  info << "offset: " << offset << ", ";
+  info << "[Input] offset: " << offset << ", ";
   info << "size: " << size << ", ";
-  info << "zOffset: " << zOffset << ", ";
-  info << "nSize: " << nSize << ", ";
+  info << "[Calc] zOffset: " << zOffset << ", ";
+  info << "misOffset: " << misOffset << ", ";
   info << "lastOffset: " << lastOffset << ", ";
-  info << "nBlocks: " << nBlocks;
-  DBG("Write Arguments", info.str());
+  LOG("Write Arguments", info.str());
 
-  if (nSize > maxTfrbytes) {
+  if (size > maxTfrbytes * 8) {
     return -EINVAL;
   }
-  bool isAligned =
-      // requested offset == zero based offset
-      (zOffset == offset) &&
-      // if not zero, need memcpy
-      ((size % blocksize_) == 0);
+  // uint32_t nBlocks = ((lastOffset - zOffset) / blocksize_) + 1;
+  // uint64_t nSize = nBlocks * blocksize_;
+  //  if (nSize > maxTfrbytes) {
+  //    return -EINVAL;
+  //  }
 
+  // TODO: do ~ while() 문으로 처리하고, nWrite-- 하는 방향으로 수정하기
+  // for (int i = 0; i < nloop; i++) {
   void *tempBuf;
-  if (!isAligned) {
-    LOG("Write Warning, isn't aligned data (size or offset), do RMW", size);
+  while (left > 0) {
+    uint32_t nCurrent = (left > maxTfrbytes) ? maxTfrbytes : left;
 
-    // INFO: Read-Modify-Write
-    if (posix_memalign((void **)&tempBuf, PAGE_SIZE, nSize)) {
-      LOG("[ERROR]", "MemAlign fail");
+    /*
+    bool isAligned =
+        // requested offset == zero based offset
+        (zOffset == offset) &&
+        // if not zero, need memcpy
+        ((size % blocksize_) == 0);
+    */
+
+    // if (!isAligned) {
+    if (misOffset) {
+      LOG("Write Warning, isn't aligned data, do RMW. misOffset", misOffset);
+
+      // INFO: Read-Modify-Write
+      if (posix_memalign((void **)&tempBuf, PAGE_SIZE, nCurrent)) {
+        LOG("[ERROR]", "MemAlign fail");
+        free(tempBuf);
+        return -EINVAL;
+      }
+      ret = uringCmdRead(fd, ns, zOffset, nCurrent, tempBuf);
+      if ((uint32_t)ret != nCurrent) {
+        LOG("[ERROR]", "RMW-Read fail");
+        free(tempBuf);
+        return -EINVAL;
+      }
+      memcpy((char *)tempBuf + misOffset, buf, nCurrent - misOffset);
+      prepUringCmd(fd, ns, op_write, zOffset, nCurrent, tempBuf, kPlacementMode,
+                   dspec);
       free(tempBuf);
-      return -EINVAL;
+    } else {
+      prepUringCmd(fd, ns, op_write, offset, nCurrent, (char *)buf + nWritten,
+                   kPlacementMode, dspec);
+      //  prepUringCmd(fd, ns, op_write, offset, nSize, buf, kPlacementMode,
+      //  dspec);
     }
-    ret = uringCmdRead(fd, ns, zOffset, nSize, tempBuf);
-    if (ret != (int)nSize) {
-      LOG("[ERROR]", "RMW-Read fail");
-      free(tempBuf);
-      return -EINVAL;
+    submitCommand();
+    ret = waitCompleted();
+    if (ret < 0) {
+      // ERROR:
+      return ret;
     }
-    memcpy((char *)tempBuf + (offset - zOffset), buf, size);
-    prepUringCmd(fd, ns, op_write, zOffset, nSize, tempBuf, kPlacementMode,
-                 dspec);
-  } else {
-    prepUringCmd(fd, ns, op_write, offset, size, buf, kPlacementMode, dspec);
+
+    LOG("Write Done, bytes", nCurrent - misOffset);
+    left -= nCurrent;
+    zOffset += nCurrent;
+    nWritten += nCurrent - misOffset;
+    // misOffset은 처음 한번만 반영
+    misOffset = 0;
   }
-  submitCommand();
-  ret = waitCompleted();
-  if (ret == 0) {
-    ret = size;
-  }
-  free(tempBuf);
-  return ret;
+  // TODO: return 예외처리 삽입해야함, 지금은 마지막 에러만 체크
+  //}
+  return nWritten;
 }
 int UringCmd::isCqOverflow() { return io_uring_cq_has_overflow(&ring_); }

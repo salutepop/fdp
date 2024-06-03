@@ -1,0 +1,225 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/cm/dev/fdp/uring/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+$(TARGET)	Makefile	/^$(TARGET): $(OBJS)$/;"	t
+%.o	Makefile	/^%.o: %.cpp $(HEADERS)$/;"	t
+BLK_DEF_MAX_SECTORS	fdpnvme.h	/^#define BLK_DEF_MAX_SECTORS /;"	d
+BLOCK_SIZE	temp.cpp	/^#define BLOCK_SIZE /;"	d	file:
+BS	uring_cmd.h	/^#define BS /;"	d
+CXX	Makefile	/^CXX = g++$/;"	m
+DBG	util.h	/^#define DBG(/;"	d
+D_LOG	util.h	/^#define D_LOG$/;"	d
+FDP_MAX_RUHS	fdpnvme.h	/^#define FDP_MAX_RUHS /;"	d
+FdpNvme	fdpnvme.cpp	/^FdpNvme::FdpNvme(const std::string &bdevName, bool isTest) {$/;"	f	class:FdpNvme
+FdpNvme	fdpnvme.h	/^class FdpNvme {$/;"	c
+GetFinishTreshold	flexfs.h	/^  uint32_t GetFinishTreshold() { return finish_treshold_; }$/;"	f	class:Superblock	typeref:typename:uint32_t
+GetUUID	flexfs.h	/^  std::string GetUUID() { return std::string(uuid_); }$/;"	f	class:Superblock	typeref:typename:std::string
+HEADERS	Makefile	/^HEADERS = uring_test.h fdpnvme.h util.h uring_cmd.h flexfs.h$/;"	m
+INCLUDES	Makefile	/^INCLUDES = -I\/usr\/local\/include$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS = -L\/usr\/local\/lib$/;"	m
+LDLIBS	Makefile	/^LDLIBS = -luring$/;"	m
+LOG	util.h	/^#define LOG(/;"	d
+MAGIC	flexfs.h	/^  const uint32_t MAGIC = 0x464C4558; \/* FLEX *\/$/;"	m	class:Superblock	typeref:typename:const uint32_t
+NVME_CSI_NVM	fdpnvme.h	/^#define NVME_CSI_NVM /;"	d
+NVME_DEFAULT_IOCTL_TIMEOUT	fdpnvme.h	/^#define NVME_DEFAULT_IOCTL_TIMEOUT /;"	d
+NVME_IDENTIFY_CNS_NS	fdpnvme.h	/^#define NVME_IDENTIFY_CNS_NS /;"	d
+NVME_IDENTIFY_CSI_SHIFT	fdpnvme.h	/^#define NVME_IDENTIFY_CSI_SHIFT /;"	d
+NVME_IDENTIFY_DATA_SIZE	fdpnvme.h	/^#define NVME_IDENTIFY_DATA_SIZE /;"	d
+NVME_IO_MGMT_RECV_RUH_STATUS	fdpnvme.h	/^  NVME_IO_MGMT_RECV_RUH_STATUS = 0x1,$/;"	e	enum:nvme_io_mgmt_recv_mo
+NvmeData	fdpnvme.h	/^  explicit NvmeData(uint32_t nsId, uint64_t nuse, uint32_t blockSize,$/;"	f	class:NvmeData
+NvmeData	fdpnvme.h	/^class NvmeData {$/;"	c
+OBJS	Makefile	/^OBJS = $(SRCS:.cpp=.o)$/;"	m
+OFFSET	temp.cpp	/^#define OFFSET /;"	d	file:
+PAGE_SIZE	uring_cmd.h	/^#define PAGE_SIZE /;"	d
+QDEPTH	uring_test.cpp	/^#define QDEPTH /;"	d	file:
+QUEUE_DEPTH	temp.cpp	/^#define QUEUE_DEPTH /;"	d	file:
+RU_SIZE	fdpnvme.h	/^#define RU_SIZE /;"	d
+SRCS	Makefile	/^SRCS = uring_test.cpp fdpnvme.cpp util.cpp uring_cmd.cpp$/;"	m
+Superblock	flexfs.h	/^  Superblock() {}$/;"	f	class:Superblock
+Superblock	flexfs.h	/^  Superblock(uint32_t finish_threshold = 0) {$/;"	f	class:Superblock
+Superblock	flexfs.h	/^class Superblock {$/;"	c
+TARGET	Makefile	/^TARGET = uring_test$/;"	m
+TEST_PID	uring_test.cpp	/^#define TEST_PID /;"	d	file:
+TEST_TYPE_MAX	uring_test.cpp	/^  TEST_TYPE_MAX$/;"	e	enum:__anon3645c47a0103	file:
+URINGCMD_READ	uring_test.cpp	/^  URINGCMD_READ,$/;"	e	enum:__anon3645c47a0103	file:
+URINGCMD_WRITE	uring_test.cpp	/^  URINGCMD_WRITE,$/;"	e	enum:__anon3645c47a0103	file:
+URING_READ	uring_test.cpp	/^  URING_READ = 0,$/;"	e	enum:__anon3645c47a0103	file:
+URING_TEST_H	uring_test.h	/^#define URING_TEST_H$/;"	d
+URING_WRITE	uring_test.cpp	/^  URING_WRITE,$/;"	e	enum:__anon3645c47a0103	file:
+UringCmd	uring_cmd.cpp	/^UringCmd::UringCmd(uint32_t qd, uint32_t blocksize, uint32_t lbashift,$/;"	f	class:UringCmd
+UringCmd	uring_cmd.h	/^  UringCmd(){};$/;"	f	class:UringCmd
+UringCmd	uring_cmd.h	/^class UringCmd {$/;"	c
+__anon3645c47a0103	uring_test.cpp	/^enum {$/;"	g	file:
+all	Makefile	/^all: $(TARGET)$/;"	t
+allocateFdpHandle	fdpnvme.cpp	/^int FdpNvme::allocateFdpHandle() {$/;"	f	class:FdpNvme	typeref:typename:int
+anagrpid	fdpnvme.h	/^  __le32 anagrpid;$/;"	m	struct:nvme_id_ns	typeref:typename:__le32
+bfd	fdpnvme.h	/^  int bfd() { return bfd_; }$/;"	f	class:FdpNvme	typeref:typename:int
+bfd_	fdpnvme.h	/^  int bfd_; \/* block device, nvme0n1 *\/$/;"	m	class:FdpNvme	typeref:typename:int
+blockSize	fdpnvme.h	/^  uint32_t blockSize() const { return blockSize_; }$/;"	f	class:NvmeData	typeref:typename:uint32_t
+blockSize_	fdpnvme.h	/^  uint32_t blockSize_;$/;"	m	class:NvmeData	typeref:typename:uint32_t
+block_size_	flexfs.h	/^  uint32_t block_size_ = 0; \/* in bytes *\/$/;"	m	class:Superblock	typeref:typename:uint32_t
+blocksize_	uring_cmd.h	/^  uint32_t blocksize_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+cfd	fdpnvme.h	/^  int cfd() { return cfd_; }$/;"	f	class:FdpNvme	typeref:typename:int
+cfd_	fdpnvme.h	/^  int cfd_; \/* char device, ng0n1 *\/$/;"	m	class:FdpNvme	typeref:typename:int
+clean	Makefile	/^clean:$/;"	t
+constexpr_log2	util.h	/^template <typename T> constexpr T constexpr_log2(T t) {$/;"	f	typeref:typename:T
+constexpr_log2_	util.h	/^template <typename T> constexpr T constexpr_log2_(T a, T e) {$/;"	f	typeref:typename:T
+constexpr_log2_ceil	util.h	/^template <typename T> constexpr T constexpr_log2_ceil(T t) {$/;"	f	typeref:typename:T
+constexpr_log2_ceil_	util.h	/^template <typename T> constexpr T constexpr_log2_ceil_(T l2, T t) {$/;"	f	typeref:typename:T
+dlfeat	fdpnvme.h	/^  __u8 dlfeat;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+dpc	fdpnvme.h	/^  __u8 dpc;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+dps	fdpnvme.h	/^  __u8 dps;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+ds	fdpnvme.h	/^  __u8 ds;$/;"	m	struct:nvme_lbaf	typeref:typename:__u8
+earutr	fdpnvme.h	/^  uint32_t earutr;$/;"	m	struct:nvme_fdp_ruh_status_desc	typeref:typename:uint32_t
+endgid	fdpnvme.h	/^  __le16 endgid;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+eui64	fdpnvme.h	/^  __u8 eui64[8];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[8]
+finish_treshold_	flexfs.h	/^  uint32_t finish_treshold_ = 0;$/;"	m	class:Superblock	typeref:typename:uint32_t
+flbas	fdpnvme.h	/^  __u8 flbas;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+fpi	fdpnvme.h	/^  __u8 fpi;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+getFdpPID	fdpnvme.h	/^  uint16_t getFdpPID(uint16_t fdpPHNDL) { return placementIDs_[fdpPHNDL]; }$/;"	f	class:FdpNvme	typeref:typename:uint16_t
+getMaxIOSize	fdpnvme.h	/^  uint32_t getMaxIOSize() { return nvmeData_.maxTfrSize(); }$/;"	f	class:FdpNvme	typeref:typename:uint32_t
+getMaxPid	fdpnvme.h	/^  uint16_t getMaxPid() { return maxPIDIdx_; }$/;"	f	class:FdpNvme	typeref:typename:uint16_t
+getNvmeCharDevice	fdpnvme.cpp	/^std::string FdpNvme::getNvmeCharDevice(const std::string &bdevName) {$/;"	f	class:FdpNvme	typeref:typename:std::string
+getNvmeData	fdpnvme.h	/^  NvmeData &getNvmeData() { return nvmeData_; }$/;"	f	class:FdpNvme	typeref:typename:NvmeData &
+getRing	fdpnvme.h	/^  io_uring *getRing() { return &ring_; }$/;"	f	class:FdpNvme	typeref:typename:io_uring *
+guard_type	fdpnvme.h	/^  __u8 guard_type;$/;"	m	struct:nvme_data	typeref:typename:__u8
+ilog2	fdpnvme.h	/^static inline int ilog2(uint32_t i) {$/;"	f	typeref:typename:int
+initBuffer	uring_cmd.cpp	/^void UringCmd::initBuffer() {$/;"	f	class:UringCmd	typeref:typename:void
+initUring	uring_cmd.cpp	/^void UringCmd::initUring(io_uring_params &params) {$/;"	f	class:UringCmd	typeref:typename:void
+initializeFDP	fdpnvme.cpp	/^void FdpNvme::initializeFDP(const std::string &bdevName) {$/;"	f	class:FdpNvme	typeref:typename:void
+initializeIoUring	fdpnvme.cpp	/^void FdpNvme::initializeIoUring(uint32_t qdepth) {$/;"	f	class:FdpNvme	typeref:typename:void
+iovecs_	uring_cmd.h	/^  struct iovec *iovecs_;$/;"	m	class:UringCmd	typeref:struct:iovec *
+isCqOverflow	uring_cmd.cpp	/^int UringCmd::isCqOverflow() { return io_uring_cq_has_overflow(&ring_); }$/;"	f	class:UringCmd	typeref:typename:int
+kDefaultPIDIdx	fdpnvme.h	/^  static constexpr uint16_t kDefaultPIDIdx = 0u;$/;"	m	class:FdpNvme	typeref:typename:uint16_t
+lbaShift	fdpnvme.h	/^  uint32_t lbaShift() const { return lbaShift_; }$/;"	f	class:NvmeData	typeref:typename:uint32_t
+lbaShift_	fdpnvme.h	/^  uint32_t lbaShift_;$/;"	m	class:NvmeData	typeref:typename:uint32_t
+lba_ext	fdpnvme.h	/^  __u32 lba_ext;$/;"	m	struct:nvme_data	typeref:typename:__u32
+lba_shift	fdpnvme.h	/^  __u32 lba_shift;$/;"	m	struct:nvme_data	typeref:typename:__u32
+lba_size	fdpnvme.h	/^  __u32 lba_size;$/;"	m	struct:nvme_data	typeref:typename:__u32
+lbaf	fdpnvme.h	/^  struct nvme_lbaf lbaf[16];$/;"	m	struct:nvme_id_ns	typeref:struct:nvme_lbaf[16]
+lbashift_	uring_cmd.h	/^  uint32_t lbashift_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+magic_	flexfs.h	/^  uint32_t magic_ = 0;$/;"	m	class:Superblock	typeref:typename:uint32_t
+main	temp.cpp	/^int main() {$/;"	f	typeref:typename:int
+main	uring_test.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
+maxPIDIdx_	fdpnvme.h	/^  uint16_t maxPIDIdx_{0};$/;"	m	class:FdpNvme	typeref:typename:uint16_t
+maxTfrSize	fdpnvme.h	/^  uint32_t maxTfrSize() { return maxTfrSize_; }$/;"	f	class:NvmeData	typeref:typename:uint32_t
+maxTfrSize_	fdpnvme.h	/^  uint32_t maxTfrSize_;$/;"	m	class:NvmeData	typeref:typename:uint32_t
+mc	fdpnvme.h	/^  __u8 mc;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+mcl	fdpnvme.h	/^  __le32 mcl;$/;"	m	struct:nvme_id_ns	typeref:typename:__le32
+ms	fdpnvme.h	/^  __le16 ms;$/;"	m	struct:nvme_lbaf	typeref:typename:__le16
+ms	fdpnvme.h	/^  __u16 ms;$/;"	m	struct:nvme_data	typeref:typename:__u16
+msrc	fdpnvme.h	/^  __u8 msrc;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+mssrl	fdpnvme.h	/^  __le16 mssrl;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nabo	fdpnvme.h	/^  __le16 nabo;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nabsn	fdpnvme.h	/^  __le16 nabsn;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nabspf	fdpnvme.h	/^  __le16 nabspf;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nacwu	fdpnvme.h	/^  __le16 nacwu;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nawun	fdpnvme.h	/^  __le16 nawun;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nawupf	fdpnvme.h	/^  __le16 nawupf;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+ncap	fdpnvme.h	/^  __le64 ncap;$/;"	m	struct:nvme_id_ns	typeref:typename:__le64
+nextPIDIdx_	fdpnvme.h	/^  uint16_t nextPIDIdx_{kDefaultPIDIdx + 1};$/;"	m	class:FdpNvme	typeref:typename:uint16_t
+nguid	fdpnvme.h	/^  __u8 nguid[16];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[16]
+nlbaf	fdpnvme.h	/^  __u8 nlbaf;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+nmic	fdpnvme.h	/^  __u8 nmic;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+noiob	fdpnvme.h	/^  __le16 noiob;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nows	fdpnvme.h	/^  __le16 nows;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+npda	fdpnvme.h	/^  __le16 npda;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+npdg	fdpnvme.h	/^  __le16 npdg;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+npwa	fdpnvme.h	/^  __le16 npwa;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+npwg	fdpnvme.h	/^  __le16 npwg;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+nruhsd	fdpnvme.h	/^  uint16_t nruhsd;$/;"	m	struct:nvme_fdp_ruh_status	typeref:typename:uint16_t
+nsId	fdpnvme.h	/^  uint32_t nsId() const { return nsId_; }$/;"	f	class:NvmeData	typeref:typename:uint32_t
+nsId_	fdpnvme.h	/^  uint32_t nsId_;$/;"	m	class:NvmeData	typeref:typename:uint32_t
+nsattr	fdpnvme.h	/^  __u8 nsattr;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+nsfeat	fdpnvme.h	/^  __u8 nsfeat;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+nsid	fdpnvme.h	/^  __u32 nsid;$/;"	m	struct:nvme_data	typeref:typename:__u32
+nsze	fdpnvme.h	/^  __le64 nsze;$/;"	m	struct:nvme_id_ns	typeref:typename:__le64
+nuse	fdpnvme.h	/^  __le64 nuse;$/;"	m	struct:nvme_id_ns	typeref:typename:__le64
+nuse	fdpnvme.h	/^  uint64_t nuse() const { return nuse_; }$/;"	f	class:NvmeData	typeref:typename:uint64_t
+nuse_	fdpnvme.h	/^  uint64_t nuse_; \/\/ Namespace Utilization$/;"	m	class:NvmeData	typeref:typename:uint64_t
+nvmcap	fdpnvme.h	/^  __u8 nvmcap[16];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[16]
+nvmeData_	fdpnvme.h	/^  NvmeData nvmeData_{};$/;"	m	class:FdpNvme	typeref:typename:NvmeData
+nvmeIOMgmtRecv	fdpnvme.cpp	/^int FdpNvme::nvmeIOMgmtRecv(uint32_t cfd, uint32_t nsid, void *data,$/;"	f	class:FdpNvme	typeref:typename:int
+nvme_admin_identify	fdpnvme.h	/^  nvme_admin_identify = 0x06,$/;"	e	enum:nvme_admin_opcode
+nvme_admin_opcode	fdpnvme.h	/^enum nvme_admin_opcode {$/;"	g
+nvme_cmd_io_mgmt_recv	uring_cmd.h	/^  nvme_cmd_io_mgmt_recv = 0x12,$/;"	e	enum:nvme_io_opcode
+nvme_cmd_io_mgmt_send	uring_cmd.h	/^  nvme_cmd_io_mgmt_send = 0x1d,$/;"	e	enum:nvme_io_opcode
+nvme_cmd_read	uring_cmd.h	/^  nvme_cmd_read = 0x02,$/;"	e	enum:nvme_io_opcode
+nvme_cmd_write	uring_cmd.h	/^  nvme_cmd_write = 0x01,$/;"	e	enum:nvme_io_opcode
+nvme_data	fdpnvme.h	/^struct nvme_data {$/;"	s
+nvme_fdp_ruh_status	fdpnvme.h	/^struct nvme_fdp_ruh_status {$/;"	s
+nvme_fdp_ruh_status_desc	fdpnvme.h	/^struct nvme_fdp_ruh_status_desc {$/;"	s
+nvme_id_ns	fdpnvme.h	/^struct nvme_id_ns {$/;"	s
+nvme_io_mgmt_recv_mo	fdpnvme.h	/^enum nvme_io_mgmt_recv_mo {$/;"	g
+nvme_io_opcode	uring_cmd.h	/^enum nvme_io_opcode {$/;"	g
+nvme_lbaf	fdpnvme.h	/^struct nvme_lbaf {$/;"	s
+nvmsetid	fdpnvme.h	/^  __le16 nvmsetid;$/;"	m	struct:nvme_id_ns	typeref:typename:__le16
+op_read	uring_cmd.h	/^#define op_read /;"	d
+op_write	uring_cmd.h	/^#define op_write /;"	d
+openNvmeDevice	fdpnvme.cpp	/^int FdpNvme::openNvmeDevice(bool isChar, const std::string &bdevName,$/;"	f	class:FdpNvme	typeref:typename:int
+openNvmeDevice	fdpnvme.cpp	/^void FdpNvme::openNvmeDevice(const std::string &bdevName) {$/;"	f	class:FdpNvme	typeref:typename:void
+params_	uring_cmd.h	/^  io_uring_params params_;$/;"	m	class:UringCmd	typeref:typename:io_uring_params
+pi_loc	fdpnvme.h	/^  __u8 pi_loc;$/;"	m	struct:nvme_data	typeref:typename:__u8
+pi_size	fdpnvme.h	/^  __u16 pi_size;$/;"	m	struct:nvme_data	typeref:typename:__u16
+pi_type	fdpnvme.h	/^  __u8 pi_type;$/;"	m	struct:nvme_data	typeref:typename:__u8
+pid	fdpnvme.h	/^  uint16_t pid;$/;"	m	struct:nvme_fdp_ruh_status_desc	typeref:typename:uint16_t
+placementIDs_	fdpnvme.h	/^  std::vector<uint16_t> placementIDs_{};$/;"	m	class:FdpNvme	typeref:typename:std::vector<uint16_t>
+prepFdpUringCmdSqe	fdpnvme.cpp	/^void FdpNvme::prepFdpUringCmdSqe(struct io_uring_sqe &sqe, void *buf,$/;"	f	class:FdpNvme	typeref:typename:void
+prepReadUringCmdSqe	fdpnvme.cpp	/^void FdpNvme::prepReadUringCmdSqe(struct io_uring_sqe &sqe, void *buf,$/;"	f	class:FdpNvme	typeref:typename:void
+prepUring	uring_cmd.cpp	/^void UringCmd::prepUring(int fd, bool is_read, off_t offset, size_t size,$/;"	f	class:UringCmd	typeref:typename:void
+prepUringCmd	uring_cmd.cpp	/^void UringCmd::prepUringCmd(int fd, int ns, bool is_read, off_t offset,$/;"	f	class:UringCmd	typeref:typename:void
+prepUringCmdRead	uring_cmd.h	/^  void prepUringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:void
+prepUringCmdWrite	uring_cmd.h	/^  void prepUringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,$/;"	f	class:UringCmd	typeref:typename:void
+prepUringRead	uring_cmd.h	/^  void prepUringRead(int fd, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:void
+prepUringWrite	uring_cmd.h	/^  void prepUringWrite(int fd, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:void
+prepWriteUringCmdSqe	fdpnvme.cpp	/^void FdpNvme::prepWriteUringCmdSqe(struct io_uring_sqe &sqe, void *buf,$/;"	f	class:FdpNvme	typeref:typename:void
+qd_	uring_cmd.h	/^  uint32_t qd_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+readNvmeInfo	fdpnvme.cpp	/^NvmeData FdpNvme::readNvmeInfo(const std::string &bdevName) {$/;"	f	class:FdpNvme	typeref:typename:NvmeData
+req_inflight_	uring_cmd.h	/^  uint32_t req_inflight_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+req_limitlow_	uring_cmd.h	/^  uint32_t req_limitlow_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+req_limitmax_	uring_cmd.h	/^  uint32_t req_limitmax_;$/;"	m	class:UringCmd	typeref:typename:uint32_t
+rescap	fdpnvme.h	/^  __u8 rescap;$/;"	m	struct:nvme_id_ns	typeref:typename:__u8
+ring_	fdpnvme.h	/^  struct io_uring ring_;$/;"	m	class:FdpNvme	typeref:struct:io_uring
+ring_	uring_cmd.h	/^  struct io_uring ring_;$/;"	m	class:UringCmd	typeref:struct:io_uring
+roundup_pow2	util.cpp	/^int roundup_pow2(unsigned int depth) {$/;"	f	typeref:typename:int
+rp	fdpnvme.h	/^  __u8 rp;$/;"	m	struct:nvme_lbaf	typeref:typename:__u8
+rsvd0	fdpnvme.h	/^  uint8_t rsvd0[14];$/;"	m	struct:nvme_fdp_ruh_status	typeref:typename:uint8_t[14]
+rsvd16	fdpnvme.h	/^  uint8_t rsvd16[16];$/;"	m	struct:nvme_fdp_ruh_status_desc	typeref:typename:uint8_t[16]
+rsvd192	fdpnvme.h	/^  __u8 rsvd192[192];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[192]
+rsvd81	fdpnvme.h	/^  __u8 rsvd81[11];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[11]
+rsvd96	fdpnvme.h	/^  __u8 rsvd96[3];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[3]
+ru_size_	flexfs.h	/^  uint32_t ru_size_ = 0;    \/* in blocks *\/$/;"	m	class:Superblock	typeref:typename:uint32_t
+ruamw	fdpnvme.h	/^  uint64_t ruamw;$/;"	m	struct:nvme_fdp_ruh_status_desc	typeref:typename:uint64_t
+ruhid	fdpnvme.h	/^  uint16_t ruhid;$/;"	m	struct:nvme_fdp_ruh_status_desc	typeref:typename:uint16_t
+ruhss	fdpnvme.h	/^  struct nvme_fdp_ruh_status_desc ruhss[];$/;"	m	struct:nvme_fdp_ruh_status	typeref:struct:nvme_fdp_ruh_status_desc[]
+startLba	fdpnvme.h	/^  uint64_t startLba() const { return startLba_; }$/;"	f	class:NvmeData	typeref:typename:uint64_t
+startLba_	fdpnvme.h	/^  uint64_t startLba_;$/;"	m	class:NvmeData	typeref:typename:uint64_t
+strToI32	util.cpp	/^int32_t strToI32(const std::string &str) {$/;"	f	typeref:typename:int32_t
+strToU16	util.cpp	/^uint16_t strToU16(const std::string &str) {$/;"	f	typeref:typename:uint16_t
+strToU32	util.cpp	/^uint32_t strToU32(const std::string &str) {$/;"	f	typeref:typename:uint32_t
+strToU64	util.cpp	/^uint64_t strToU64(const std::string &str) {$/;"	f	typeref:typename:uint64_t
+submitCommand	uring_cmd.cpp	/^int UringCmd::submitCommand(int nr_reqs) {$/;"	f	class:UringCmd	typeref:typename:int
+tBenchmark	uring_test.cpp	/^void tBenchmark(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd,$/;"	f	typeref:typename:void
+tREAD	uring_test.cpp	/^const uint32_t tREAD = 1U << 1;$/;"	v	typeref:typename:const uint32_t
+tReadSingle	uring_test.cpp	/^void tReadSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {$/;"	f	typeref:typename:void
+tURING	uring_test.cpp	/^const uint32_t tURING = 0U << 0;$/;"	v	typeref:typename:const uint32_t
+tURING_CMD	uring_test.cpp	/^const uint32_t tURING_CMD = 1U << 0;$/;"	v	typeref:typename:const uint32_t
+tWRITE	uring_test.cpp	/^const uint32_t tWRITE = 0U << 1;$/;"	v	typeref:typename:const uint32_t
+tWriteFDP	uring_test.cpp	/^void tWriteFDP(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {$/;"	f	typeref:typename:void
+tWriteSB	uring_test.cpp	/^void tWriteSB(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {$/;"	f	typeref:typename:void
+tWriteSingle	uring_test.cpp	/^void tWriteSingle(FdpNvme &fdp, NvmeData &nvme, UringCmd &uring_cmd) {$/;"	f	typeref:typename:void
+uringCmdRead	uring_cmd.h	/^  int uringCmdRead(int fd, int ns, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:int
+uringCmdWrite	uring_cmd.h	/^  int uringCmdWrite(int fd, int ns, off_t offset, size_t size, void *buf,$/;"	f	class:UringCmd	typeref:typename:int
+uringRead	uring_cmd.h	/^  int uringRead(int fd, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:int
+uringWrite	uring_cmd.h	/^  int uringWrite(int fd, off_t offset, size_t size, void *buf) {$/;"	f	class:UringCmd	typeref:typename:int
+uuid_	flexfs.h	/^  char uuid_[37] = {0};$/;"	m	class:Superblock	typeref:typename:char[37]
+vs	fdpnvme.h	/^  __u8 vs[3712];$/;"	m	struct:nvme_id_ns	typeref:typename:__u8[3712]
+waitCompleted	uring_cmd.cpp	/^int UringCmd::waitCompleted() {$/;"	f	class:UringCmd	typeref:typename:int
