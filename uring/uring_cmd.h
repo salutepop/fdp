@@ -53,7 +53,6 @@ public:
       }
       free(iovecs_);
     }
-    LOG("Destruction", "UringCmd");
   }
   // size = byte
   void prepUringRead(int fd, off_t offset, size_t size, void *buf) {
