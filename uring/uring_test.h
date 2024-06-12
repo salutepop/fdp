@@ -5,5 +5,8 @@
 #include "uring_cmd.h"
 #include "util.h"
 
+#include <mutex>
+#include <thread>
+
 #include <chrono>
 #endif // URING_TEST_H
