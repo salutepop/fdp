@@ -1,19 +1,22 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint> // for uint16_t, uint32_t
 #include <cstring>
 #include <fcntl.h>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <mutex>
 #include <random>
 #include <sstream>
 #include <stdexcept>
 #include <stdlib.h>
 #include <string>
 #include <sys/stat.h>
+#include <thread>
 #include <unistd.h>
-
+#include <vector>
 #define D_LOG
 // #define D_DBG
 #ifdef D_LOG
@@ -54,3 +57,14 @@ template <typename T> constexpr T constexpr_log2(T t) {
 template <typename T> constexpr T constexpr_log2_ceil(T t) {
   return constexpr_log2_ceil_(constexpr_log2(t), t);
 }
+
+class RangeLock {
+public:
+  RangeLock(size_t size) : locks(size) {}
+
+  void lock(size_t start, size_t end);
+  void unlock(size_t start, size_t end);
+
+private:
+  std::vector<std::mutex> locks;
+};

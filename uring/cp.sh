@@ -4,4 +4,5 @@ cp uring_cmd.cpp /home/cm/dev/repo/RocksDB/plugin/flexfs/fs/uring_cmd.cc
 cp uring_cmd.h /home/cm/dev/repo/RocksDB/plugin/flexfs/fs/uring_cmd.h
 
 cp util.h /home/cm/dev/repo/RocksDB/plugin/flexfs/fs/util.h
+cp util.cpp /home/cm/dev/repo/RocksDB/plugin/flexfs/fs/util.cc
 

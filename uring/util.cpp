@@ -81,3 +81,15 @@ int32_t strToI32(const std::string &str) {
     throw;
   }
 }
+
+void RangeLock::lock(size_t start, size_t end) {
+  for (size_t i = start; i <= end; ++i) {
+    locks[i].lock();
+  }
+}
+
+void RangeLock::unlock(size_t start, size_t end) {
+  for (size_t i = start; i <= end; ++i) {
+    locks[i].unlock();
+  }
+}

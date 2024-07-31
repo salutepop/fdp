@@ -38,7 +38,8 @@ private:
   void initBuffer();
   void initUring(io_uring_params &params);
   void prepUringCmd(int fd, int ns, bool is_read, off_t offset, size_t size,
-                    void *buf, uint32_t dtype = 0, uint32_t dspec = 0);
+                    void *buf, uint32_t dtype = 0, uint32_t dspec = 0,
+                    uint64_t userData = 0);
   void prepUring(int fd, bool is_read, off_t offset, size_t size, void *buf);
 
 public:
@@ -74,7 +75,7 @@ public:
     prepUringCmd(fd, ns, op_write, offset, size, buf, kPlacementMode, dspec);
   }
   int submitCommand(int nr_reqs = 0);
-  int waitCompleted();
+  int waitCompleted(int nr_reqs = 0);
 
   int uringRead(int fd, off_t offset, size_t size, void *buf);
   int uringWrite(int fd, off_t offset, size_t size, void *buf);
