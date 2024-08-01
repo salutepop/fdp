@@ -15,11 +15,16 @@ enum {
   TEST_TYPE_MAX
 };
 
+const char *enumStrings[] = {"URING_READ", "URINGCMD_READ", "URING_WRITE",
+                             "URINGCMD_WRITE", "TEST_TYPE_MAX"};
+
 const uint32_t tURING_CMD = 1U << 0;
 const uint32_t tURING = 0U << 0;
 const uint32_t tREAD = 1U << 1;
 const uint32_t tWRITE = 0U << 1;
-const uint32_t QDEPTH = 64;
+
+const uint32_t QDEPTH = 32;
+
 static thread_local std::unique_ptr<UringCmd> uring_cmd;
 static std::unique_ptr<FdpNvme> fdp;
 static std::unique_ptr<NvmeData> nvme;
@@ -51,7 +56,7 @@ void tWriteThreadsRing(int tid) {
       data[i] = tid * i;
     }
     for (uint32_t test_idx = URING_READ; test_idx < TEST_TYPE_MAX; test_idx++) {
-      if ((test_idx == URING_READ) || (test_idx == URINGCMD_READ) ||
+      if ((test_idx == URING_READ) || (test_idx == URINGCMD_WRITE) ||
           (test_idx == URING_WRITE)) {
         // LOG("SKIP", test_idx);
         continue;
@@ -187,10 +192,10 @@ void tWriteThread(int tid) {
 
 /* INFO: blocksize는 1MB크기 까지 평가 가능하고,
  * uringCmdWrite/Read 내부에서 256KB단위로 처리해줌 */
-void tBenchmark(int tid, uint32_t blocksize, uint64_t test_cnt) {
+void tBenchmarkHelper(int tid, uint32_t test_idx, uint32_t blocksize,
+                      uint64_t test_cnt) {
   off_t offset = 0;
   // uint32_t blocksize = 256 * 1024;
-  int err;
   uint64_t cnt = 0;
   // uint64_t maxTrfBytes = 4096 * 64;
   std::random_device rd;
@@ -198,142 +203,46 @@ void tBenchmark(int tid, uint32_t blocksize, uint64_t test_cnt) {
   std::uniform_int_distribution<> dis(1, 100000000);
 
   if (uring_cmd == nullptr) {
-    LOG("Create Urint", std::this_thread::get_id());
     uring_cmd = std::make_unique<UringCmd>(32, nvme->blockSize(),
                                            nvme->lbaShift(), io_uring_params{});
   }
-  // err = posix_memalign((void **)&buffer, PAGE_SIZE, blocksize);
-  // DBG("Mem Align", err);
 
   // TODO:Write 성능 이상함
-  for (uint32_t test_idx = URING_READ; test_idx < TEST_TYPE_MAX; test_idx++) {
-    // for (uint32_t test_idx = URING_WRITE; test_idx < URING_WRITE + 1;
-    //     test_idx++) {
-    std::chrono::system_clock::time_point start =
-        std::chrono::system_clock::now();
-    void *buffer;
-    // struct iovec *iovecs = (struct iovec *)calloc(QDEPTH, sizeof(struct
-    // iovec));
-    if (posix_memalign(&buffer, PAGE_SIZE, blocksize)) {
-      LOG("[FAIL]", "MemAlign");
+  void *buffer;
+  if (posix_memalign(&buffer, PAGE_SIZE, blocksize)) {
+    LOG("[FAIL]", "MemAlign");
+  }
+
+  for (cnt = 0; cnt < test_cnt; cnt++) {
+    switch (test_idx) {
+    case URING_READ:
+      uring_cmd->uringRead(fdp->bfd(), offset, blocksize, buffer);
+      break;
+    case URINGCMD_READ:
+      uring_cmd->uringCmdRead(fdp->cfd(), nvme->nsId(), offset, blocksize,
+                              buffer);
+      break;
+    case URING_WRITE:
+      uring_cmd->uringWrite(fdp->bfd(), offset, blocksize, buffer);
+      break;
+    case URINGCMD_WRITE:
+      uring_cmd->uringCmdWrite(fdp->cfd(), nvme->nsId(), offset, blocksize,
+                               buffer, TEST_PID);
+      break;
+    default:
+      break;
     }
 
-    for (cnt = 0; cnt < test_cnt; cnt++) {
-      switch (test_idx) {
-      case URING_READ:
-        uring_cmd->uringRead(fdp->bfd(), offset, blocksize, buffer);
-        break;
-      case URINGCMD_READ:
-        uring_cmd->uringCmdRead(fdp->cfd(), nvme->nsId(), offset, blocksize,
-                                buffer);
-        break;
-      case URING_WRITE:
-        uring_cmd->uringWrite(fdp->bfd(), offset, blocksize, buffer);
-        break;
-      case URINGCMD_WRITE:
-        uring_cmd->uringCmdWrite(fdp->cfd(), nvme->nsId(), offset, blocksize,
-                                 buffer, TEST_PID);
-        break;
-      default:
-        break;
-      }
-      /*
-      for (uint32_t i = 0; i < QDEPTH; i++) {
-        // memset(buffer[i], 0, blocksize);
-        switch (test_idx) {
-        case URING_READ:
-          uring_cmd->prepUringRead(fdp->bfd(), offset, blocksize, buffer[i]);
-          break;
-        case URINGCMD_READ:
-          uring_cmd->prepUringCmdRead(fdp->cfd(), nvme->nsId(), offset,
-                                      blocksize, buffer[i]);
-          break;
-        case URING_WRITE:
-          uring_cmd->prepUringWrite(fdp->bfd(), offset, blocksize, buffer[i]);
-          break;
-        case URINGCMD_WRITE:
-          uring_cmd->prepUringCmdWrite(fdp->cfd(), nvme->nsId(), offset,
-                                       blocksize, buffer[i], TEST_PID);
-          break;
-        default:
-          LOG("[ERR] test_idx", test_idx);
-          break;
-        }
-      }
-      err = uring_cmd->submitCommand(QDEPTH);
-      // LOG("REQS", err);
-      for (int reqs = 0; reqs < err; reqs++) {
-        err = uring_cmd->waitCompleted();
-        if (err > 0)
-          break;
-      }
-      if (uring_cmd->isCqOverflow() != 0) {
-        LOG("overflow", uring_cmd->isCqOverflow());
-        // uring_cmd->submitCommand();
-        uring_cmd->waitCompleted();
-      }
-      */
-      /*
-      if (QDEPTH == 1) {
-        uring_cmd.submitCommand();
-        uring_cmd.waitCompleted();
-        // } else if (cnt > 0 && cnt % QDEPTH == QDEPTH - 1) {
-      } else if ((cnt + 1) % QDEPTH == 0) {
-        err = uring_cmd.submitCommand(QDEPTH);
-        //  LOG("submitCommand", err);
-        for (int reqs = 0; reqs < err; reqs++) {
-          uring_cmd.waitCompleted();
-        }
-        if (uring_cmd.isCqOverflow() != 0) {
-          LOG("overflow", uring_cmd.isCqOverflow());
-          // uring_cmd.submitCommand();
-          uring_cmd.waitCompleted();
-        }
-        */
-
-      if (blocksize == 4096) {
-        offset = dis(gen) / 4; // random offset
-      } else {
-        offset += (blocksize / BS); // sequential ofset
-      }
-
-    } /* end loop, test_cnt */
-
-    err = uring_cmd->submitCommand();
-    for (int reqs = 0; reqs < err; reqs++) {
-      err = uring_cmd->waitCompleted();
-      if (err > 0)
-        break;
-    }
-    std::chrono::duration<double> sec =
-        std::chrono::system_clock::now() - start;
-    if (err < 0) {
-      LOG("Benchmark ERROR, err", err);
+    offset += blocksize; // sequential offset
+    /*
+    if (blocksize == BS) {
+      offset = dis(gen) / BS; // random offset
     } else {
-      std::stringstream info;
-      info << "QD-" << QDEPTH << ", ";
-      info << "BS-" << blocksize / 1024 << "KB" << ", ";
-      info << "CNT-" << test_cnt << ", ";
-      if (test_idx == URING_READ) {
-        info << "URING_READ" << ",";
-      } else if (test_idx == URING_WRITE) {
-        info << "URING_WRITE" << ",";
-      } else if (test_idx == URINGCMD_READ) {
-        info << "URINGCMD_READ" << ",";
-      } else if (test_idx == URINGCMD_WRITE) {
-        info << "URINGCMD_WRITE" << ",";
-      }
-      /*
-      LOG("Info", info.str());
-      LOG("Final offset", offset);
-      LOG("Times(sec)", sec.count());
-      LOG("IOPS", (test_cnt * QDEPTH) / sec.count());
-      LOG("MiB/s",
-          ((QDEPTH * test_cnt * (blocksize / 1024)) / 1024) / sec.count());
-      LOG("Benchmark done, err", err);
-      */
+      offset += blocksize; // sequential offset
     }
-  } /* end loop, test_idx */
+    */
+
+  } /* end loop, test_cnt */
 }
 
 // INFO : To verify, check the NVME ftrace and fdp status
@@ -814,15 +723,33 @@ void tMultiThreads(int threads, void (*func_)(int)) {
     t.join();
   }
 }
-void tMultiBenchmark(int threads, uint64_t blocksize, uint64_t testcnt) {
+void tBenchmark(int threads, uint32_t test_idx, uint64_t blocksize,
+                uint64_t testcnt) {
   std::vector<std::thread> threads_;
+  std::chrono::system_clock::time_point start =
+      std::chrono::system_clock::now();
+
   for (int i = 0; i < threads; i++) {
-    threads_.push_back(std::thread(tBenchmark, i, blocksize, testcnt));
+    threads_.push_back(
+        std::thread(tBenchmarkHelper, i, test_idx, blocksize, testcnt));
   }
   for (auto &t : threads_) {
     t.join();
   }
+  std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+
+  uint64_t totalcnt = testcnt * threads;
+  std::stringstream info;
+  info << "TEST_ITEM-" << enumStrings[test_idx] << ", ";
+  info << "THREADS-" << threads << ", ";
+  info << "BS-" << blocksize / 1024 << "KB" << ", ";
+  info << "CNT-" << testcnt << "[Total:" << totalcnt << "], ";
+  LOG("Info", info.str());
+  LOG("Times(sec)", sec.count());
+  LOG("IOPS", totalcnt / sec.count());
+  LOG("MiB/s", ((totalcnt * (blocksize / 1024)) / 1024) / sec.count());
 }
+
 int ringTest() {
   struct io_uring ring;
   // struct io_uring_params params;
@@ -906,10 +833,11 @@ int main(int argc, char *argv[]) {
   //      io_uring_params{}};
 
   // tMultiThreads(8, tWriteThreadsRing);
-  // tMultiThreads(8, tWriteThreadsRing);
-  uint64_t blocksize = 4096 * 256;
+  //  tMultiThreads(8, tWriteThreadsRing);
+  uint64_t blocksize = 4096 * 1024;
   uint64_t testcnt = 1000;
-  tMultiBenchmark(8, blocksize, testcnt);
+  tBenchmark(4, URINGCMD_READ, blocksize, testcnt);
+  tBenchmark(4, URINGCMD_WRITE, blocksize, testcnt);
 
   // tWriteSingle(fdp, nvme, uring_cmd);
   //      tReadSingle(fdp, nvme, uring_cmd);
