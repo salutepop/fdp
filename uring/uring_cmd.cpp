@@ -1,5 +1,4 @@
 #include "uring_cmd.h"
-#include <liburing.h>
 
 std::atomic_int cnt = 0;
 UringCmd::UringCmd(uint32_t qd, uint32_t blocksize, uint32_t lbashift,

@@ -813,6 +813,7 @@ int ringTest() {
 
   return 0;
 }
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <device_path>" << std::endl;
@@ -827,6 +828,25 @@ int main(int argc, char *argv[]) {
   // FdpNvme fdp = FdpNvme{device_path, false};
   fdp = std::make_unique<FdpNvme>(device_path, true);
   nvme = std::make_unique<NvmeData>(fdp->getNvmeData());
+
+  if (uring_cmd == nullptr) {
+    uring_cmd = std::make_unique<UringCmd>(32, nvme->blockSize(),
+                                           nvme->lbaShift(), io_uring_params{});
+  }
+  // uint64_t _len = 0x1000 * 64;
+  uint64_t _offset = 0x0;
+  uint64_t _len = 13079937024;
+  uring_cmd->uringDiscard(fdp->bfd(), _offset, _len);
+  uring_cmd->uringDiscard(fdp->bfd(), _len, _len);
+  /* INFO: pread, pwrite
+  fd_read = open(device_path.c_str(), O_RDONLY | O_DIRECT);
+  fd_write = open(device_path.c_str(), O_WRONLY);
+  if ((fd_read == -1) || (fd_write == -1)) {
+    std::cerr << "Failed to open file: " << strerror(errno) << std::endl;
+    return 1;
+  }
+  */
+
   // UringCmd uring_cmd =
   //  static thread_local UringCmd uring_cmd =
   //      UringCmd{QDEPTH, nvme.blockSize(), nvme.lbaShift(),
@@ -834,10 +854,12 @@ int main(int argc, char *argv[]) {
 
   // tMultiThreads(8, tWriteThreadsRing);
   //  tMultiThreads(8, tWriteThreadsRing);
+  /*
   uint64_t blocksize = 4096 * 1024;
   uint64_t testcnt = 1000;
   tBenchmark(4, URINGCMD_READ, blocksize, testcnt);
   tBenchmark(4, URINGCMD_WRITE, blocksize, testcnt);
+  */
 
   // tWriteSingle(fdp, nvme, uring_cmd);
   //      tReadSingle(fdp, nvme, uring_cmd);
@@ -849,4 +871,5 @@ int main(int argc, char *argv[]) {
   //    tUringCmdDataAligned(fdp, nvme, uring_cmd);
   //   tMisAlignedWrite(fdp, nvme, uring_cmd);
   //   tMisAlignedRead(fdp, nvme, uring_cmd);
+  return 0;
 }

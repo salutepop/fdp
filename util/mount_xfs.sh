@@ -16,7 +16,7 @@ sudo fuser -ck $DEVICE
 sudo umount $DEVICE
 sudo fio --name=trim --filename=$DEVICE --rw=trim --bs=3G
 sudo mkfs.xfs -f $DEVICE
-rm -r $MOUNT
+sudo rm -r $MOUNT
 mkdir $MOUNT
 sudo mount $DEVICE $MOUNT
 sudo chown -R cm $MOUNT
