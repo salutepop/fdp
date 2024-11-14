@@ -197,14 +197,16 @@ int UringCmd::uringCmdRead(int fd, int ns, off_t offset, size_t size,
   int loop = 0;
 
   //    INFO: 너무 긴 경우(>4MB, QD16) 예외처리
-  if (size > maxTfrbytes * 16) {
+  if (size > maxTfrbytes * 32) {
     return -EINVAL;
   }
 
   void *tempBuf;
-  if (posix_memalign((void **)&tempBuf, PAGE_SIZE, maxTfrbytes * 16)) {
-    LOG("[ERROR]", "MEM Align");
-    return -ENOMEM;
+  if (misOffset) {
+    if (posix_memalign((void **)&tempBuf, PAGE_SIZE, maxTfrbytes * 16)) {
+      LOG("[ERROR]", "MEM Align");
+      return -ENOMEM;
+    }
   }
 
   while (left > 0) {
@@ -212,28 +214,35 @@ int UringCmd::uringCmdRead(int fd, int ns, off_t offset, size_t size,
     uint32_t nCurSize = ((uint32_t)left > maxTfrbytes) ? maxTfrbytes : left;
     nCurSize = (((nCurSize - 1) / blocksize_) + 1) * blocksize_;
 
-    prepUringCmd(fd, ns, op_read, zOffset, nCurSize, (char *)tempBuf + nRead,
-                 loop);
+    if (misOffset) {
+      prepUringCmd(fd, ns, op_read, zOffset, nCurSize, (char *)tempBuf + nRead,
+                   loop);
+    } else {
+      prepUringCmd(fd, ns, op_read, zOffset, nCurSize, (char *)buf + nRead,
+                   loop);
+    }
 
+    /*
     submitCommand();
     ret = waitCompleted();
     if (ret < 0) {
       LOG("ERR", ret);
     }
+    */
     left -= nCurSize;
     zOffset += nCurSize;
     nRead += nCurSize;
   }
   // TODO: Batch I/O 분석 필요
-  /*
   submitCommand();
   ret = waitCompleted(loop);
   if (ret < 0) {
     LOG("ERR", ret);
   }
-  */
-  memcpy((char *)buf, (char *)tempBuf + misOffset, size);
-  free(tempBuf);
+  if (misOffset) {
+    memcpy((char *)buf, (char *)tempBuf + misOffset, size);
+    free(tempBuf);
+  }
 
   // TODO: 실제 읽은 block size를 전달할 지, 요청한 size를 전달할지 고민됨.
   // return nRead;
@@ -256,7 +265,7 @@ int UringCmd::uringCmdWrite(int fd, int ns, off_t offset, size_t size,
   int loop = 0;
 
   //   INFO: 너무 긴 경우(>4MB) 예외처리
-  if (size > maxTfrbytes * 16) {
+  if (size > maxTfrbytes * 32) {
     return -EINVAL;
   }
 
@@ -271,13 +280,15 @@ int UringCmd::uringCmdWrite(int fd, int ns, off_t offset, size_t size,
     } else {
       prepUringCmd(fd, ns, op_write, zOffset, nCurSize, (char *)buf + nWritten,
                    loop, kPlacementMode, dspec);
+    }
+    /*
       submitCommand();
       ret = waitCompleted();
-    }
     if (ret < 0) {
       LOG("ERROR", ret);
       return ret;
     }
+    */
 
     left -= nCurSize;
     zOffset += nCurSize;
@@ -286,13 +297,11 @@ int UringCmd::uringCmdWrite(int fd, int ns, off_t offset, size_t size,
     misOffset = 0;
   }
   // TODO: Batch I/O 분석 필요
-  /*
   submitCommand();
   ret = waitCompleted(loop);
   if (ret < 0) {
     LOG("ERR", ret);
   }
-  */
   return nWritten;
 }
 int UringCmd::isCqOverflow() { return io_uring_cq_has_overflow(&ring_); }

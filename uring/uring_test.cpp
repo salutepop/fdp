@@ -834,10 +834,10 @@ int main(int argc, char *argv[]) {
                                            nvme->lbaShift(), io_uring_params{});
   }
   // uint64_t _len = 0x1000 * 64;
-  uint64_t _offset = 0x0;
-  uint64_t _len = 13079937024;
-  uring_cmd->uringDiscard(fdp->bfd(), _offset, _len);
-  uring_cmd->uringDiscard(fdp->bfd(), _len, _len);
+  // uint64_t _offset = 0x0;
+  // uint64_t _len = 13079937024;
+  // uring_cmd->uringDiscard(fdp->bfd(), _offset, _len);
+  // uring_cmd->uringDiscard(fdp->bfd(), _len, _len);
   /* INFO: pread, pwrite
   fd_read = open(device_path.c_str(), O_RDONLY | O_DIRECT);
   fd_write = open(device_path.c_str(), O_WRONLY);
@@ -854,12 +854,19 @@ int main(int argc, char *argv[]) {
 
   // tMultiThreads(8, tWriteThreadsRing);
   //  tMultiThreads(8, tWriteThreadsRing);
-  /*
-  uint64_t blocksize = 4096 * 1024;
-  uint64_t testcnt = 1000;
-  tBenchmark(4, URINGCMD_READ, blocksize, testcnt);
-  tBenchmark(4, URINGCMD_WRITE, blocksize, testcnt);
-  */
+  uint64_t blocksize = 4 * 1024;
+  uint64_t testcnt = 10000;
+  // tBenchmark(1, URINGCMD_READ, blocksize, testcnt);
+  // tBenchmark(1, URINGCMD_WRITE, blocksize, testcnt);
+
+  tBenchmark(1, URINGCMD_READ, 4096, testcnt * 10);
+  tBenchmark(1, URINGCMD_READ, blocksize * 2, testcnt * 10);
+  tBenchmark(1, URINGCMD_READ, blocksize * 4, testcnt * 10);
+  tBenchmark(1, URINGCMD_READ, blocksize * 64, testcnt * 2);
+  tBenchmark(1, URINGCMD_READ, blocksize * 128, testcnt);
+  tBenchmark(1, URINGCMD_READ, blocksize * 256, testcnt);
+  tBenchmark(1, URINGCMD_READ, blocksize * 512, testcnt);
+  tBenchmark(1, URINGCMD_READ, blocksize * 1024, testcnt);
 
   // tWriteSingle(fdp, nvme, uring_cmd);
   //      tReadSingle(fdp, nvme, uring_cmd);
