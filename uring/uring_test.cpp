@@ -859,9 +859,12 @@ int main(int argc, char *argv[]) {
   // tBenchmark(1, URINGCMD_READ, blocksize, testcnt);
   // tBenchmark(1, URINGCMD_WRITE, blocksize, testcnt);
 
-  tBenchmark(1, URINGCMD_READ, 4096, testcnt * 10);
-  tBenchmark(1, URINGCMD_READ, blocksize * 2, testcnt * 10);
-  tBenchmark(1, URINGCMD_READ, blocksize * 4, testcnt * 10);
+  tBenchmark(1, URINGCMD_READ, 4096, testcnt * 30);
+  tBenchmark(1, URINGCMD_READ, blocksize * 2, testcnt * 30);
+  tBenchmark(1, URINGCMD_READ, blocksize * 4, testcnt * 30);
+  tBenchmark(1, URINGCMD_READ, blocksize * 8, testcnt * 20);
+  tBenchmark(1, URINGCMD_READ, blocksize * 16, testcnt * 20);
+  tBenchmark(1, URINGCMD_READ, blocksize * 32, testcnt * 10);
   tBenchmark(1, URINGCMD_READ, blocksize * 64, testcnt * 2);
   tBenchmark(1, URINGCMD_READ, blocksize * 128, testcnt);
   tBenchmark(1, URINGCMD_READ, blocksize * 256, testcnt);

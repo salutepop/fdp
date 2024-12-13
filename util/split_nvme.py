@@ -89,6 +89,9 @@ def main(args):
 
             if (cur_time - prev_time) > 300: # if over 5min. then, change file
                 output_file.close()
+                if(file_cnt > 5):
+                    break
+
                 file_cnt += 1
                 output_filename = f'{filename}_S{file_cnt}.trace'
                 output_file = open(output_filename, 'w', newline='')

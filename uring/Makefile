@@ -10,6 +10,10 @@ LDFLAGS = -L/usr/local/lib
 LDLIBS = -luring
 
 # 소스 파일과 타겟 파일 설정
+#SRCS = fdpnvme.cpp util.cpp uring_cmd.cpp io_test.cpp
+#HEADERS = fdpnvme.h util.h uring_cmd.h flexfs.h io_test.h
+#OBJS = $(SRCS:.cpp=.o)
+#TARGET = io_test
 SRCS = uring_test.cpp fdpnvme.cpp util.cpp uring_cmd.cpp
 HEADERS = uring_test.h fdpnvme.h util.h uring_cmd.h flexfs.h
 OBJS = $(SRCS:.cpp=.o)

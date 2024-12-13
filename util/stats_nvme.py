@@ -10,7 +10,8 @@ from scipy.stats import gaussian_kde
 from scipy.stats import zscore
 import os
 
-io_dict = {} # cmd_id, IO
+io_dict = {}  # cmd_id, IO
+
 
 class IO:
     cmd_id: int
@@ -33,9 +34,10 @@ class IO:
     def completed(self, comp_time):
         self.comp_time = comp_time
         self.latency = round((self.comp_time - self.issue_time) * 1000, 3)
-    
+
     def toCsv(self):
         return f"{self.cmd_id},{self.cmd_type},{self.issue_time},{self.comp_time},{self.latency},{self.slba},{self.len},{self.dsmgmt},\n"
+
 
 def parse_complete_rq(line):
     # line 샘플
@@ -44,7 +46,7 @@ def parse_complete_rq(line):
     # 정규식 패턴
     pattern = r"(\d+\.\d+):.*?cmdid=(\d+)"
 
-    #정규식 검색
+    # 정규식 검색
     match = re.search(pattern, line)
 
     if match:
@@ -58,13 +60,14 @@ def parse_complete_rq(line):
             del io_dict[cmd_id]
             return ret
 
+
 def parse_setup_cmd(line):
     # line 샘플
     # line='systemd-udevd-47096   [010] ..... 91444.019570: nvme_setup_cmd: nvme0: disk=nvme0n1, qid=11, cmdid=57664, nsid=1, flags=0x0, meta=0x0, cmd=(nvme_cmd_read slba=918149376, len=25, ctrl=0x8000, dsmgmt=7, reftag=0)'
 
     # 정규식 패턴
     pattern = r"(\d+\.\d+):.*?cmdid=(\d+).*?cmd=\((.*?) slba=(\d+).*?len=(\d+).*?dsmgmt=(\d+)"
-   
+
     # 정규식 검색
     match = re.search(pattern, line)
 
@@ -83,19 +86,20 @@ def parse_setup_cmd(line):
         else:
             cmd_type = "ERR"
 
-
-        io_dict[cmd_id] = IO(cmd_id, cmd_type, timestamp, slba_value, len_value, dsmgmt_value)
+        io_dict[cmd_id] = IO(cmd_id, cmd_type, timestamp,
+                             slba_value, len_value, dsmgmt_value)
         return True
         # print(timestamp, cmd_type, slba_value, len_value, dsmgmt_value)
         # return f"{timestamp} {cmd_type} {slba_value} {len_value} {dsmgmt_value}\n"
-        #print("Timestamp:", timestamp)
-        #print("CMD 값:", cmd_value)
-        #print("SLBA 값:", slba_value)
-        #print("LEN 값:", len_value)
-        #print("DSMGMT 값:", dsmgmt_value)
+        # print("Timestamp:", timestamp)
+        # print("CMD 값:", cmd_value)
+        # print("SLBA 값:", slba_value)
+        # print("LEN 값:", len_value)
+        # print("DSMGMT 값:", dsmgmt_value)
     else:
         print(line)
         return False
+
 
 def draw_latencySimple(fig, axis, df, x_data):
     mean_latency = df['latency'].median()
@@ -106,8 +110,7 @@ def draw_latencySimple(fig, axis, df, x_data):
     slba = df['slba']
     size = df['len']
 
-    #norm_size = (size - size.min()) / (size.max() - size.min())
-
+    # norm_size = (size - size.min()) / (size.max() - size.min())
 
     # 첫 번째 플롯: Latency 산점도
     axis.set_title('Latency vs. Issue Time')
@@ -122,32 +125,40 @@ def draw_latencySimple(fig, axis, df, x_data):
     # Outlier를 제외한 데이터 필터링
     outlier_threshold_low = Q1 - 1.5 * IQR
     outlier_threshold_high = Q3 + 1.5 * IQR
-    filtered_data = df[(latency >= outlier_threshold_low) & (latency <= outlier_threshold_high)]
+    filtered_data = df[(latency >= outlier_threshold_low) &
+                       (latency <= outlier_threshold_high)]
     filtered_data = filtered_data.copy()  # 복사본 생성
 
     # issue_time을 100개로 분할하여 각 구간의 min/max 계산
-    bins = np.linspace(issue_time.min(), issue_time.max(), 1001)  # 100개의 구간 경계 생성
-    filtered_data['issue_time_binned'] = np.digitize(filtered_data['issue_time'], bins)  # issue_time을 구간에 따라 분할
+    bins = np.linspace(issue_time.min(), issue_time.max(),
+                       1001)  # 100개의 구간 경계 생성
+    filtered_data['issue_time_binned'] = np.digitize(
+        filtered_data['issue_time'], bins)  # issue_time을 구간에 따라 분할
 
     # 각 구간에서 latency의 min/max 계산
-    latency_grouped = filtered_data.groupby('issue_time_binned')['latency'].agg(['min', 'max']).reset_index()
-    
+    latency_grouped = filtered_data.groupby('issue_time_binned')[
+        'latency'].agg(['min', 'max']).reset_index()
+
     # 각 구간의 중심값을 구해 x축으로 사용
     latency_grouped['issue_time_mid'] = latency_grouped['issue_time_binned'].apply(
-        lambda x: (bins[x-1] + bins[x])/2 if x < len(bins)-1 else (bins[x-1] + bins[-1])/2
+        lambda x: (bins[x-1] + bins[x])/2 if x < len(bins) -
+        1 else (bins[x-1] + bins[-1])/2
     )
 
     # min/max 값이 0인 구간을 필터링
-    latency_grouped = latency_grouped[(latency_grouped['min'] > 0) & (latency_grouped['max'] > 0)]
+    latency_grouped = latency_grouped[(
+        latency_grouped['min'] > 0) & (latency_grouped['max'] > 0)]
 
     # Interpolation for min and max
-    min_smooth = make_interp_spline(latency_grouped['issue_time_mid'], latency_grouped['min'], k=3)(latency_grouped['issue_time_mid'])
-    max_smooth = make_interp_spline(latency_grouped['issue_time_mid'], latency_grouped['max'], k=3)(latency_grouped['issue_time_mid'])
-
+    min_smooth = make_interp_spline(latency_grouped['issue_time_mid'], latency_grouped['min'], k=3)(
+        latency_grouped['issue_time_mid'])
+    max_smooth = make_interp_spline(latency_grouped['issue_time_mid'], latency_grouped['max'], k=3)(
+        latency_grouped['issue_time_mid'])
 
     # Area plot으로 min-max 범위 표현
-    #axis.fill_between(latency_grouped['issue_time_mid'], latency_grouped['min'], latency_grouped['max'], color='skyblue', alpha=0.4)
-    axis.fill_between(latency_grouped['issue_time_mid'], min_smooth, max_smooth, color='skyblue', alpha=1.0)
+    # axis.fill_between(latency_grouped['issue_time_mid'], latency_grouped['min'], latency_grouped['max'], color='skyblue', alpha=0.4)
+    axis.fill_between(latency_grouped['issue_time_mid'],
+                      min_smooth, max_smooth, color='skyblue', alpha=1.0)
 
     # 1-2 Contour
     # Data sampling - 10%
@@ -156,44 +167,55 @@ def draw_latencySimple(fig, axis, df, x_data):
     sample_issue_time = sample_df['issue_time']
 
     # Outlier 제외 (IQR 방법 사용)
-    latency_no_outliers = sample_latency[(sample_latency >= (Q1 - 1.5 * IQR)) & (sample_latency <= (Q3 + 1.5 * IQR))]
-    issue_time_no_outliers = sample_issue_time[sample_latency.index.isin(latency_no_outliers.index)]
+    latency_no_outliers = sample_latency[(sample_latency >= (
+        Q1 - 1.5 * IQR)) & (sample_latency <= (Q3 + 1.5 * IQR))]
+    issue_time_no_outliers = sample_issue_time[sample_latency.index.isin(
+        latency_no_outliers.index)]
 
     print(latency_no_outliers.max())
     # 데이터의 밀집도를 추정하기 위해 커널 밀도 추정 (KDE) 사용
-    kde = gaussian_kde(np.vstack([issue_time_no_outliers, latency_no_outliers]))
+    kde = gaussian_kde(
+        np.vstack([issue_time_no_outliers, latency_no_outliers]))
 
     # 스무딩을 위한 메쉬 생성
-    issue_time_range = np.linspace(issue_time_no_outliers.min(), issue_time_no_outliers.max(), 100)
-    latency_range = np.linspace(latency_no_outliers.min(), latency_no_outliers.max(), 100)
-    issue_time_mesh, latency_mesh = np.meshgrid(issue_time_range, latency_range)
+    issue_time_range = np.linspace(
+        issue_time_no_outliers.min(), issue_time_no_outliers.max(), 100)
+    latency_range = np.linspace(
+        latency_no_outliers.min(), latency_no_outliers.max(), 100)
+    issue_time_mesh, latency_mesh = np.meshgrid(
+        issue_time_range, latency_range)
     positions = np.vstack([issue_time_mesh.ravel(), latency_mesh.ravel()])
     density = kde(positions).reshape(issue_time_mesh.shape)
 
     # 사용자 정의 컬러맵 생성
-    colors = [(1, 1, 1, 0), (1, 1, 1, 0), (0, 0, 1, 0.5), (1, 0, 0, 1)]  # RGBA: 투명, 파랑, 빨강
+    colors = [(1, 1, 1, 0), (1, 1, 1, 0), (0, 0, 1, 0.5),
+              (1, 0, 0, 1)]  # RGBA: 투명, 파랑, 빨강
     positions = [0, 0.1, 0.5, 1]  # 컬러맵의 위치 (0: 노랑, 0.7: 파랑, 1: 빨강)
     n_bins = 100  # Number of bins
     cmap_name = 'custom_cmap'
-    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, list(zip(positions, colors)), N=n_bins)
+    custom_cmap = LinearSegmentedColormap.from_list(
+        cmap_name, list(zip(positions, colors)), N=n_bins)
 
-    contour = axis.contourf(issue_time_mesh, latency_mesh, density, cmap=custom_cmap, alpha=0.7)
+    contour = axis.contourf(issue_time_mesh, latency_mesh,
+                            density, cmap=custom_cmap, alpha=0.7)
 
     # 1-2 Scatter
     # Outlier 만 사용
     latency_outliers = latency[latency > latency_no_outliers.max()]
-    issue_time_outliers = issue_time[latency.index.isin(latency_outliers.index)]
+    issue_time_outliers = issue_time[latency.index.isin(
+        latency_outliers.index)]
     size_outliers = size[latency.index.isin(latency_outliers.index)]
     # 산점도 플로팅 (극단적인 outlier)
-    sc = axis.scatter(issue_time_outliers, latency_outliers, c=size_outliers, cmap='coolwarm', edgecolor='none', alpha=0.7)
+    sc = axis.scatter(issue_time_outliers, latency_outliers,
+                      c=size_outliers, cmap='coolwarm', edgecolor='none', alpha=0.7)
 
-
-    #sc = axis.scatter(issue_time_outliers, latency_outliers, c=size_outliers, cmap='coolwarm', edgecolor='none', alpha=0.5)
+    # sc = axis.scatter(issue_time_outliers, latency_outliers, c=size_outliers, cmap='coolwarm', edgecolor='none', alpha=0.5)
     fig.colorbar(sc, ax=axis, label='Size(KB)')
 
     # 1-3 최대값과 최소값 수직선 추가
-    #axis.axhline(latency.max(), color='red', linestyle='--', label=f'Latency Max: {latency.max():.3f}')
-    #axis.axhline(latency.mean(), color='blue', linestyle='--', label=f'Latency Min: {latency.mean():.3f}')
+    # axis.axhline(latency.max(), color='red', linestyle='--', label=f'Latency Max: {latency.max():.3f}')
+    # axis.axhline(latency.mean(), color='blue', linestyle='--', label=f'Latency Min: {latency.mean():.3f}')
+
 
 def draw_column(fig, axis, df, column, title, ymax=0):
     # 'latency'와 'issue_time' 열의 데이터 추출
@@ -201,60 +223,72 @@ def draw_column(fig, axis, df, column, title, ymax=0):
     issue_time = df['issue_time']
     size = df['len']
 
-    sc = axis.scatter(issue_time, y_data, c=size, cmap='coolwarm', edgecolor='none', alpha=0.5)
+    sc = axis.scatter(issue_time, y_data, c=size,
+                      cmap='coolwarm', edgecolor='none', alpha=0.5)
     axis.set_title(title)
     axis.set_xlabel('Issue Time')
     axis.set_ylabel(column)
     fig.colorbar(sc, ax=axis, label='Size(KB)')
 
-    if ymax > 0 :
+    if ymax > 0:
         axis.set_ylim(0, ymax)
+
 
 def draw_column_pid(fig, axis, df, column, title, ymax=0):
     # 'latency'와 'issue_time' 열의 데이터 추출
     y_data = df[column]
     issue_time = df['issue_time']
     size = df['dsmgmt']
-    listcmap = ListedColormap(['red', 'green', 'blue', 'purple', 'orange', 'black', 'yellow', 'cyan'])
+    listcmap = ListedColormap(
+        ['red', 'green', 'blue', 'purple', 'orange', 'black', 'yellow', 'cyan'])
 
-    sc = axis.scatter(issue_time, y_data, c=size, cmap=listcmap, edgecolor='none', alpha=0.9)
+    sc = axis.scatter(issue_time, y_data, c=size,
+                      cmap=listcmap, edgecolor='none', alpha=0.9)
     axis.set_title(title)
     axis.set_xlabel('Issue Time')
     axis.set_ylabel(column)
     fig.colorbar(sc, ax=axis, label='PID')
 
-    if ymax > 0 :
+    if ymax > 0:
         axis.set_ylim(0, ymax)
 
 
-#Latency 산점도
+# Latency 산점도
 def draw_latency(fig, axis, df, title):
     # 'latency'와 'issue_time' 열의 데이터 추출
     latency = df['latency']
     issue_time = df['issue_time']
     size = df['len']
 
-    sc = axis.scatter(issue_time, latency, c=size, cmap='coolwarm', edgecolor='none', alpha=0.5)
+    sc = axis.scatter(issue_time, latency, c=size,
+                      cmap='coolwarm', edgecolor='none', alpha=0.5)
     axis.set_title(title)
     axis.set_xlabel('Issue Time')
     axis.set_ylabel('Latency')
     fig.colorbar(sc, ax=axis, label='Size(KB)')
 
-#LBA 산점도
+# LBA 산점도
+
+
 def draw_lba(fig, axis, df, title):
     # 'latency'와 'issue_time' 열의 데이터 추출
     issue_time = df['issue_time']
     slba = df['slba']
-    size = df['len']
+    # size = df['len']
 
-    sc = axis.scatter(issue_time, slba, c=size, cmap='coolwarm', edgecolor='none', alpha=0.5)
+    # sc = axis.scatter(issue_time, slba, c=size, s=1,
+    # cmap='coolwarm', edgecolor='none', alpha=0.5)
+    sc = axis.scatter(issue_time, slba, s=1,
+                      edgecolor='none', c='black', alpha=0.5)
     axis.set_title(title)
     axis.set_xlabel('Issue Time')
     axis.set_ylabel('LBA')
+    axis.set_ylim(top=9e7)  # Set the maximum value of the y-axis
     fig.colorbar(sc, ax=axis, label='Size(KB)')
 
+
 def calcStatistics(df):
-# amount of Read/Write IOs
+    # amount of Read/Write IOs
 
     ios = len(df)
     read_MB = (df[df['cmd_type'] == 'READ']['len'] + 1).sum() * 4 / 1024
@@ -271,9 +305,10 @@ def calcStatistics(df):
     write_lat99 = df[df['cmd_type'] == 'WRITE']['latency'].quantile(0.99)
     write_lat999 = df[df['cmd_type'] == 'WRITE']['latency'].quantile(0.999)
 
-    read_lat_desc = df[df['cmd_type'] == 'READ']['latency'].describe().to_string(float_format="{:.3f}".format)
-    write_lat_desc = df[df['cmd_type'] == 'WRITE']['latency'].describe().to_string(float_format="{:.3f}".format)
-
+    read_lat_desc = df[df['cmd_type'] == 'READ']['latency'].describe(
+    ).to_string(float_format="{:.3f}".format)
+    write_lat_desc = df[df['cmd_type'] == 'WRITE']['latency'].describe(
+    ).to_string(float_format="{:.3f}".format)
 
     ret = 'Statistics\n'
     ret += f'Total : {ios} Requests, READ : {read_MB:,.0f} MB({read_chunk:,.0f}KB), WRITE : {write_MB:.1f} MB({write_chunk:.1f}KB)\n'
@@ -281,15 +316,18 @@ def calcStatistics(df):
     ret += f'READ latency describe : {read_lat_desc}\n'
     ret += f'WIRTE latency avg : {write_latavg:.3f}ms, 99% : {write_lat99:.3f}ms, 99.9% : {write_lat999:.3f}ms, max : {write_latmax:.3f}ms\n'
     ret += f'WRITE latency describe : {write_lat_desc}\n'
-    
+
     small_read = (df[df['cmd_type'] == 'READ']['len'] < 16)
     ret += f'small read (<32kb) : {small_read.sum()} ea ({small_read.mean():.2f} %)\n'
 
     # dsmgmt 열의 값 분포를 Count와 Percentage(%)로 계산
-    dsmgmt_counts = df[df['cmd_type'] == 'WRITE']['dsmgmt'].value_counts()  # Count 계산
-    dsmgmt_percentage = df[df['cmd_type'] == 'WRITE']['dsmgmt'].value_counts(normalize=True) * 100  # Percentage(%) 계산
+    dsmgmt_counts = df[df['cmd_type'] ==
+                       'WRITE']['dsmgmt'].value_counts()  # Count 계산
+    dsmgmt_percentage = df[df['cmd_type'] == 'WRITE']['dsmgmt'].value_counts(
+        normalize=True) * 100  # Percentage(%) 계산
     # dsmgmt 값에 따라 len의 총 합계 계산
-    dsmgmt_len_sum = df[df['cmd_type'] == 'WRITE'].groupby('dsmgmt')['len'].apply(lambda x: (x + 1).sum())
+    dsmgmt_len_sum = df[df['cmd_type'] == 'WRITE'].groupby(
+        'dsmgmt')['len'].apply(lambda x: (x + 1).sum())
 
     # 텍스트로 각 값의 개수와 백분율 출력
     ret += 'Write PID(dsmgmt) distribution (PID : Count : Size)\n'
@@ -309,6 +347,11 @@ def main(args):
 
     df = pd.read_csv(input_file, header=0)
 
+    fig, (ax1, ax2) = plt.subplots(
+        nrows=2, ncols=1, figsize=(12, 12), sharex=True)
+    draw_lba(fig, ax1, df[df['cmd_type'] == 'READ'], "LBA - Read")
+    draw_lba(fig, ax2, df[df['cmd_type'] == 'WRITE'], "LBA - Write")
+
     result = calcStatistics(df)
     f = open(output_file, 'w')
     f.write(result)
@@ -316,43 +359,44 @@ def main(args):
     print(result)
 
     # 산점도 그래프 그리기
-    #fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, ncols=1, figsize=(12, 12), sharex=True)
+    # fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, ncols=1, figsize=(12, 12), sharex=True)
 
-    #draw_latencySimple(df, fig, ax1)
-    #draw_latency(fig, ax1, df[df['cmd_type'] == 'WRITE'], "Latency - Write")
-    #draw_latency(fig, ax2, df[df['cmd_type'] == 'READ'], "Latency - Read")
-    #draw_lba(fig, ax1, df[df['cmd_type'] == 'WRITE'], "LBA - Write")
-    #draw_lba(fig, ax2, df[df['cmd_type'] == 'READ'], "LBA - Read")
+    # draw_latencySimple(df, fig, ax1)
+    # draw_latency(fig, ax1, df[df['cmd_type'] == 'WRITE'], "Latency - Write")
+    # draw_latency(fig, ax2, df[df['cmd_type'] == 'READ'], "Latency - Read")
+    # draw_lba(fig, ax1, df[df['cmd_type'] == 'WRITE'], "LBA - Write")
+    # draw_lba(fig, ax2, df[df['cmd_type'] == 'READ'], "LBA - Read")
 
-    #draw_column(fig, ax1, df[df['cmd_type'] == 'READ'], 'latency', "Latency - Read")
-    #draw_column(fig, ax2, df[df['cmd_type'] == 'WRITE'], 'latency', "Latency - Write")
-    #draw_column(fig, ax3, df[df['cmd_type'] == 'READ'], 'slba', "LBA - Read")
-    #draw_column(fig, ax4, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
+    # draw_column(fig, ax1, df[df['cmd_type'] == 'READ'], 'latency', "Latency - Read")
+    # draw_column(fig, ax2, df[df['cmd_type'] == 'WRITE'], 'latency', "Latency - Write")
+    # draw_column(fig, ax3, df[df['cmd_type'] == 'READ'], 'slba', "LBA - Read")
+    # draw_column(fig, ax4, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
 
-    #draw_column(fig, ax3, df, 'qdepth_total', "QDepth")
+    # draw_column(fig, ax3, df, 'qdepth_total', "QDepth")
 
-    #fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(18, 12), sharex=True)
-    #draw_column(fig, ax1, df[df['cmd_type'] == 'WRITE'], 'dsmgmt', "PID")
-    #draw_column(fig, ax2, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
-    #draw_column_pid(fig, ax3, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
-    ## 레이아웃 조정
-    #plt.tight_layout()
+    # fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(18, 12), sharex=True)
+    # draw_column(fig, ax1, df[df['cmd_type'] == 'WRITE'], 'dsmgmt', "PID")
+    # draw_column(fig, ax2, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
+    # draw_column_pid(fig, ax3, df[df['cmd_type'] == 'WRITE'], 'slba', "LBA - Write")
+
+    # 레이아웃 조정
+    plt.tight_layout()
 
     # 그래프를 PNG 파일로 저장
-    #filename_png = os.path.splitext(output_file)[0] + '.png'
-    #plt.savefig(filename_png, format='png')
-            
+    filename_png = os.path.splitext(output_file)[0] + '.png'
+    plt.savefig(filename_png, format='png')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Description of your program")
 
     # 인수 추가
     parser.add_argument("-i", "--input_file", type=str, help="Input file path")
-    parser.add_argument("-o", "--output_file", type=str, help="Output file path")
+    parser.add_argument("-o", "--output_file", type=str,
+                        help="Output file path")
 
     # 명령행 인수 파싱
     args = parser.parse_args()
 
     # main 함수 호출
     main(args)
-

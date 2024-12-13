@@ -12,11 +12,12 @@ NUM_1M=1000000
 NUM_10M=10000000
 NUM_100M=100000000
 NUM_300M=300000000
+NUM_500M=500000000
 NUM_1B=1000000000
 
 # CONFIGURATION
 #COMMON_OPTIONS=" --disable_wal=true --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --async_io --histogram" #  --statistics"
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --async_io --histogram" #  --statistics"
+COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
 
 test_fdp_mkfs_trim(){
     DEV_NAME=$1
@@ -104,7 +105,7 @@ test_fdp(){
 
     # RUN TEST #
     DEV_TYPE="//fdp:"
-    sudo ./db_bench --fs_uri=zenfs:$DEV_TYPE$DEV_NAME --benchmarks=$BENCH_TYPE --num=$NUMS --threads=$THREADS $OPTIONS
+    sudo gdb --args ./db_bench --fs_uri=zenfs:$DEV_TYPE$DEV_NAME --benchmarks=$BENCH_TYPE --num=$NUMS --threads=$THREADS $OPTIONS
 
     # END TEST #
     RESULT=$DIR_RESULT'FDP_'$BENCH_TYPE'_'$COMMENT
@@ -315,12 +316,36 @@ test_fdp_dev(){
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test"
 
-    test_fdp $1 fillseq $NUM_300M 1 1 0 "test" 
+#    test_fdp $1 fillseq $NUM_1M 1 1 0 "test" 
+#    test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "test1"
+#    test_fdp $1 overwrite $NUM_1M 1 0 0 "--use_existing_db" "test2"
+
+    test_fdp $1 fillseq $NUM_10M 1 1 0 "test" 
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "test1"
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "test1"
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --auto_readahead_size" "test1"
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --auto_readahead_size" "test1"
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --auto_readahead_size --max_auto_readahead_size=2097152" "test1"
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --auto_readahead_size --max_auto_readahead_size=2097152" "test1"
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --auto_readahead_size --max_auto_readahead_size=2097152 --async_io" "test1"
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --auto_readahead_size --max_auto_readahead_size=2097152 --async_io" "test1"
+    #test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "test1"
+    #test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db --duration=10" "test1"
+    #test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db --duration=10" "test1"
+
+    #test_cns $1 fillseq $NUM_10M 1 1 0 "test" 
+    #test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "test1"
+    #test_cns $1 readseq $NUM_10M 4 0 0 "--use_existing_db" "test1"
+
+    #test_tor $1 fillseq $NUM_10M 1 1 0 "test" 
+    #test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "test1"
+    #test_tor $1 readseq $NUM_10M 4 0 0 "--use_existing_db" "test1"
     #test_fdp $1 fillrandom $NUM_10M 1 0 0 "--use_existing_db" "test"
     #test_fdp $1 fillrandom $NUM_10M 1 0 0 "--use_existing_db" "test"
     #test_fdp $1 fillseq $NUM_100M 1 1 0 "1B_test" 
     #test_fdp $1 fillseq $NUM_100M 1 1 0 "1B_test" 
-    test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test1"
+    #test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "test1"
+    #test_fdp $1 overwrite $NUM_10M 4 0 0 "--use_existing_db" "test1"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test2"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test3"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "test4"

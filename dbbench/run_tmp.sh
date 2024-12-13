@@ -17,14 +17,11 @@ NUM_700M=700000000
 NUM_800M=800000000
 NUM_1B=1000000000
 NUM_1500M=1500000000
-NUM_2B=2000000000
-NUM_3B=3000000000
+NUM_4B=4000000000
 
 # CONFIGURATION
 #COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --max_auto_readahead_size=4194304 --auto_readahead_size --histogram" #  --statistics"
-#COMMON_OPTIONS=" --disable_wal --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
 COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-#COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --histogram" #  --statistics"
 #COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --auto_readahead_size --max_auto_readahead_size=4194304 --histogram" #  --statistics"
 #COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --readahead_size=4194304 --histogram" #  --statistics"
 #COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
@@ -103,7 +100,6 @@ test_fdp(){
 
     # BEGIN TEST #
     echo "[RUN-FDP] [TIME `(cat /proc/uptime)`]" `date +"%m-%d %H:%M:%S"` $BENCH_TYPE $COMMENT $NUMS $DEV_NAME
-    echo 3 | sudo tee /proc/sys/vm/drop_caches
     if [ $CLEANING -eq 1 ]; then
         sudo umount /dev/$DEV_NAME
         sudo nvme fdp update /dev/$DEV_NAME -p 0,1,2,3,4,5,6
@@ -322,8 +318,6 @@ test_zns_dev(){
 }
 
 test_cns_waf(){
-    #test_cns $1 fillseq $NUM_3B 1 1 1 "--max_background_jobs=4 --max_bytes_for_level_multiplier=6" "3B" 
-    #test_cns $1 overwrite $NUM_3B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=4" "3B_1"
     # todo : WAF 비교 (default)
     #test_fdp $1 fillseq $NUM_10M 1 1 0 "--max_bytes_for_level_multiplier=8 --max_background_jobs=4" "temp" 
     #test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "temp"
@@ -332,6 +326,9 @@ test_cns_waf(){
     #test_cns $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "5B_1"
     #test_cns $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "5B_2"
 
+    test_fdp $1 fillseq $NUM_4B 1 1 1 "--max_bytes_for_level_multiplier=8 --max_background_jobs=4" "4B" 
+    test_fdp $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "4B_1"
+    test_fdp $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "4B_2"
     #test_fdp $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "5B_3"
     #test_fdp $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "5B_4"
     #test_fdp $1 overwrite $NUM_4B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=8 --max_background_jobs=4" "5B_5"
@@ -356,14 +353,7 @@ test_cns_waf(){
     #test_cns $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "100M_18"
     #test_cns $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "100M_19"
     #test_cns $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "100M_20"
-    
-    test_cns $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5" "500M" 
-    test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_1"
-    test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_2"
-    test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_3"
-    test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_4"
-    test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_5"
-
+    #
     #test_cns $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M" 
     #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_1"
     #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_2"
@@ -398,29 +388,6 @@ test_cns_waf(){
 }
 
 test_fdp_waf(){
-    #test_fdp $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5" "500M" 
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5  --max_background_jobs=8" "500M_1"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5  --max_background_jobs=8" "500M_2"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5  --max_background_jobs=8" "500M_3"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5  --max_background_jobs=8" "500M_4"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5  --max_background_jobs=8" "500M_5"
-
-    test_fdp $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5" "500M" 
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_1"
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_2"
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_3"
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_4"
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5" "500M_5"
-    #test_fdp $1 fillseq $NUM_2B 1 1 1 "--max_background_jobs=4 --max_bytes_for_level_multiplier=6" "3B" 
-    #test_fdp $1 readseq $NUM_2B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=8" "3B_1"
-    #test_fdp $1 readseq $NUM_2B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=8" "3B_2"
-    #test_fdp $1 readseq $NUM_2B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=8" "3B_3"
-    #test_fdp $1 overwrite $NUM_3B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=8" "3B_1"
-    #test_fdp $1 overwrite $NUM_3B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=8" "3B_2"
-    #test_fdp $1 overwrite $NUM_1B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=4" "1B_3"
-    #test_fdp $1 fillseq $NUM_3B 1 1 1 "--max_background_jobs=4 --max_bytes_for_level_multiplier=6" "3B" 
-    #test_fdp $1 overwrite $NUM_3B 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=6 --max_background_jobs=4" "3B_2"
-    #test_fdp $1 overwrite $NUM_3B 1 0 1 "--use_existing_db --max_background_jobs=4" "4B_2"
     #test_fdp $1 fillseq $NUM_500M 1 1 1 "500M" 
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "100M_1"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db" "100M_2"
@@ -454,12 +421,12 @@ test_fdp_waf(){
     #test_fdp $1 overwrite $NUM_500M 1 0 1 "--max_background_jobs=4 --use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_4"
     #test_fdp $1 overwrite $NUM_500M 1 0 1 "--max_background_jobs=4 --use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_5"
 
-    #test_fdp $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "multi_5" 
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_1"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_2"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_3"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_4"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_5"
+    test_fdp $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "multi_5" 
+    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_1"
+    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_2"
+    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_3"
+    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_4"
+    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "500M_5"
     # todo : WAF 비교 (default)
     #test_fdp $1 fillseq $NUM_500M 1 1 0 "db_default" 
     #test_fdp $1 overwrite $NUM_500M 1 0 0 "--use_existing_db" "500M_1"
@@ -556,104 +523,45 @@ test_tor_waf(){
 }
 
 test_perf(){
-
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --histogram" #  --statistics"
-    #XFS Buffered
-    test_cns $1 fillrandom $NUM_10M 1 1 0 "buff_rw_t1" 
-    test_cns $1 fillrandom $NUM_10M 16 1 0 "buff_rw_t16" 
-    test_cns $1 fillseq $NUM_10M 1 1 0 "buff_sw_t1" 
-    test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "buff_sr_t1" 
-    test_cns $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "buff_sr_t16" 
-    test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "buff_sr_auto_t1" 
-    test_cns $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "buff_sr_auto_t16" 
-    test_cns $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "buff_rr_t1" 
-    test_cns $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "buff_rr_t16" 
-    test_cns $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "buff_over_t1" 
-    test_cns $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "buff_over_t16" 
-
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-    #XFS Direct I/O for Read
-    test_cns $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_cns $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_cns $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
+    test_cns $1 fillseq $NUM_10M 1 1 0 "default" 
     test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
     test_cns $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
     test_cns $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
     test_cns $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
     test_cns $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
     test_cns $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_cns $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_cns $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-
-    #FlexFS
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --histogram" #  --statistics"
-    test_fdp $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_fdp $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_fdp $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-    test_fdp $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_fdp $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_fdp $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-
-    #TorFS
-    test_tor $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_tor $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_tor $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_tor $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_tor $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_tor $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_tor $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
+    test_cns $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "rw_t1" 
+    test_cns $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "rw_t16" 
 
     #test_cns $1 readwhilewriting $NUM_1M 1 0 0 "--use_existing_db --duration=300" "rnw_t1"
     #test_cns $1 readwhilewriting $NUM_1M 16 0 0 "--use_existing_db --duration=300" "rnw_t16"
     #test_cns $1 readrandomwriterandom $NUM_1M 1 0 0 "--use_existing_db --readwritepercent=50 --duration=300" "rrwr_t1"
     #test_cns $1 readrandomwriterandom $NUM_1M 16 0 0 "--use_existing_db --readwritepercent=50 --duration=300" "rrwr_t16"
 
-#    test_fdp $1 fillseq $NUM_10M 1 1 0 "default" 
-#    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-#    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-#    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-#    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-#    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-#    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-#    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "rw_t1" 
-#    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "rw_t16" 
+    test_fdp $1 fillseq $NUM_10M 1 1 0 "default" 
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
+    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
+    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
+    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
+    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
+    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "rw_t1" 
+    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "rw_t16" 
 
     #test_fdp $1 readwhilewriting $NUM_1M 1 0 0 "--use_existing_db --duration=300" "rnw_t1"
     #test_fdp $1 readwhilewriting $NUM_1M 16 0 0 "--use_existing_db --duration=300" "rnw_t16"
     #test_fdp $1 readrandomwriterandom $NUM_1M 1 0 0 "--use_existing_db --readwritepercent=50 --duration=300" "rrwr_t1"
     #test_fdp $1 readrandomwriterandom $NUM_1M 16 0 0 "--use_existing_db --readwritepercent=50 --duration=300" "rrwr_t16"
 
-#    test_tor $1 fillseq $NUM_10M 1 1 0 "default" 
-#    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-#    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-#    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-#    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-#    test_tor $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-#    test_tor $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-#    test_tor $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "rw_t1" 
-#    test_tor $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "rw_t16" 
+    test_tor $1 fillseq $NUM_10M 1 1 0 "default" 
+    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
+    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
+    test_tor $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
+    test_tor $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
+    test_tor $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
+    test_tor $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
+    test_tor $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "rw_t1" 
+    test_tor $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "rw_t16" 
 
     #test_tor $1 readwhilewriting $NUM_1M 1 0 0 "--use_existing_db --duration=300" "rnw_t1"
     #test_tor $1 readwhilewriting $NUM_1M 16 0 0 "--use_existing_db --duration=300" "rnw_t16"
@@ -678,8 +586,7 @@ test_debug(){
     #test_fdp $1 fillseq $NUM_300M 1 1 0 "--max_background_jobs=8 --max_bytes_for_level_multiplier=5" "temp" 
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db --max_background_jobs=8 --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "100M"
     #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db --max_background_jobs=8 --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "200M"
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    #test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db  --max_background_jobs=4 --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "300M"
+    test_fdp $1 overwrite $NUM_100M 1 0 0 "--use_existing_db  --max_background_jobs=4 --max_bytes_for_level_multiplier=5 --level0_file_num_compaction_trigger=8" "300M"
     #test_fdp $1 fillseq $NUM_100M 1 1 0 "default"
     #test_fdp $1 fillseq $NUM_100M 1 1 0 "--disable_wal=true" "disable" 
     #test_tor $1 fillseq $NUM_100M 1 1 0 "default" 
@@ -692,82 +599,6 @@ test_debug(){
     #test_tor $1 overwrite 100 1 0 0 "--use_existing_db " "over"
 }
 
-test_perf_fillrandom(){
-    test_cns $1 fillrandom $NUM_10M 1 1 0 "default" 
-    #test_cns $1 fillrandom $NUM_10M 1 1 0 "--disable_wal" "default" 
-    #test_fdp $1 fillrandom $NUM_10M 1 1 0 "--disable_wal" "default" 
-    #test_fdp $1 fillrandom $NUM_10M 1 1 0 "default" 
-    #test_tor $1 fillrandom $NUM_10M 1 1 0 "default" 
-}
-
-test_tmp(){
-    #FlexFS
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --histogram" #  --statistics"
-    test_fdp $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_fdp $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_fdp $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-    test_fdp $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_fdp $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_fdp $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-}
-
-#test_universal(){
-#COMMON_OPTIONS=" --compaction_style=1 --universal_size_ratio=10 --universal_min_merge_width=2 --universal_max_merge_width=4 --stats_dump_period_sec=60 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-    #test_fdp $1 fillseq $NUM_500M 1 1 1 "--options_file=universal_options.ini" "500M" 
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --options_file=universal_options.ini" "500M_1"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --options_file=universal_options.ini" "500M_2"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --options_file=universal_options.ini" "500M_3"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --options_file=universal_options.ini" "500M_4"
-    #test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --options_file=universal_options.ini" "500M_5"
-
-    #test_cns $1 fillseq $NUM_500M 1 1 1 "--max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M" 
-    #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M_1"
-    #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M_2"
-    #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M_3"
-    #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M_4"
-    #test_cns $1 overwrite $NUM_500M 1 0 1 "--use_existing_db --max_bytes_for_level_multiplier=5 --options_file=universal_options.ini" "500M_5"
-
-#}
-
-test_fdp_perf(){
-    
-    #1GB block cache
-COMMON_OPTIONS=" --stats_dump_period_sec=60 --cache_size=1073741824 --key_size=20 --value_size=800 --use_direct_io_for_flush_and_compaction --use_direct_reads --histogram" #  --statistics"
-    test_fdp $1 fillrandom $NUM_10M 1 1 0 "rw_t1" 
-    test_fdp $1 fillrandom $NUM_10M 16 1 0 "rw_t16" 
-    test_fdp $1 fillseq $NUM_10M 1 1 0 "sw_t1" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db" "sr_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db" "sr_t16" 
-    test_fdp $1 readseq $NUM_10M 1 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t1" 
-    test_fdp $1 readseq $NUM_10M 16 0 0 "--use_existing_db --max_auto_readahead_size=2097152 --auto_readahead_size" "sr_auto_t16" 
-    test_fdp $1 readrandom $NUM_1M 1 0 0 "--use_existing_db" "rr_t1" 
-    test_fdp $1 readrandom $NUM_1M 16 0 0 "--use_existing_db" "rr_t16" 
-    test_fdp $1 overwrite $NUM_10M 1 0 0 "--use_existing_db" "over_t1" 
-    test_fdp $1 overwrite $NUM_10M 16 0 0 "--use_existing_db" "over_t16" 
-}
-
-test_fdp_trace(){
-    #test_fdp $1 fillseq $NUM_500M 1 1 1 "500M" 
-    test_fdp $1 overwrite $NUM_500M 1 0 1 "--use_existing_db" "500M_2"
-}
 main(){
     #/home/cm/dev/fdp/util/fill.sh /dev/nvme0n2 /home/cm/cns_fill
     cp $DB_BENCH .
@@ -776,17 +607,10 @@ main(){
     sudo rm -r $DIR_RESULT
     mkdir $DIR_RESULT
 
-    test_fdp_trace nvme0n1
-    #test_fdp_perf nvme0n1
-    #test_fdp_perf nvme0n1
-    #test_universal nvme0n1
-    #test_tmp nvme0n1
-    #test_tmp nvme0n1
-    #test_tmp nvme0n1
-    #test_perf_fillrandom nvme0n1
-    #test_perf nvme0n1
-    #test_perf nvme0n1
-    #test_perf nvme0n1
+    test_cns_waf nvme0n1
+#    test_perf nvme0n1
+#    test_perf nvme0n1
+#    test_perf nvme0n1
     #test_compaction nvme0n1
     #test_fdp_mkfs_trim nvme0n1
     #test_debug nvme0n1

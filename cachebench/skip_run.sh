@@ -20,8 +20,8 @@ BENCH_TYPE=$3 # flat_kvcache_reg  graph_cache_leader  kvcache_202206  kvcache_20
 
 DEV_CONFIG=$DIR_CONFIG$BENCH_TYPE'/'$DEV'_'$DEV_TYPE'_config_kvcache.json'
 NODEV_CONFIG=$DIR_CONFIG$BENCH_TYPE/$NODEV_JSON
-FILE_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_test.txt'
-SMART_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_smart.txt'
+FILE_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_test.log'
+SMART_OUTPUT=$DIR_OUTPUT$DEV'_'$DEV_TYPE'_'$BENCH_TYPE'_smart.log'
 
 # X-1. initialize
 sudo rm $FILE_OUTPUT
@@ -31,6 +31,7 @@ echo START_TIME : `cat /proc/uptime` >> $SMART_OUTPUT
 sudo umount /dev/$DEV
 mkdir -p $DIR_OUTPUT
 
+sudo nvme smart-log /dev/$DEV >> $SMART_OUTPUT
 sed 's/DEVICE/'$DEV'/g' $NODEV_CONFIG > $DEV_CONFIG
 if [ $DEV_TYPE == 'cns' ]; then
     sed -i '/FDP/d' $DEV_CONFIG
@@ -38,22 +39,17 @@ if [ $DEV_TYPE == 'cns' ]; then
     sed -i '/navyQDepth/d' $DEV_CONFIG
 fi
 
+# skip format
 # 0. enable nvme
-sudo $PATH_SCRIPTS'nvmeconfig.sh' /dev/${DEV:0:5} $DEV_TYPE
+#sudo $PATH_SCRIPTS'nvmeconfig.sh' /dev/${DEV:0:5} $DEV_TYPE
 
+# skip trim
 # 1. trim device
 sudo fio --name=trim --filename=/dev/$DEV --rw=trim --bs=3G
 
-sleep 600
-sudo nvme smart-log /dev/$DEV >> $SMART_OUTPUT
-sudo nvme ocp smart-add-log /dev/$DEV >> $SMART_OUTPUT
-
 # 2. execute benchmark
-# 48 hours
-sudo $CACHEBENCH -json_test_config $DEV_CONFIG -progress_stats_file $FILE_OUTPUT --progress 60 -timeout_seconds 172800
+sudo $CACHEBENCH -json_test_config $DEV_CONFIG -progress_stats_file $FILE_OUTPUT --progress 60
 
 # 3. end
 echo END_TIME : `cat /proc/uptime` >> $SMART_OUTPUT
-sleep 600
 sudo nvme smart-log /dev/$DEV >> $SMART_OUTPUT
-sudo nvme ocp smart-add-log /dev/$DEV >> $SMART_OUTPUT
